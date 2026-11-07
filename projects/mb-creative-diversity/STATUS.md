@@ -7,3 +7,6 @@
 - 2026-11-08T00:09:07+02:00: script_clean.txt written (6 sections, STT spellings fixed); waiting for script approval
 - 2026-11-08T00:11:35+02:00: card crop set to 1440:1325:0:800 (head room checked on two frames)
 - 2026-11-08T00:19:27+02:00: approved script 
+- 2026-11-08T00:43:01+02:00: final cut prepared: words.json mapped, 2153 card frames
+- 2026-11-08T00:43:44+02:00: storyboard sb001 (9 frames)
+- 2026-11-08T00:44:04+02:00: storyboard sb002 (9 frames)

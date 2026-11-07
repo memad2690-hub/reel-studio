@@ -87,5 +87,43 @@
       "audio": true,
       "problems": []
     }
+  },
+  {
+    "id": "sb001",
+    "kind": "storyboard",
+    "file": "storyboard/sb001.png",
+    "created": "2026-11-08T00:43:44+02:00",
+    "times": [
+      5.45,
+      10.22,
+      17.353,
+      29.9,
+      39.31,
+      47.614,
+      57.674,
+      64.114,
+      69.54
+    ],
+    "anchor_misses": [],
+    "note": ""
+  },
+  {
+    "id": "sb002",
+    "kind": "storyboard",
+    "file": "storyboard/sb002.png",
+    "created": "2026-11-08T00:44:04+02:00",
+    "times": [
+      5.45,
+      10.22,
+      17.353,
+      29.9,
+      39.31,
+      47.614,
+      57.674,
+      64.114,
+      69.54
+    ],
+    "anchor_misses": [],
+    "note": "hook question mark attached"
   }
 ]
