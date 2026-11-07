@@ -70,7 +70,11 @@ async function loadList(){
   document.querySelectorAll('.proj').forEach(el => el.onclick = () => open(el.dataset.s));
 }
 
-async function open(slug){ cur = slug; data = await api('/api/project/' + slug); loadList(); render(); }
+async function open(slug){
+  cur = slug; const d = await api('/api/project/' + encodeURIComponent(slug)); loadList();
+  if (d.error || !d.project){ data = null; $('#detail').innerHTML = `<p class="muted">Can't open ${h(slug)}: ${h(d.error || 'unknown error')}.</p>`; return; }
+  data = d; render();
+}
 
 function stagesHtml(){
   const ap = data.approvals, st = data.project.stage;

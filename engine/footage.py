@@ -16,13 +16,18 @@ def run(cmd, **kw):
 
 def probe(path):
     out = subprocess.run(['ffprobe', '-v', 'error', '-show_entries',
-                          'stream=codec_type,codec_name,width,height,r_frame_rate,bit_rate:format=duration,bit_rate',
+                          'stream=codec_type,codec_name,width,height,r_frame_rate,bit_rate,duration:format=duration,bit_rate',
                           '-of', 'json', path], capture_output=True, text=True, check=True).stdout
     return json.loads(out)
 
 
 def duration(path):
     return float(probe(path)['format']['duration'])
+
+
+def video_duration(path):
+    v = next((s for s in probe(path)['streams'] if s['codec_type'] == 'video'), {})
+    return float(v.get('duration') or duration(path))
 
 
 def contact_sheet(video, out_png, cols=6, rows=2, width=240):
@@ -54,11 +59,12 @@ def api_key(cfg):
 def stt(audio_path, out_json, cfg):
     """ElevenLabs Speech-to-Text with word timestamps. The key is read from env/file, never printed."""
     key = api_key(cfg)
+    # The header is read from stdin (-H @-), so the key never appears in the process list.
     cmd = ['curl', '-sS', '--fail-with-body', '-X', 'POST', 'https://api.elevenlabs.io/v1/speech-to-text',
-           '-H', 'xi-api-key: ' + key, '-F', f'model_id={cfg["elevenlabs"]["stt_model"]}',
+           '-H', '@-', '-F', f'model_id={cfg["elevenlabs"]["stt_model"]}',
            '-F', f'language_code={cfg["elevenlabs"]["stt_language"]}', '-F', 'timestamps_granularity=word',
            '-F', f'file=@{audio_path}', '-o', out_json]
-    r = subprocess.run(cmd, capture_output=True, text=True)
+    r = subprocess.run(cmd, input='xi-api-key: ' + key + '\n', capture_output=True, text=True)
     if r.returncode != 0:
         msg = (r.stderr or '').replace(key, '***')
         raise SystemExit('STT failed (check allowed domains / key): ' + msg[-400:])

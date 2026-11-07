@@ -40,7 +40,7 @@ Every element has `x`, `y` (its centre), optional `rot`, `scale`.
 | `{"at": "كلمة", "nth": 2, "offset": -0.1, "after": "سابق", "edge": "end"}` | full form |
 | `{"rel": 0.4}` | seconds after the scene start |
 
-Arabic words carry attached prefixes (بـ، الـ، و). Anchor on the stem (`"المرتجعات"` matches `والمرتجعات`). Words of 1–2 letters (`ما`, `في`) only match exactly. Missing anchors are listed by `build`, and `render` refuses to run until they are fixed (or `--force`).
+Arabic words carry attached prefixes (بـ، الـ، و). Anchor on the stem (`"المرتجعات"` matches `والمرتجعات`). Words of 1–2 letters (`ما`, `في`) only match exactly. Missing anchors, and elements whose `in` lands at or after the time they leave (e.g. anchored on a word spoken only in a later scene, so they would never appear), are listed by `build`; `render` refuses to run until they are fixed (or `--force`).
 
 Default `in`: scene start + 0.2s, plus 0.12s per element. Default `out`: scene end.
 

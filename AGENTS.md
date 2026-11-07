@@ -26,12 +26,12 @@ Never skip a gate. A gate is passed only by `approvals.json` (set by him in the 
 ```
 python3 reel.py check                      # prerequisites
 python3 reel.py status [slug]              # where every project stands
-python3 reel.py new <slug> --mode A|B --title "…" --reel-id CEOS-012 --cta AUDIT
+python3 reel.py new <slug> --mode A|B --title "…" --reel-id CEOS-012 --cta AUDIT   # slug: lowercase a-z 0-9 - _ (mb-007)
 python3 reel.py build <slug>               # page + anchor check (fast)
 python3 reel.py storyboard <slug>          # storyboard/sbNNN.png, one frame per scene
 python3 reel.py render <slug> [--draft]    # exports/vNNN.mp4 + QA + contact sheet
-python3 reel.py render <slug> --from 0 --to 90 --version v004   # long videos in parts, then:
-python3 reel.py join <slug> v004
+python3 reel.py render <slug> --from 0 --to 90 --version v004   # long videos in silent parts (pick an unused version), then:
+python3 reel.py join <slug> v004           # checks the parts cover the reel, adds the audio once
 python3 reel.py notes <slug> | note | resolve <slug> <ids> --version vNNN
 python3 reel.py approve <slug> script|voiceover|roughcut|storyboard|final [--version]
 python3 reel.py stt <slug> <audio-or-video> [--out words_raw.json]
@@ -43,7 +43,7 @@ python3 scripts/make_demo.py               # synthetic smoke test of both modes
 python3 -m unittest discover -s tests
 ```
 
-Rendering speed: ~70s per 27s of Mode A, ~45s per 17s of Mode B here. Keep each command under 10 minutes; split anything longer than ~2 minutes of video with `--from/--to` + `join`.
+Rendering speed: ~70s per 27s of Mode A, ~70s per 17s of Mode B here. Keep each command under 10 minutes; split anything longer than ~2 minutes of video with `--from/--to` + `join`.
 
 ## Feedback loop (the point of the studio)
 
@@ -59,7 +59,7 @@ Rendering speed: ~70s per 27s of Mode A, ~45s per 17s of Mode B here. Keep each 
 ## Output quality (non-negotiable)
 
 - Deliver 1080×1920. Never 720×1280. Mode A is authored at 720×1280 and rendered with deviceScaleFactor 1.5.
-- Keep intermediates lossless (PNG frames). Encode with x264 once at the end (crf 16 A / 15 B, preset slow, yuv420p, AAC 192k, +faststart).
+- Intermediates: Mode B frames are lossless PNG. Mode A frames are JPEG q95 (visually lossless for flat cut-out graphics; PNG is about 7x slower), or PNG with `render --lossless` for short reels. Encode with x264 once at the end (crf 16 A / 15 B, preset slow, yuv420p, AAC 192k, +faststart).
 - Mode B card frames are extracted **from raw.mp4** with the cut list (never from the rough cut).
 - `render` runs QA (size, fps, audio, bitrate) and saves a contact sheet. Look at the sheet before sending. Tell him the in-app preview may look softer than the downloaded file.
 - Wants sharper footage? Shoot 4K, it gets downscaled to 1080 with lanczos. Don't render 2K.

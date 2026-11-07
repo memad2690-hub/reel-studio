@@ -27,11 +27,8 @@ import reel  # noqa: E402
 
 STATIC = os.path.join(ROOT, 'studio', 'static')
 PROJECTS = reel.PROJECTS
-SLUG_OK = set('abcdefghijklmnopqrstuvwxyz0123456789-_')
-
-
 def safe_slug(slug):
-    if not slug or set(slug) - SLUG_OK or not os.path.isdir(os.path.join(PROJECTS, slug)):
+    if not reel.valid_slug(slug) or not os.path.isdir(os.path.join(PROJECTS, slug)):
         return None
     return slug
 
@@ -150,10 +147,19 @@ class H(BaseHTTPRequestHandler):
             out.sort(key=lambda x: x.get('updated') or '', reverse=True)
             return self.send_json(out)
         if path.startswith('/api/project/'):
-            slug = safe_slug(path.split('/')[3])
-            return self.send_json(project_detail(slug)) if slug else self.send_json({'error': 'no project'}, 404)
+            raw = path.split('/')[3]
+            slug = safe_slug(raw)
+            if slug:
+                return self.send_json(project_detail(slug))
+            if os.path.isdir(os.path.join(PROJECTS, raw)) and not reel.valid_slug(raw):
+                return self.send_json({'error': 'folder names must be lowercase letters, digits, "-" or "_"; '
+                                                'rename the folder in projects/'}, 400)
+            return self.send_json({'error': 'no project'}, 404)
         if path.startswith('/media/'):
-            _, _, slug, rel = path.split('/', 3)
+            bits = path.split('/', 3)
+            if len(bits) < 4:
+                return self.send_json({'error': 'not found'}, 404)
+            _, _, slug, rel = bits
             slug = safe_slug(slug)
             p = inside(os.path.join(PROJECTS, slug), rel) if slug else None
             return self.send_file(p) if p else self.send_json({'error': 'not found'}, 404)

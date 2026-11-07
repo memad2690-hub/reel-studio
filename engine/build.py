@@ -41,12 +41,21 @@ def anim_group(inner, t_in, t_out, kind, x=0, y=0, rot=0, scale=1, extra=''):
             f'<g transform="translate({x},{y}) rotate({rot}) scale({scale})">{inner}</g></g>')
 
 
+def flag_late(anchors, spec, t, t_out, s_start, what):
+    """An element that comes in at/after the moment it leaves would never be seen: report it."""
+    if t >= t_out - 1e-6:
+        anchors.misses.append({'anchor': spec, 'after': round(s_start, 2), 'element': what,
+                               'problem': f'comes in at {t:.2f}s, after it leaves ({t_out:.2f}s), so it never appears'})
+
+
 def expand(el, mode, anchors, s_start, s_end, idx, ins=None):
-    ins = ins if ins is not None else []
     """Return SVG for one element (seats and steps expand to several animated groups)."""
+    ins = ins if ins is not None else []
     t_in = anchors.resolve(el.get('in'), s_start, default=s_start + 0.2 + 0.12 * idx)
     t_out = anchors.resolve(el.get('out'), s_start, default=s_end)
     t_out = min(t_out, s_end)
+    what = el.get('text') or el.get('hl') or el.get('title') or el.get('name') or el['type']
+    flag_late(anchors, el.get('in'), t_in, t_out, s_start, what)
     ins.append(t_in)
     kind = el.get('anim', 'pop')
     x, y, rot, sc = el.get('x', 0), el.get('y', 0), el.get('rot', 0), el.get('scale', 1)
@@ -58,6 +67,8 @@ def expand(el, mode, anchors, s_start, s_end, idx, ins=None):
         pal = kits.A if mode == 'A' else kits.B
         c = kits.col(el.get('color', 'red'), pal)
         fill_end = anchors.resolve(el.get('fill_end'), s_start, default=t_in + 0.12 * filled)
+        if filled and fill_end > t_in:
+            flag_late(anchors, el.get('fill_end'), fill_end, t_out, s_start, 'seats fill_end')
         rows = (n + cols - 1) // cols
         ox, oy = -(cols * (size + gap) - gap) / 2, -(rows * (size + gap) - gap) / 2
         pos = [(ox + (i % cols) * (size + gap), oy + (i // cols) * (size + gap)) for i in range(n)]
@@ -76,6 +87,7 @@ def expand(el, mode, anchors, s_start, s_end, idx, ins=None):
         gap = el.get('gap', 130)
         for i, item in enumerate(el.get('items', [])):
             ti = anchors.resolve(item.get('in'), s_start, default=t_in + 0.6 * i)
+            flag_late(anchors, item.get('in'), ti, t_out, s_start, item.get('text') or f'steps item {i + 1}')
             ins.append(ti)
             sub = dict(item); sub.setdefault('type', 'wcard' if mode == 'B' else 'label')
             sub.setdefault('size', el.get('size', 46))

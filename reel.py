@@ -8,6 +8,7 @@ import argparse
 import datetime as dt
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -57,10 +58,35 @@ def project(slug):
     return rj(os.path.join(pdir(slug), 'project.json'))
 
 
-def next_version(d, prefix):
+SLUG_RE = re.compile(r'^[a-z0-9_][a-z0-9_-]*$')
+
+
+def valid_slug(slug):
+    return bool(slug) and bool(SLUG_RE.match(slug))
+
+
+def used_versions(d, prefix):
+    """Version numbers already taken: recorded in versions.json or present on disk (incl. unjoined parts)."""
     vs = rj(os.path.join(d, 'versions.json'), [])
-    n = 1 + max([int(v['id'][len(prefix):]) for v in vs if v['id'].startswith(prefix)] or [0])
-    return f'{prefix}{n:03d}'
+    used = {int(v['id'][len(prefix):]) for v in vs if re.fullmatch(re.escape(prefix) + r'\d+', v['id'])}
+    pat = re.compile(re.escape(prefix) + r'(\d{3,})(?:[._]|$)')
+    for sub in ('exports', 'storyboard'):
+        p = os.path.join(d, sub)
+        for f in (os.listdir(p) if os.path.isdir(p) else []):
+            m = pat.match(f)
+            if m:
+                used.add(int(m.group(1)))
+    return used
+
+
+def next_version(d, prefix):
+    return f'{prefix}{1 + max(used_versions(d, prefix) or [0]):03d}'
+
+
+def version_taken(d, vid):
+    """True if vid is recorded or its final export already exists (never overwrite an export)."""
+    vs = rj(os.path.join(d, 'versions.json'), [])
+    return any(v['id'] == vid for v in vs) or os.path.exists(os.path.join(d, 'exports', f'{vid}.mp4'))
 
 
 def add_version(d, entry):
@@ -80,6 +106,9 @@ def node():
 
 # ------------------------------------------------------------------ commands
 def cmd_new(a):
+    if not valid_slug(a.slug):
+        sys.exit(f'Bad slug {a.slug!r}: use lowercase letters, digits, "-" or "_" (e.g. {re.sub(r"[^a-z0-9_-]+", "-", a.slug.lower()).strip("-")!r}), '
+                 'so the studio can open it.')
     d = os.path.join(PROJECTS, a.slug)
     if os.path.exists(d):
         sys.exit(f'projects/{a.slug} already exists')
@@ -106,7 +135,8 @@ def cmd_build(a):
            'captions': len(m['captions']), 'anchor_misses': m['anchor_misses'], 'audio': m['audio']}
     print(json.dumps(out, ensure_ascii=False))
     if m['anchor_misses']:
-        print('WARNING: some anchors were not found; those elements fell back to default times.', file=sys.stderr)
+        print('WARNING: timing problems: anchors not found (elements fell back to default times) or elements '
+              'timed after their scene ends (they would never appear).', file=sys.stderr)
     return m
 
 
@@ -174,6 +204,12 @@ def qa(path, mode=None):
         problems.append('not 1080x1920')
     if not au:
         problems.append('no audio stream')
+    if mode in builder.MODES and abs(res['fps'] - builder.MODES[mode]['fps']) > 0.01:
+        problems.append(f'fps {res["fps"]}, expected {builder.MODES[mode]["fps"]}')
+    if au and v.get('duration') and au.get('duration'):
+        gap = abs(float(v['duration']) - float(au['duration']))
+        if gap > 0.1:
+            problems.append(f'audio and video lengths differ by {gap:.2f}s')
     if mode == 'B' and res['mbps'] < 4:
         problems.append('low bitrate for footage')
     res['problems'] = problems
@@ -185,13 +221,17 @@ def cmd_render(a):
     proj = project(a.slug)
     m = builder.build(d)
     if m['anchor_misses'] and not a.force:
-        sys.exit(f'Anchors not found: {m["anchor_misses"]}. Fix scenes.json or pass --force.')
+        sys.exit(f'Timing problems: {json.dumps(m["anchor_misses"], ensure_ascii=False)}. Fix scenes.json or pass --force.')
     vid = a.version or next_version(d, 'v')
+    if version_taken(d, vid):
+        sys.exit(f'{vid} already exists. Every render is a new version: omit --version, or pick an unused one '
+                 f'(next free: {next_version(d, "v")}).')
     partial = a.frm is not None or a.to is not None
     name = f'{vid}_part_{float(a.frm or 0):07.2f}.mp4' if partial else f'{vid}.mp4'
     out = os.path.join(d, 'exports', name)
     cmd = [node(), os.path.join(ROOT, 'engine', 'render.js'), '--build', os.path.join(d, 'build'), '--out', out]
-    if m['audio']:
+    # Parts are rendered silent; join adds the full audio once, so there are no gaps or drift at the joints.
+    if m['audio'] and not partial:
         cmd += ['--audio', os.path.join(d, m['audio'])]
     if a.frm is not None:
         cmd += ['--from', str(a.frm)]
@@ -199,6 +239,8 @@ def cmd_render(a):
         cmd += ['--to', str(a.to)]
     if a.draft:
         cmd += ['--preset', 'veryfast', '--crf', '22']
+    if a.lossless:
+        cmd += ['--lossless']
     subprocess.run(cmd, check=True)
     if partial:
         print(json.dumps({'part': out, 'next': f'render the remaining ranges with --version {vid}, then: reel.py join {a.slug} {vid}'}))
@@ -220,17 +262,40 @@ def finish_render(d, proj, vid, out, note='', draft=False):
 
 def cmd_join(a):
     d = pdir(a.slug)
-    parts = sorted(f for f in os.listdir(os.path.join(d, 'exports')) if f.startswith(a.version + '_part_'))
+    if version_taken(d, a.version):
+        sys.exit(f'{a.version} already exists; refusing to overwrite it.')
+    exp = os.path.join(d, 'exports')
+    parts = sorted((float(m.group(1)), f) for f in os.listdir(exp)
+                   if (m := re.fullmatch(re.escape(a.version) + r'_part_([\d.]+)\.mp4', f)))
     if not parts:
         sys.exit('no parts found')
+    m = builder.build(d)
+    # The parts must tile the whole timeline with no hole or overlap.
+    t, problems = 0.0, []
+    for start, f in parts:
+        if abs(start - t) > 0.05:
+            problems.append(f'{f} starts at {start:.2f}s, expected {t:.2f}s')
+        t = start + footage.video_duration(os.path.join(exp, f))
+    if abs(t - m['duration']) > 0.1:
+        problems.append(f'parts end at {t:.2f}s but the reel is {m["duration"]:.2f}s')
+    if problems:
+        sys.exit('Parts do not cover the reel: ' + '; '.join(problems) + '. Render the missing range with '
+                 f'--from/--to --version {a.version}, then join again.')
+    os.makedirs(os.path.join(d, 'build'), exist_ok=True)
     lst = os.path.join(d, 'build', 'parts.txt')
     with open(lst, 'w') as f:
-        f.writelines(f"file '{os.path.join(d, 'exports', p)}'\n" for p in parts)
-    out = os.path.join(d, 'exports', f'{a.version}.mp4')
-    subprocess.run(['ffmpeg', '-y', '-v', 'error', '-f', 'concat', '-safe', '0', '-i', lst, '-c', 'copy',
-                    '-movflags', '+faststart', out], check=True)
-    for p in parts:
-        os.remove(os.path.join(d, 'exports', p))
+        f.writelines(f"file '{os.path.join(exp, p)}'\n" for _, p in parts)
+    out = os.path.join(exp, f'{a.version}.mp4')
+    cmd = ['ffmpeg', '-y', '-v', 'error', '-f', 'concat', '-safe', '0', '-i', lst]
+    if m['audio']:
+        # one continuous audio track for the whole reel (the parts are silent)
+        cmd += ['-i', os.path.join(d, m['audio']), '-map', '0:v', '-map', '1:a', '-c:v', 'copy',
+                '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-t', f'{t:.3f}']
+    else:
+        cmd += ['-c', 'copy']
+    subprocess.run(cmd + ['-movflags', '+faststart', out], check=True)
+    for _, p in parts:
+        os.remove(os.path.join(exp, p))
     finish_render(d, project(a.slug), a.version, out)
 
 
@@ -458,6 +523,7 @@ def main():
     s.add_argument('--times'); s.add_argument('--note'); s.set_defaults(f=cmd_storyboard)
     s = sp.add_parser('render', help='render exports/vNNN.mp4'); s.add_argument('slug'); s.add_argument('--from', dest='frm', type=float)
     s.add_argument('--to', type=float); s.add_argument('--version'); s.add_argument('--draft', action='store_true')
+    s.add_argument('--lossless', action='store_true', help='Mode A: PNG frames instead of JPEG q95 (about 7x slower)')
     s.add_argument('--force', action='store_true'); s.add_argument('--note'); s.set_defaults(f=cmd_render)
     s = sp.add_parser('join', help='join rendered parts'); s.add_argument('slug'); s.add_argument('version'); s.set_defaults(f=cmd_join)
     s = sp.add_parser('qa', help='check a video file'); s.add_argument('file'); s.set_defaults(f=cmd_qa)
