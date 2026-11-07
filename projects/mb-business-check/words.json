@@ -535,9 +535,9 @@
     "end": 37.12
   },
   {
-    "text": "ولاaa",
-    "start": 37.24,
-    "end": 37.82
+    "text": "ولا",
+    "start": 37.53,
+    "end": 37.94
   },
   {
     "text": "conversion",
@@ -660,7 +660,7 @@
     "end": 47.54
   },
   {
-    "text": "audit",
+    "text": "AUDIT",
     "start": 47.56,
     "end": 47.8
   },
@@ -675,9 +675,9 @@
     "end": 48.36
   },
   {
-    "text": "che-checklist",
-    "start": 48.36,
-    "end": 49.32
+    "text": "checklist",
+    "start": 48.91,
+    "end": 49.46
   },
   {
     "text": "تقدر",
@@ -705,7 +705,7 @@
     "end": 50.6
   },
   {
-    "text": "بتاعك..",
+    "text": "بتاعك.",
     "start": 50.64,
     "end": 51.08
   }

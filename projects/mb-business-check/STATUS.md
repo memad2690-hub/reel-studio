@@ -8,3 +8,8 @@
 - 2026-11-08T00:11:00+02:00: final cut prepared: words.json mapped, 1538 card frames
 - 2026-11-08T00:11:35+02:00: card crop set to 1440:1325:0:700 (head room checked on two frames)
 - 2026-11-08T00:13:10+02:00: final cut prepared: words.json mapped, 1538 card frames
+- 2026-11-08T00:19:27+02:00: approved script 
+- 2026-11-08T00:20:10+02:00: storyboard sb001 (9 frames)
+- 2026-11-08T00:20:40+02:00: storyboard sb002 (9 frames)
+- 2026-11-08T00:20:51+02:00: storyboard sb003 (1 frames)
+- 2026-11-08T00:21:07+02:00: storyboard sb004 (9 frames)

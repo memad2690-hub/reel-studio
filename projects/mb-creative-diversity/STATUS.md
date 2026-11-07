@@ -6,3 +6,4 @@
 - 2026-11-08T00:08:09+02:00: approved roughcut rc001
 - 2026-11-08T00:09:07+02:00: script_clean.txt written (6 sections, STT spellings fixed); waiting for script approval
 - 2026-11-08T00:11:35+02:00: card crop set to 1440:1325:0:800 (head room checked on two frames)
+- 2026-11-08T00:19:27+02:00: approved script 

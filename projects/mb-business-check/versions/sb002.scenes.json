@@ -1,0 +1,451 @@
+{
+ "mode": "B",
+ "words": "words.json",
+ "audio": "build/cut_audio.m4a",
+ "captions": true,
+ "scenes": [
+  {
+   "id": "hook",
+   "title": "Hook",
+   "card": "top",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "قبل ما تغير",
+     "hl": "الـ media buyer",
+     "post": "",
+     "x": 540,
+     "y": 150,
+     "size": 84,
+     "in": {
+      "rel": 0.05
+     },
+     "anim": "slide"
+    },
+    {
+     "type": "icon",
+     "name": "users",
+     "x": 300,
+     "y": 430,
+     "in": "media"
+    },
+    {
+     "type": "arrow",
+     "x": 400,
+     "y": 430,
+     "dx": 270,
+     "dy": 0,
+     "in": "اتأكد"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "المشكلة في",
+      "الـ business؟"
+     ],
+     "x": 790,
+     "y": 430,
+     "size": 46,
+     "in": "business",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "context",
+   "title": "3 signs",
+   "start": "فيه تلات",
+   "elements": [
+    {
+     "type": "number",
+     "text": "3",
+     "x": 540,
+     "y": 130,
+     "size": 170,
+     "color": "red",
+     "in": "تلات",
+     "anim": "stamp"
+    },
+    {
+     "type": "text",
+     "text": "علامات",
+     "x": 540,
+     "y": 260,
+     "size": 56,
+     "in": "حاجات"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "الـ campaign structure",
+      "والـ strategy"
+     ],
+     "x": 540,
+     "y": 470,
+     "size": 48,
+     "in": "structure"
+    },
+    {
+     "type": "pill",
+     "text": "لوحدها مش هتحل",
+     "color": "red",
+     "x": 540,
+     "y": 650,
+     "size": 44,
+     "in": "لوحدها",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "sign1",
+   "title": "Sign 1: checkout drop",
+   "start": "أول حاجة",
+   "elements": [
+    {
+     "type": "pill",
+     "text": "1",
+     "color": "ink",
+     "x": 540,
+     "y": 80,
+     "size": 58,
+     "in": {
+      "rel": 0.05
+     }
+    },
+    {
+     "type": "icon",
+     "name": "cart",
+     "x": 800,
+     "y": 260,
+     "in": "add"
+    },
+    {
+     "type": "pill",
+     "text": "add to cart كتير",
+     "color": "blue",
+     "x": 800,
+     "y": 400,
+     "size": 36,
+     "in": "add"
+    },
+    {
+     "type": "arrow",
+     "x": 690,
+     "y": 260,
+     "dx": -300,
+     "dy": 0,
+     "in": "قليلة"
+    },
+    {
+     "type": "icon",
+     "name": "receipt",
+     "x": 280,
+     "y": 260,
+     "in": "checkout"
+    },
+    {
+     "type": "pill",
+     "text": "checkout قليل",
+     "color": "red",
+     "x": 280,
+     "y": 400,
+     "size": 36,
+     "in": "checkout"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "أكيد عندك مشكلة"
+     ],
+     "x": 540,
+     "y": 600,
+     "size": 52,
+     "text_color": "red",
+     "in": {
+      "at": "مشكلة",
+      "after": "أكيد"
+     },
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "sign2",
+   "title": "Sign 2: stock",
+   "start": "تاني واحدة",
+   "elements": [
+    {
+     "type": "pill",
+     "text": "2",
+     "color": "ink",
+     "x": 540,
+     "y": 80,
+     "size": 58,
+     "in": {
+      "rel": 0.05
+     }
+    },
+    {
+     "type": "icon",
+     "name": "box",
+     "x": 540,
+     "y": 250,
+     "in": "طلب"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "فيه طلب على المنتج",
+      "بس المقاسات والألوان المهمة"
+     ],
+     "x": 540,
+     "y": 470,
+     "size": 44,
+     "in": "المقاسات"
+    },
+    {
+     "type": "pill",
+     "text": "مش متوفرة",
+     "color": "red",
+     "x": 540,
+     "y": 650,
+     "size": 46,
+     "in": "متوفرة",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "sign3",
+   "title": "Sign 3: weak offer",
+   "start": "تالت حاجة",
+   "elements": [
+    {
+     "type": "pill",
+     "text": "3",
+     "color": "ink",
+     "x": 540,
+     "y": 80,
+     "size": 58,
+     "in": {
+      "rel": 0.05
+     }
+    },
+    {
+     "type": "headline",
+     "pre": "الـ",
+     "hl": "offer",
+     "post": "بتاعك",
+     "x": 540,
+     "y": 230,
+     "size": 96,
+     "in": "offer"
+    },
+    {
+     "type": "pill",
+     "text": "مش واضح",
+     "color": "red",
+     "x": 740,
+     "y": 450,
+     "size": 46,
+     "in": "واضح",
+     "anim": "stamp"
+    },
+    {
+     "type": "pill",
+     "text": "مش منافس",
+     "color": "red",
+     "x": 340,
+     "y": 450,
+     "size": 46,
+     "in": "منافس",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "funnel",
+   "title": "Review the funnel",
+   "start": "هنا لازم",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "راجع",
+     "hl": "الـ funnel",
+     "post": "كله",
+     "x": 540,
+     "y": 90,
+     "size": 84,
+     "in": "funnel"
+    },
+    {
+     "type": "steps",
+     "x": 540,
+     "y": 240,
+     "gap": 122,
+     "size": 54,
+     "items": [
+      {
+       "type": "pill",
+       "text": "Product page",
+       "color": "blue",
+       "in": "product"
+      },
+      {
+       "type": "pill",
+       "text": "Shipping",
+       "color": "blue",
+       "in": "shipping"
+      },
+      {
+       "type": "pill",
+       "text": "Inventory",
+       "color": "blue",
+       "in": "inventory"
+      },
+      {
+       "type": "pill",
+       "text": "Pricing",
+       "color": "blue",
+       "in": "pricing"
+      },
+      {
+       "type": "pill",
+       "text": "Customer experience",
+       "color": "blue",
+       "in": "customer"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "diagnose",
+   "title": "Where is the problem",
+   "start": "نقدر بعد",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "المشكلة",
+     "hl": "فين؟",
+     "post": "",
+     "x": 540,
+     "y": 120,
+     "size": 90,
+     "in": "نحدد"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "Traffic"
+     ],
+     "x": 870,
+     "y": 360,
+     "size": 42,
+     "in": "traffic"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "Operations"
+     ],
+     "x": 540,
+     "y": 360,
+     "size": 42,
+     "in": "operations"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "Conversion"
+     ],
+     "x": 210,
+     "y": 360,
+     "size": 42,
+     "in": "conversion"
+    },
+    {
+     "type": "icon",
+     "name": "warning",
+     "x": 540,
+     "y": 600,
+     "color": "red",
+     "in": "quality",
+     "anim": "shake"
+    }
+   ]
+  },
+  {
+   "id": "payoff",
+   "title": "Payoff",
+   "start": "أحسن",
+   "elements": [
+    {
+     "type": "wcard",
+     "lines": [
+      "أحسن media buying strategy"
+     ],
+     "x": 540,
+     "y": 130,
+     "size": 50,
+     "in": {
+      "rel": 0.1
+     }
+    },
+    {
+     "type": "headline",
+     "pre": "مش",
+     "hl": "هتعوض",
+     "post": "",
+     "x": 540,
+     "y": 330,
+     "size": 100,
+     "in": "هتعوض",
+     "anim": "stamp"
+    },
+    {
+     "type": "pill",
+     "text": "مشكلة في الـ operations",
+     "color": "red",
+     "x": 540,
+     "y": 520,
+     "size": 44,
+     "in": "operations"
+    },
+    {
+     "type": "xmark",
+     "x": 540,
+     "y": 700,
+     "size": 50,
+     "in": "كبيرة",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "cta",
+   "title": "CTA",
+   "start": "لو عاوز",
+   "elements": [
+    {
+     "type": "icon",
+     "name": "check",
+     "x": 540,
+     "y": 90,
+     "r": 60,
+     "color": "green",
+     "in": "checklist"
+    },
+    {
+     "type": "cta",
+     "keyword": "AUDIT",
+     "magnet": "وهبعتلك الـ checklist",
+     "x": 540,
+     "y": 290,
+     "in": "اكتب"
+    }
+   ]
+  }
+ ]
+}

@@ -63,5 +63,73 @@
       "audio": true,
       "problems": []
     }
+  },
+  {
+    "id": "sb001",
+    "kind": "storyboard",
+    "file": "storyboard/sb001.png",
+    "created": "2026-11-08T00:20:10+02:00",
+    "times": [
+      3.27,
+      8.68,
+      17.137,
+      22.517,
+      25.63,
+      33.007,
+      38.857,
+      44.47,
+      47.86
+    ],
+    "anchor_misses": [],
+    "note": ""
+  },
+  {
+    "id": "sb002",
+    "kind": "storyboard",
+    "file": "storyboard/sb002.png",
+    "created": "2026-11-08T00:20:40+02:00",
+    "times": [
+      3.27,
+      8.68,
+      17.137,
+      22.517,
+      25.63,
+      33.007,
+      38.857,
+      44.47,
+      47.86
+    ],
+    "anchor_misses": [],
+    "note": "bigger pills/badges, spaced diagnose cards, CTA wording"
+  },
+  {
+    "id": "sb003",
+    "kind": "storyboard",
+    "file": "storyboard/sb003.png",
+    "created": "2026-11-08T00:20:51+02:00",
+    "times": [
+      33.0
+    ],
+    "anchor_misses": [],
+    "note": "funnel spacing check"
+  },
+  {
+    "id": "sb004",
+    "kind": "storyboard",
+    "file": "storyboard/sb004.png",
+    "created": "2026-11-08T00:21:07+02:00",
+    "times": [
+      3.27,
+      8.68,
+      17.137,
+      22.517,
+      25.63,
+      33.007,
+      38.857,
+      44.47,
+      47.86
+    ],
+    "anchor_misses": [],
+    "note": "full board with all fixes"
   }
 ]
