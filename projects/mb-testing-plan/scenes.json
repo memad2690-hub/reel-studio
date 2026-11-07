@@ -1,0 +1,7 @@
+{
+  "mode": "B",
+  "words": "words.json",
+  "audio": "build/cut_audio.m4a",
+  "captions": true,
+  "scenes": []
+}

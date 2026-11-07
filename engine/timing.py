@@ -27,8 +27,14 @@ def load_words(path):
         if w.get('type', 'word') != 'word':
             continue
         text = (w.get('text') or '').strip()
-        if text:
-            out.append({'text': text, 'start': float(w['start']), 'end': float(w['end'])})
+        if not text:
+            continue
+        if not any(c.isalnum() for c in text):
+            # STT sometimes returns a lone '.' or '،' as a word: glue it to the previous word
+            if out:
+                out[-1]['text'] += text
+            continue
+        out.append({'text': text, 'start': float(w['start']), 'end': float(w['end'])})
     return out
 
 

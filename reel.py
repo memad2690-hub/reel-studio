@@ -437,7 +437,7 @@ def cmd_finalize_cut(a):
     d = pdir(a.slug)
     cuts = rj(os.path.join(d, 'cuts.json'))
     raw = os.path.join(d, cuts['source'])
-    segs = cuts['segments']
+    segs = footage.snap(cuts['segments'])  # same frame-aligned cuts as the audio and card frames
     words = load_words(os.path.join(d, a.words))
     wj(os.path.join(d, 'words.json'), map_through_cuts(words, segs))
     footage.render_cut(raw, segs, os.path.join(d, 'build', 'cut_audio.m4a'), audio_only=True)

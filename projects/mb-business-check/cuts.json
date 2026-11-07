@@ -1,0 +1,149 @@
+{
+  "source": "raw/raw.mp4",
+  "segments": [
+    [
+      1.14,
+      4.64
+    ],
+    [
+      5.1,
+      11.72
+    ],
+    [
+      12.48,
+      16.99
+    ],
+    [
+      17.31,
+      18.6
+    ],
+    [
+      19.04,
+      20.42
+    ],
+    [
+      20.7,
+      26.08
+    ],
+    [
+      26.58,
+      29.7
+    ],
+    [
+      49.36,
+      51.28
+    ],
+    [
+      52.0,
+      57.9
+    ],
+    [
+      58.26,
+      63.7
+    ],
+    [
+      64.42,
+      70.02
+    ],
+    [
+      70.6,
+      77.16
+    ]
+  ],
+  "report": [
+    {
+      "start": 1.26,
+      "end": 4.46,
+      "text": "قبل ما تغير الـ media buyer اتأكد إن المشكلة مش في الـ business نفسه.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 5.22,
+      "end": 11.54,
+      "text": "فيه تلات حاجات لو موجودة تغيير الـ campaign structure والـ strategy لوحدها مش هيحل المشكلة.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 12.6,
+      "end": 18.42,
+      "text": "أول حاجة لازم تبقى عارف إنه لو ناس كتير بتعمل add to cart بس نسبة قليلة بتعمـ-- بتكمل الـ checkout،",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 17.02,
+      "end": 17.3,
+      "text": "بتعمـ--",
+      "kept": false,
+      "reason": "stumble \"بتعمـ--\""
+    },
+    {
+      "start": 19.16,
+      "end": 20.24,
+      "text": "أنت أكيد عندك مشكلة.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 20.82,
+      "end": 25.9,
+      "text": "تاني واحدة لو فيه طلب على المنتج بس المقاسات أو الألوان المهمة مش متوفرة.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 26.7,
+      "end": 29.52,
+      "text": "تالت حاجة لو الـ offer بتاعك أصلًا مش واضح أو مش منافس.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 30.24,
+      "end": 43.18,
+      "text": "هنا لازم بتراجع الـ funnel كلها، سواء product page, shipping, inventory, pricing, customer experience، وبعدين نحدد هل المشكلة في traffic ولا operations ولا conversion ولا media buying.",
+      "kept": false,
+      "reason": "first take of the funnel paragraph; second take (7-9) kept"
+    },
+    {
+      "start": 49.48,
+      "end": 51.1,
+      "text": "هنا لازم نراجع الـ funnel كله.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 52.12,
+      "end": 57.72,
+      "text": "نتأكد من الـ product page، الـ shipping، الـ inventory، الـ pricing، الـ customer experience.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 58.38,
+      "end": 63.52,
+      "text": "نقدر بعد كده نحدد المشكلة في traffic ولا operations ولاaa conversion quality.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 64.54,
+      "end": 69.84,
+      "text": "أحسن media buying strategy مش هتعوض الـ business operations لو فيها مشكلة كبيرة.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 70.72,
+      "end": 76.98,
+      "text": "لو عاوز checklist تعرف بيها المشكلة عندك فين، اكتب audit وهبعتلك الـ che-checklist تقدر تطبقها على الـ brand بتاعك..",
+      "kept": true,
+      "reason": ""
+    }
+  ],
+  "created": "2026-11-07T23:41:54+02:00",
+  "note": "Hand-reviewed cut list (dropped sentences and stumble words). Edit, then: reel.py roughcut <slug> --reuse",
+  "crop": "1440:1325:0:800"
+}

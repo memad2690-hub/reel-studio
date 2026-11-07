@@ -88,6 +88,23 @@ class TimingProblemTests(Tmp):
         self.assertEqual(misses[0]['anchor'], 'مش موجودة')
 
 
+class SnapTests(unittest.TestCase):
+    def test_snap_to_frames(self):
+        import footage
+        self.assertEqual(footage.snap([[1.14, 4.64], [5.1, 5.11]]), [[1.1333, 4.6333]])  # zero-length dropped
+
+    def test_lone_punctuation_glued(self):
+        from timing import load_words
+        with tempfile.NamedTemporaryFile('w', suffix='.json', delete=False, encoding='utf-8') as f:
+            json.dump({'words': [{'text': 'بتاعك', 'start': 0, 'end': 0.5, 'type': 'word'},
+                                 {'text': '.', 'start': 0.5, 'end': 0.5, 'type': 'word'},
+                                 {'text': '[صوت]', 'start': 0.6, 'end': 1, 'type': 'audio_event'}]}, f)
+        try:
+            self.assertEqual([w['text'] for w in load_words(f.name)], ['بتاعك.'])
+        finally:
+            os.remove(f.name)
+
+
 @unittest.skipUnless(shutil.which('ffmpeg'), 'ffmpeg not installed')
 class QATests(Tmp):
     def make(self, fps, adur):

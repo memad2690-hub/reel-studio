@@ -1,0 +1,250 @@
+{
+  "source": "raw/raw.mp4",
+  "segments": [
+    [
+      0.96,
+      6.62
+    ],
+    [
+      6.98,
+      12.16
+    ],
+    [
+      12.72,
+      17.38
+    ],
+    [
+      17.88,
+      21.1
+    ],
+    [
+      29.68,
+      34.96
+    ],
+    [
+      35.22,
+      41.34
+    ],
+    [
+      41.64,
+      42.94
+    ],
+    [
+      43.32,
+      46.36
+    ],
+    [
+      46.7,
+      49.56
+    ],
+    [
+      49.84,
+      52.02
+    ],
+    [
+      52.14,
+      54.86
+    ],
+    [
+      55.04,
+      65.68
+    ],
+    [
+      66.02,
+      67.37
+    ],
+    [
+      67.71,
+      71.4
+    ],
+    [
+      72.0,
+      76.34
+    ],
+    [
+      76.42,
+      78.76
+    ],
+    [
+      79.42,
+      83.66
+    ],
+    [
+      83.92,
+      86.86
+    ]
+  ],
+  "report": [
+    {
+      "start": 1.08,
+      "end": 6.44,
+      "text": "بقولك إيه، إزاي تعرف المحتوى اللي بتطلعه عندك في الإعلانات نفس النوع ولا مختلف.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 7.1,
+      "end": 11.98,
+      "text": "يعني أنت ممكن تكون مشغل عشر إعلانات على meta بس metric شايفاهم تقريبا نفس الإعلان.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 12.84,
+      "end": 13.56,
+      "text": "ليه ده بيحصل؟",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 13.72,
+      "end": 17.2,
+      "text": "عشان أنت مجرد غيرت الصورة أو غيرت اللون أو كتبت hook جديد.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 18.0,
+      "end": 20.92,
+      "text": "ده مش معناه إنك عملت three creative angles مختلفين.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 27.64,
+      "end": 28.5,
+      "text": "هفهمك حاجة.",
+      "kept": false,
+      "reason": "\"هفهمك حاجة\" restart before \"هوريك حاجة\""
+    },
+    {
+      "start": 29.8,
+      "end": 34.78,
+      "text": "هوريك حاجة جوة Ads Manager ناس كتير مش بتبص لها اسمها Creative Diversity.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 35.34,
+      "end": 41.16,
+      "text": "Creative Diversity ده metric بيساعدك تفهم قد إيه الـ creatives عندك متنوعة.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 41.76,
+      "end": 42.76,
+      "text": "تفتح Ads Manager",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 43.44,
+      "end": 46.18,
+      "text": "تدخل على Columns وبعدها Customize Columns",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 46.82,
+      "end": 49.38,
+      "text": "وبعد كده تدور على Creative Diversity.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 49.96,
+      "end": 51.84,
+      "text": "لو متاحة عندك في الـ account ضيفها.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 52.26,
+      "end": 54.68,
+      "text": "هتشوف تصنيفات زي low وmedium وhigh.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 55.16,
+      "end": 57.5,
+      "text": "خد بالك high مش معناها إن الإعلان هيبيع أكتر.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 57.82,
+      "end": 65.5,
+      "text": "هو بس معناها إن أنت عندك variation كتير أو عندك angles كتير متنوعة من الـ creatives اللي بتنزلها.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 66.14,
+      "end": 68.96,
+      "text": "فالتنوع الحقيقي مش إنك تغيـ- تغير لون الخلفية.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 67.38,
+      "end": 67.7,
+      "text": "تغيـ-",
+      "kept": false,
+      "reason": "stumble \"تغيـ-\""
+    },
+    {
+      "start": 69.06,
+      "end": 71.22,
+      "text": "التنوع إنك تغير بس الـ angle نفسها.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 72.12,
+      "end": 73.06,
+      "text": "إعلان بيحل مشكلة.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 73.32,
+      "end": 74.3,
+      "text": "إعلان بيشرح ميزة.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 74.48,
+      "end": 76.16,
+      "text": "إعلان بيرد على اعتراض عند عميل.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 76.54,
+      "end": 78.58,
+      "text": "إعلان بيرد على تساؤل مختلف.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 79.54,
+      "end": 83.48,
+      "text": "قبل ما تطلع عشر إعلانات شبه بعض جرب three angles مختلفين بجد.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 84.04,
+      "end": 86.68,
+      "text": "اكتبلي angles في الـ comment لو عايز أمثلة عملية.",
+      "kept": true,
+      "reason": ""
+    }
+  ],
+  "created": "2026-11-07T23:41:54+02:00",
+  "note": "Hand-reviewed cut list (dropped sentences and stumble words). Edit, then: reel.py roughcut <slug> --reuse",
+  "crop": "1440:1325:0:800"
+}

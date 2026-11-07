@@ -2,6 +2,7 @@
 import json
 import os
 import re
+import shutil
 import subprocess
 from difflib import SequenceMatcher
 
@@ -118,44 +119,85 @@ def propose_cuts(words, total, lead=0.12, tail=0.18, sim=0.6):
     return segs, report
 
 
-def render_cut(video, segments, out_path, audio_only=False, fade=0.035):
-    """Trim/atrim each kept segment with short audio fades, then concat. Review copy (or final audio)."""
-    parts, labels = [], []
+def snap(segments, fps=FPS_B):
+    """Snap cut points to the output frame grid, so every segment is a whole number of frames and
+    audio, video and word timings (map_through_cuts) all use exactly the same cuts."""
+    out = []
+    for s, e in segments:
+        s2, e2 = round(round(s * fps) / fps, 4), round(round(e * fps) / fps, 4)
+        if e2 > s2:
+            out.append([s2, e2])
+    return out
+
+
+def cut_audio(video, segments, out_path, fade=0.035, codec=('-c:a', 'aac', '-b:a', '192k')):
+    """Kept segments of the raw audio with short fades, concatenated (audio only: light on memory)."""
+    segments = snap(segments)
+    parts = []
     for i, (s, e) in enumerate(segments):
         d = e - s
-        a = f'[0:a]atrim={s}:{e},asetpts=PTS-STARTPTS,afade=t=in:d={fade},afade=t=out:st={max(0, d - fade):.3f}:d={fade}[a{i}]'
-        if audio_only:
-            parts.append(a); labels.append(f'[a{i}]')
-        else:
-            parts.append(f'[0:v]trim={s}:{e},setpts=PTS-STARTPTS[v{i}];' + a); labels.append(f'[v{i}][a{i}]')
-    n = len(segments)
+        parts.append(f'[0:a]atrim={s}:{e},asetpts=PTS-STARTPTS,afade=t=in:d={fade},'
+                     f'afade=t=out:st={max(0, d - fade):.3f}:d={fade}[a{i}]')
+    fc = ';'.join(parts) + ';' + ''.join(f'[a{i}]' for i in range(len(segments))) + f'concat=n={len(segments)}:v=0:a=1[a]'
+    run(['ffmpeg', '-y', '-v', 'error', '-i', video, '-filter_complex', fc, '-map', '[a]', *codec, '-ar', '48000', out_path])
+    return out_path
+
+
+def render_cut(video, segments, out_path, audio_only=False, fade=0.035, fps=FPS_B):
+    """Review rough cut (or, with audio_only, the final cut audio).
+
+    Video is cut one segment at a time (seek + exact frame count) and joined without re-encoding, so memory
+    stays flat even for 4K footage; the audio is cut once from raw and laid over the whole video."""
     if audio_only:
-        fc = ';'.join(parts) + ';' + ''.join(labels) + f'concat=n={n}:v=0:a=1[a]'
-        run(['ffmpeg', '-y', '-v', 'error', '-i', video, '-filter_complex', fc, '-map', '[a]', '-c:a', 'aac', '-b:a', '192k',
-             '-ar', '48000', out_path])
-    else:
-        fc = ';'.join(parts) + ';' + ''.join(labels) + f'concat=n={n}:v=1:a=1[v][a]'
-        run(['ffmpeg', '-y', '-v', 'error', '-i', video, '-filter_complex', fc, '-map', '[v]', '-map', '[a]',
-             '-c:v', 'libx264', '-crf', '18', '-preset', 'fast', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k',
-             '-movflags', '+faststart', out_path])
+        return cut_audio(video, segments, out_path, fade)
+    segments = snap(segments, fps)
+    tmp = out_path + '.parts'
+    os.makedirs(tmp, exist_ok=True)
+    try:
+        names = []
+        for i, (s, e) in enumerate(segments):
+            n = round((e - s) * fps)
+            p = os.path.join(tmp, f'{i:03d}.mp4')
+            run(['ffmpeg', '-y', '-v', 'error', '-ss', f'{s:.4f}', '-i', video, '-frames:v', str(n), '-an',
+                 '-vf', f'fps={fps},scale=1080:-2:flags=lanczos', '-c:v', 'libx264', '-crf', '18', '-preset', 'fast',
+                 '-pix_fmt', 'yuv420p', p])
+            names.append(p)
+        lst = os.path.join(tmp, 'list.txt')
+        with open(lst, 'w') as f:
+            f.writelines(f"file '{p}'\n" for p in names)
+        wav = cut_audio(video, segments, os.path.join(tmp, 'audio.wav'), fade, codec=('-c:a', 'pcm_s16le'))
+        total = sum(round((e - s) * fps) for s, e in segments) / fps
+        run(['ffmpeg', '-y', '-v', 'error', '-f', 'concat', '-safe', '0', '-i', lst, '-i', wav, '-map', '0:v', '-map', '1:a',
+             '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-t', f'{total:.4f}', '-movflags', '+faststart', out_path])
+    finally:
+        for f in os.listdir(tmp):
+            os.remove(os.path.join(tmp, f))
+        os.rmdir(tmp)
     return out_path
 
 
 def card_frames(video, segments, out_dir, crop=None, size=(1000, 920), fps=FPS_B):
-    """Face-card PNG frames straight from raw (never from the rough cut): trim → concat → fps → crop → scale."""
+    """Face-card PNG frames straight from raw (never from the rough cut), one segment at a time:
+    seek → exact frame count → crop → scale. Numbered continuously across segments."""
     os.makedirs(out_dir, exist_ok=True)
     for f in os.listdir(out_dir):
         if f.endswith('.png'):
             os.remove(os.path.join(out_dir, f))
-    parts = [f'[0:v]trim={s}:{e},setpts=PTS-STARTPTS[v{i}]' for i, (s, e) in enumerate(segments)]
-    chain = f'concat=n={len(segments)}:v=1:a=0,fps={fps}'
-    if crop:
-        chain += f',crop={crop}'
     w, h = size
-    chain += f',scale={w}:{h}:force_original_aspect_ratio=increase:flags=lanczos,crop={w}:{h}'
-    fc = ';'.join(parts) + ';' + ''.join(f'[v{i}]' for i in range(len(segments))) + chain + '[out]'
-    run(['ffmpeg', '-y', '-v', 'error', '-i', video, '-filter_complex', fc, '-map', '[out]', os.path.join(out_dir, '%05d.png')])
-    return len([f for f in os.listdir(out_dir) if f.endswith('.png')])
+    vf = f'fps={fps}' + (f',crop={crop}' if crop else '') + \
+         f',scale={w}:{h}:force_original_aspect_ratio=increase:flags=lanczos,crop={w}:{h}'
+    k = 1
+    for s, e in snap(segments, fps):
+        n = round((e - s) * fps)
+        run(['ffmpeg', '-y', '-v', 'error', '-ss', f'{s:.4f}', '-i', video, '-frames:v', str(n), '-vf', vf,
+             '-start_number', str(k), os.path.join(out_dir, '%05d.png')])
+        got = len([f for f in os.listdir(out_dir) if f.endswith('.png')])
+        if got < k - 1 + n:  # a short read at the very end of the file: repeat the last frame
+            last = os.path.join(out_dir, f'{got:05d}.png')
+            for j in range(got + 1, k + n):
+                shutil.copy(last, os.path.join(out_dir, f'{j:05d}.png'))
+        k += n
+    return k - 1
 
 
 def crop_preview(video, crop, out_png, t=1.0):
@@ -166,5 +208,5 @@ def crop_preview(video, crop, out_png, t=1.0):
     return out_png
 
 
-__all__ = ['probe', 'duration', 'contact_sheet', 'extract_audio', 'stt', 'silences', 'sentences', 'propose_cuts',
+__all__ = ['probe', 'duration', 'snap', 'cut_audio', 'video_duration', 'contact_sheet', 'extract_audio', 'stt', 'silences', 'sentences', 'propose_cuts',
            'render_cut', 'card_frames', 'crop_preview', 'map_through_cuts']
