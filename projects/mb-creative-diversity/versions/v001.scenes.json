@@ -1,0 +1,391 @@
+{
+ "mode": "B",
+ "words": "words.json",
+ "audio": "build/cut_audio.m4a",
+ "captions": true,
+ "scenes": [
+  {
+   "id": "hook",
+   "title": "Hook",
+   "card": "top",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "إعلاناتك",
+     "hl": "نفس النوع؟",
+     "post": "",
+     "x": 540,
+     "y": 160,
+     "size": 92,
+     "in": {
+      "rel": 0.05
+     },
+     "anim": "slide"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "ولا مختلفة فعلًا؟"
+     ],
+     "x": 540,
+     "y": 420,
+     "size": 54,
+     "in": "مختلف",
+     "anim": "pop"
+    }
+   ]
+  },
+  {
+   "id": "context",
+   "title": "10 ads, 1 ad",
+   "start": "يعني أنت",
+   "elements": [
+    {
+     "type": "number",
+     "text": "10",
+     "x": 540,
+     "y": 120,
+     "size": 160,
+     "color": "blue",
+     "in": "عشر",
+     "anim": "stamp"
+    },
+    {
+     "type": "text",
+     "text": "إعلانات شغالة",
+     "x": 540,
+     "y": 260,
+     "size": 54,
+     "in": "إعلانات"
+    },
+    {
+     "type": "icon",
+     "name": "warning",
+     "x": 540,
+     "y": 450,
+     "color": "red",
+     "in": "شايفاهم",
+     "anim": "shake"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "Meta شايفاهم",
+      "تقريبًا نفس الإعلان"
+     ],
+     "x": 540,
+     "y": 650,
+     "size": 48,
+     "text_color": "red",
+     "in": "تقريبا",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "why",
+   "title": "Why it happens",
+   "start": "ليه ده",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "",
+     "hl": "ليه؟",
+     "post": "",
+     "x": 540,
+     "y": 80,
+     "size": 96,
+     "in": {
+      "rel": 0.05
+     },
+     "anim": "stamp"
+    },
+    {
+     "type": "steps",
+     "x": 540,
+     "y": 230,
+     "gap": 118,
+     "size": 46,
+     "items": [
+      {
+       "type": "pill",
+       "text": "غيرت الصورة",
+       "color": "blue",
+       "in": "الصورة"
+      },
+      {
+       "type": "pill",
+       "text": "غيرت اللون",
+       "color": "blue",
+       "in": "اللون"
+      },
+      {
+       "type": "pill",
+       "text": "hook جديد",
+       "color": "blue",
+       "in": "hook"
+      }
+     ]
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "مش three creative angles"
+     ],
+     "x": 540,
+     "y": 660,
+     "size": 48,
+     "text_color": "red",
+     "in": "three",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "reveal",
+   "title": "Creative Diversity",
+   "start": "هوريك",
+   "elements": [
+    {
+     "type": "wcard",
+     "lines": [
+      "جوه Ads Manager"
+     ],
+     "x": 540,
+     "y": 90,
+     "size": 46,
+     "in": "Ads"
+    },
+    {
+     "type": "headline",
+     "pre": "",
+     "hl": "Creative Diversity",
+     "post": "",
+     "x": 540,
+     "y": 280,
+     "size": 88,
+     "in": "اسمها",
+     "anim": "stamp"
+    },
+    {
+     "type": "icon",
+     "name": "chart",
+     "x": 540,
+     "y": 480,
+     "in": "metric"
+    },
+    {
+     "type": "pill",
+     "text": "قد إيه الـ creatives متنوعة",
+     "color": "ink",
+     "x": 540,
+     "y": 660,
+     "size": 44,
+     "in": "متنوعة"
+    }
+   ]
+  },
+  {
+   "id": "howto",
+   "title": "Where to find it",
+   "start": "تفتح",
+   "elements": [
+    {
+     "type": "steps",
+     "x": 540,
+     "y": 80,
+     "gap": 140,
+     "size": 46,
+     "items": [
+      {
+       "type": "wcard",
+       "text": "Ads Manager",
+       "in": "تفتح"
+      },
+      {
+       "type": "wcard",
+       "text": "Columns",
+       "in": "Columns"
+      },
+      {
+       "type": "wcard",
+       "text": "Customize Columns",
+       "in": "Customize"
+      },
+      {
+       "type": "wcard",
+       "text": "Creative Diversity",
+       "text_color": "blue",
+       "in": "تدور"
+      }
+     ]
+    },
+    {
+     "type": "pill",
+     "text": "لو متاحة… ضيفها",
+     "color": "green",
+     "x": 540,
+     "y": 700,
+     "size": 44,
+     "in": "ضيفها",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "levels",
+   "title": "Low / Medium / High",
+   "start": "هتشوف",
+   "elements": [
+    {
+     "type": "pill",
+     "text": "Low",
+     "color": "grey",
+     "x": 820,
+     "y": 90,
+     "size": 48,
+     "in": "Low"
+    },
+    {
+     "type": "pill",
+     "text": "Medium",
+     "color": "blue",
+     "x": 540,
+     "y": 90,
+     "size": 48,
+     "in": "Medium"
+    },
+    {
+     "type": "pill",
+     "text": "High",
+     "color": "green",
+     "x": 260,
+     "y": 90,
+     "size": 48,
+     "in": "High"
+    },
+    {
+     "type": "headline",
+     "pre": "High",
+     "hl": "مش",
+     "post": "مبيعات أكتر",
+     "x": 540,
+     "y": 330,
+     "size": 84,
+     "in": {
+      "at": "High",
+      "nth": 2
+     },
+     "anim": "stamp"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "معناها variation",
+      "و angles متنوعة أكتر"
+     ],
+     "x": 540,
+     "y": 590,
+     "size": 46,
+     "in": "variation"
+    }
+   ]
+  },
+  {
+   "id": "real",
+   "title": "Real diversity",
+   "start": "فالتنوع",
+   "elements": [
+    {
+     "type": "wcard",
+     "lines": [
+      "تغير لون الخلفية"
+     ],
+     "x": 540,
+     "y": 130,
+     "size": 52,
+     "in": "لون"
+    },
+    {
+     "type": "xmark",
+     "x": 540,
+     "y": 130,
+     "size": 90,
+     "in": "الخلفية",
+     "anim": "stamp"
+    },
+    {
+     "type": "headline",
+     "pre": "غير",
+     "hl": "الـ angle",
+     "post": "نفسها",
+     "x": 540,
+     "y": 420,
+     "size": 96,
+     "in": "angle",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "angles",
+   "title": "4 angles",
+   "start": "إعلان بيحل",
+   "elements": [
+    {
+     "type": "steps",
+     "x": 540,
+     "y": 110,
+     "gap": 160,
+     "size": 48,
+     "items": [
+      {
+       "type": "wcard",
+       "text": "إعلان بيحل مشكلة",
+       "in": "بيحل"
+      },
+      {
+       "type": "wcard",
+       "text": "إعلان بيشرح ميزة",
+       "in": "بيشرح"
+      },
+      {
+       "type": "wcard",
+       "text": "بيرد على اعتراض",
+       "in": "اعتراض"
+      },
+      {
+       "type": "wcard",
+       "text": "بيرد على تساؤل مختلف",
+       "in": "تساؤل"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "cta",
+   "title": "CTA",
+   "start": "قبل ما تطلع",
+   "elements": [
+    {
+     "type": "pill",
+     "text": "جرب three angles مختلفين بجد",
+     "color": "blue",
+     "x": 540,
+     "y": 80,
+     "size": 44,
+     "in": "three"
+    },
+    {
+     "type": "cta",
+     "keyword": "ANGLES",
+     "magnet": "أمثلة عملية",
+     "x": 540,
+     "y": 290,
+     "in": "اكتبلي"
+    }
+   ]
+  }
+ ]
+}

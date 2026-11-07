@@ -125,5 +125,23 @@
     ],
     "anchor_misses": [],
     "note": "hook question mark attached"
+  },
+  {
+    "id": "v001",
+    "kind": "render",
+    "file": "exports/v001.mp4",
+    "sheet": "exports/v001_sheet.png",
+    "created": "2026-11-08T01:19:40+02:00",
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 71.77,
+      "mbps": 6.18,
+      "audio": true,
+      "problems": []
+    },
+    "draft": false,
+    "note": ""
   }
 ]

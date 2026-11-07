@@ -10,3 +10,5 @@
 - 2026-11-08T00:43:01+02:00: final cut prepared: words.json mapped, 2153 card frames
 - 2026-11-08T00:43:44+02:00: storyboard sb001 (9 frames)
 - 2026-11-08T00:44:04+02:00: storyboard sb002 (9 frames)
+- 2026-11-08T01:03:43+02:00: approved storyboard sb002
+- 2026-11-08T01:19:40+02:00: render v001 1080x1920 71.77s  QA ok
