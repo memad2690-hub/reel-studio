@@ -5,6 +5,7 @@
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
+const { pathToFileURL } = require('url');
 
 let chromium;
 try { ({ chromium } = require('playwright')); }
@@ -27,7 +28,7 @@ const lossless = meta.mode === 'B' || !!args.lossless;
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: meta.W, height: meta.H }, deviceScaleFactor: meta.scale });
   page.on('pageerror', e => console.error('page error:', e.message));
-  await page.goto('file://' + path.join(build, 'page.html'));
+  await page.goto(pathToFileURL(path.join(build, 'page.html')).href);  // works on Windows paths too
   await page.evaluate(() => window.ready);
   const hasCard = meta.mode === 'B' && fs.existsSync(path.join(build, 'cf'));
   const cfCount = hasCard ? fs.readdirSync(path.join(build, 'cf')).filter(f => f.endsWith('.png')).length : 0;

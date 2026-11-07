@@ -486,7 +486,13 @@ def cmd_library(a):
 
 
 def cmd_studio(a):
-    os.execvp(sys.executable, [sys.executable, os.path.join(ROOT, 'studio', 'serve.py')] + (['--port', str(a.port)] if a.port else []))
+    cmd = [sys.executable, os.path.join(ROOT, 'studio', 'serve.py')] + (['--port', str(a.port)] if a.port else [])
+    if os.name == 'nt':  # exec on Windows detaches the server from the console; run it in the foreground instead
+        try:
+            sys.exit(subprocess.call(cmd))
+        except KeyboardInterrupt:
+            sys.exit(0)
+    os.execvp(sys.executable, cmd)
 
 
 def cmd_check(a):
