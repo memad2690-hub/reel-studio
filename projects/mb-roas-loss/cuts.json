@@ -169,5 +169,5 @@
   ],
   "created": "2026-11-07T23:41:55+02:00",
   "note": "Hand-reviewed cut list (dropped sentences and stumble words). Edit, then: reel.py roughcut <slug> --reuse",
-  "crop": "1440:1325:0:800"
+  "crop": "1440:1325:0:700"
 }
