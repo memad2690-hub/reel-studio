@@ -1,0 +1,41 @@
+{
+  "mode": "B",
+  "words": "words.json",
+  "audio": "build/cut_audio.m4a",
+  "captions": true,
+  "scenes": [
+    {"id": "hook", "title": "Hook", "card": "top", "elements": [
+      {"type": "wcard", "lines": ["\"معايا budget كبيرة للـ ads\""], "x": 540, "y": 140, "size": 52, "in": "معايا"},
+      {"type": "icon", "name": "money", "x": 540, "y": 340, "in": "budget"},
+      {"type": "headline", "pre": "وبرضو", "hl": "مش مناسبين", "post": "", "x": 540, "y": 560, "size": 92, "in": "مناسبين", "anim": "stamp"}]},
+
+    {"id": "context", "title": "Budget is not readiness", "start": "لإن", "elements": [
+      {"type": "wcard", "lines": ["حجم الـ budget"], "x": 540, "y": 120, "size": 56, "in": "حجم"},
+      {"type": "text", "text": "≠", "x": 540, "y": 290, "size": 130, "color": "red", "in": "بيحدد", "anim": "stamp"},
+      {"type": "headline", "pre": "جاهز", "hl": "للـ scaling", "post": "", "x": 540, "y": 470, "size": 90, "in": "scaling"}]},
+
+    {"id": "tension", "title": "Not ready", "start": "تخيل", "elements": [
+      {"type": "steps", "x": 540, "y": 110, "gap": 190, "size": 50, "items": [
+        {"type": "wcard", "text": "الـ stock limited", "in": "limited"},
+        {"type": "wcard", "text": "الـ margins مش معروفة", "in": "margins"},
+        {"type": "wcard", "text": "مفيش tracking واضح", "text_color": "red", "in": "tracking"}]},
+      {"type": "icon", "name": "warning", "x": 540, "y": 690, "color": "red", "in": "e-commerce", "anim": "shake"}]},
+
+    {"id": "checklist", "title": "Before you spend more", "start": "فقبل", "elements": [
+      {"type": "headline", "pre": "قبل ما", "hl": "تزود الصرف", "post": "", "x": 540, "y": 80, "size": 82, "in": "نزود"},
+      {"type": "steps", "x": 540, "y": 240, "gap": 140, "size": 46, "items": [
+        {"type": "wcard", "text": "المخزون يستحمل؟", "in": "المخزون"},
+        {"type": "wcard", "text": "Contribution positive؟", "in": "Contribution"},
+        {"type": "wcard", "text": "الـ tracking validated؟", "in": "tracking"},
+        {"type": "wcard", "text": "creatives جديدة للـ testing؟", "in": "creatives"}]}]},
+
+    {"id": "payoff", "title": "Real scaling", "start": "الـ scaling الحقيقي", "elements": [
+      {"type": "wcard", "lines": ["تصرف فلوس أكتر"], "x": 540, "y": 120, "size": 54, "in": "تصرف"},
+      {"type": "xmark", "x": 540, "y": 120, "size": 90, "in": "أكتر", "anim": "stamp"},
+      {"type": "headline", "pre": "تعرف", "hl": "امتى", "post": "تزود الصرف", "x": 540, "y": 380, "size": 88, "in": "امتى", "anim": "stamp"},
+      {"type": "pill", "text": "قرار منطقي", "color": "green", "x": 540, "y": 580, "size": 50, "in": "منطقي"}]},
+
+    {"id": "cta", "title": "CTA", "start": "لو عندك", "elements": [
+      {"type": "cta", "prompt": "ابعتلي", "keyword": "SCALE", "magnet": "نوع المنتج + الميزانية الحالية", "x": 540, "y": 160, "in": "ابعت"}]}
+  ]
+}

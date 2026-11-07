@@ -55,5 +55,21 @@
       "audio": true,
       "problems": []
     }
+  },
+  {
+    "id": "sb001",
+    "kind": "storyboard",
+    "file": "storyboard/sb001.png",
+    "created": "2026-11-08T01:22:03+02:00",
+    "times": [
+      4.293,
+      9.053,
+      15.693,
+      29.3,
+      37.157,
+      40.547
+    ],
+    "anchor_misses": [],
+    "note": ""
   }
 ]
