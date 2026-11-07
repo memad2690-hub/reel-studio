@@ -1,15 +1,19 @@
-# Script
+# Script — الـ budget الكبيرة مش معناها scaling (Mode B, clean transcript of rc001)
 
-Status: draft (approve with `python3 reel.py approve <slug> script`)
-
-## HOOK (0-3s)
-
-## CONTEXT (3-10s)
-
-## TENSION (10-20s)
-
-## VALUE (20-35s)
-
-## PAYOFF (35-45s)
-
-## CTA (45-60s)
+# HOOK (0:00)
+ممكن brand يقول لي: "معايا budget كبيرة للـ ads." وبرضو ما نبقاش مناسبين نشتغل مع بعض.
+# CONTEXT (0:05)
+لإن حجم الـ budget مش هو اللي بيحدد إذا كان الـ business جاهز للـ scaling أصلًا ولا لأ.
+# TENSION (0:10)
+تخيل brand عنده stock أصلًا هو limited، ومش عارف الـ margins بتاعته إيه، ولسه مفيش tracking واضح للـ e-commerce بتاعه.
+# VALUE (0:16)
+فقبل ما نزود الصرف محتاجين نجاوب على أصلًا هل المخزون يستحمل؟
+هل Contribution أصلًا is positive؟
+يعني هل إحنا في الأول وفي الآخر لما نطلع إعلانات بنطلع عليها ربح ولا لأ؟
+هل الـ tracking validated أو موثوق فيه؟
+وهل فيه creatives جديدة جاهزة إن إحنا نعملها testing؟
+# PAYOFF (0:31)
+الـ scaling الحقيقي مش إنك تصرف فلوس أكتر.
+الـ scaling إنك تعرف امتى زيادة الصرف ممكن تبقى قرار منطقي.
+# CTA (0:37)
+لو عندك brand وبتفكر تزود الـ ads budget، ابعت لي SCALE، نوع المنتج بتاعك والميزانية الحالية بتاعتك عاملة إزاي، الـ ads budget عاملة إزاي، ونقدر نتكلم نشوف نقدر أصلًا نعمل scaling ولا لأ.

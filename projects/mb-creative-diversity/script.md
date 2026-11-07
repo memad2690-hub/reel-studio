@@ -1,15 +1,28 @@
-# Script
+# Script — Creative Diversity جوه Ads Manager (Mode B, clean transcript of rc001)
 
-Status: draft (approve with `python3 reel.py approve <slug> script`)
-
-## HOOK (0-3s)
-
-## CONTEXT (3-10s)
-
-## TENSION (10-20s)
-
-## VALUE (20-35s)
-
-## PAYOFF (35-45s)
-
-## CTA (45-60s)
+# HOOK (0:00)
+بقولك إيه، إزاي تعرف المحتوى اللي بتطلعه عندك في الإعلانات نفس النوع ولا مختلف.
+# CONTEXT (0:06)
+يعني أنت ممكن تكون مشغل عشر إعلانات على Meta بس Meta شايفاهم تقريبا نفس الإعلان.
+ليه ده بيحصل؟
+عشان أنت مجرد غيرت الصورة أو غيرت اللون أو كتبت hook جديد.
+ده مش معناه إنك عملت three creative angles مختلفين.
+# TENSION (0:19)
+هوريك حاجة جوة Ads Manager ناس كتير مش بتبص لها اسمها Creative Diversity.
+Creative Diversity ده metric بيساعدك تفهم قد إيه الـ creatives عندك متنوعة.
+# VALUE (0:30)
+تفتح Ads Manager تدخل على Columns وبعدها Customize Columns وبعد كده تدور على Creative Diversity.
+لو متاحة عندك في الـ account ضيفها.
+هتشوف تصنيفات زي Low وMedium وHigh.
+خد بالك High مش معناها إن الإعلان هيبيع أكتر.
+هو بس معناها إن أنت عندك variation كتير أو عندك angles كتير متنوعة من الـ creatives اللي بتنزلها.
+# PAYOFF (0:53)
+فالتنوع الحقيقي مش إنك تغير لون الخلفية.
+التنوع إنك تغير بس الـ angle نفسها.
+إعلان بيحل مشكلة.
+إعلان بيشرح ميزة.
+إعلان بيرد على اعتراض عند عميل.
+إعلان بيرد على تساؤل مختلف.
+# CTA (1:05)
+قبل ما تطلع عشر إعلانات شبه بعض جرب three angles مختلفين بجد.
+اكتبلي ANGLES في الـ comment لو عايز أمثلة عملية.
