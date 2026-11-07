@@ -1,0 +1,7 @@
+{
+  "mode": "A",
+  "words": "words.json",
+  "audio": "audio/vo.mp3",
+  "captions": true,
+  "scenes": []
+}

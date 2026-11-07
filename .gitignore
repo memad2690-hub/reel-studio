@@ -1,0 +1,16 @@
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+*.tmp
+.DS_Store
+.el_key
+.env
+# per-project heavy or generated files (re-render from versions/*.scenes.json)
+projects/*/build/
+projects/*/raw/*
+!projects/*/raw/.gitkeep
+projects/*/exports/*.mp4
+projects/*/exports/*.mov
+# synthetic demos are recreated by scripts/make_demo.py
+projects/_demo-*/

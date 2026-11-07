@@ -1,0 +1,27 @@
+{
+  "brand": "محمد عماد",
+  "language": "Egyptian Arabic (ar-EG); English business terms in Latin script (ROAS, Break-even, Contribution Margin, Ads Manager)",
+  "output": {
+    "width": 1080,
+    "height": 1920,
+    "codec": "h264 high, yuv420p, AAC 192k 48kHz, +faststart",
+    "rule": "Always deliver 1080x1920. Keep intermediates lossless. Encode with x264 once at the end."
+  },
+  "modes": {
+    "A": {"name": "Cut-out explainer", "author_size": [720, 1280], "render_scale": 1.5, "fps": 24, "crf": 16},
+    "B": {"name": "Split-screen doodle edit", "author_size": [1080, 1920], "render_scale": 1.0, "fps": 30, "crf": 15}
+  },
+  "captions": {
+    "A": {"min_words": 2, "max_words": 4, "size": 40, "weight": 800, "y": 960, "max_chars": 26},
+    "B": {"min_words": 1, "max_words": 3, "size": 54, "weight": 900, "max_chars": 20, "orphan_slack": 0}
+  },
+  "elevenlabs": {
+    "default_voice": {"name": "Mahmoud Soliman – Egyptian Story", "voice_id": "oOge1k8044i7H9hCreX6", "model": "eleven_v4"},
+    "stt_model": "scribe_v1",
+    "stt_language": "ara",
+    "key_file": "~/.el_key",
+    "key_env": "ELEVENLABS_API_KEY"
+  },
+  "lengths": {"workbook_reel": [45, 60], "explainer": [60, 180]},
+  "stages": ["brief", "script", "voiceover", "roughcut", "storyboard", "render", "final"]
+}

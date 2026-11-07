@@ -1,0 +1,12 @@
+{
+  "slug": "",
+  "title": "",
+  "mode": "A",
+  "reel_id": "",
+  "cta_keyword": "",
+  "stage": "brief",
+  "created": "",
+  "length_target_s": [45, 60],
+  "elevenlabs": {"flow_id": "", "voice_id": "", "generation_id": "", "chosen_take": ""},
+  "notes": ""
+}

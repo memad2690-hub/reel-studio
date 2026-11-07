@@ -1,0 +1,16 @@
+{
+  "name": "reel-studio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Egyptian Arabic reel production: cut-out explainers and split-screen doodle edits, rendered deterministically with Playwright + FFmpeg.",
+  "scripts": {
+    "check": "python3 reel.py check",
+    "studio": "python3 reel.py studio",
+    "demo": "python3 scripts/make_demo.py",
+    "test": "python3 -m unittest discover -s tests"
+  },
+  "dependencies": {
+    "playwright": "1.63.0"
+  },
+  "license": "MIT"
+}

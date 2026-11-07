@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reel Studio</title>
+<style>
+@font-face{font-family:Cairo;src:url("/fonts/Cairo-Variable.ttf") format("truetype");font-weight:200 1000}
+:root{--paper:#f4eddd;--card:#fffdf7;--ink:#1f1d1a;--muted:#7a7366;--line:#e2d9c4;--red:#c8423a;--blue:#2f5d8a;--yellow:#f2cf4a;--green:#3f7a5a}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.5 Cairo,system-ui,sans-serif;background:var(--paper);color:var(--ink)}
+header{display:flex;align-items:center;gap:16px;padding:14px 22px;border-bottom:2px solid var(--ink);background:var(--card)}
+header h1{font-size:20px;margin:0;font-weight:900;letter-spacing:.2px}
+header h1 span{background:var(--yellow);padding:0 6px}
+nav button{font:inherit;font-weight:700;border:0;background:none;padding:6px 10px;cursor:pointer;border-bottom:3px solid transparent}
+nav button.on{border-color:var(--ink)}
+main{display:grid;grid-template-columns:270px 1fr;min-height:calc(100vh - 62px)}
+aside{border-right:2px solid var(--line);padding:14px;overflow:auto}
+.proj{padding:10px 12px;border:2px solid var(--line);border-radius:12px;margin-bottom:10px;background:var(--card);cursor:pointer}
+.proj.on{border-color:var(--ink);box-shadow:5px 6px 0 rgba(0,0,0,.12)}
+.proj b{display:block}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:0 8px;border-radius:99px;background:var(--line);margin:2px 4px 0 0}
+.tag.red{background:var(--red);color:#fff}.tag.blue{background:var(--blue);color:#fff}.tag.green{background:var(--green);color:#fff}
+section{padding:18px 24px;overflow:auto}
+.row{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+.panel{background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:14px 16px;box-shadow:6px 7px 0 rgba(0,0,0,.10)}
+video{width:340px;max-width:100%;border-radius:14px;border:3px solid var(--ink);background:#000;display:block}
+.timeline{display:flex;height:26px;margin:10px 0;border:2px solid var(--ink);border-radius:8px;overflow:hidden;width:340px;max-width:100%}
+.timeline div{border-left:1px solid var(--ink);font-size:11px;font-weight:700;padding:3px 4px;cursor:pointer;white-space:nowrap;overflow:hidden;background:#fff}
+.timeline div:nth-child(2n){background:#f6efd9}
+textarea,input,select{font:inherit;width:100%;border:2px solid var(--ink);border-radius:10px;padding:8px 10px;background:#fff}
+textarea{min-height:76px}
+button.btn{font:inherit;font-weight:800;border:2px solid var(--ink);border-radius:10px;background:var(--yellow);padding:6px 14px;cursor:pointer;box-shadow:3px 4px 0 rgba(0,0,0,.18)}
+button.btn.ghost{background:#fff}button.btn.ok{background:var(--green);color:#fff}
+.note{border-bottom:1px dashed var(--line);padding:8px 0}
+.note .t{font-weight:800;color:var(--blue);cursor:pointer;margin-right:6px}
+.note.applied,.note.dismissed{opacity:.5}
+.stages{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 14px}
+.stage{padding:3px 12px;border-radius:99px;border:2px solid var(--ink);font-weight:700;font-size:13px;background:#fff}
+.stage.done{background:var(--green);color:#fff;border-color:var(--green)}.stage.now{background:var(--yellow)}
+img.sb{max-width:100%;border:3px solid var(--ink);border-radius:12px}
+pre{white-space:pre-wrap;font:inherit;background:#fff;border:2px solid var(--line);border-radius:12px;padding:12px;unicode-bidi:plaintext}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.muted{color:var(--muted)}
+[dir=auto]{unicode-bidi:plaintext}
+@media(max-width:800px){main{grid-template-columns:1fr}aside{border-right:0;border-bottom:2px solid var(--line);max-height:220px}}
+</style>
+</head>
+<body>
+<header><h1>Reel <span>Studio</span></h1>
+<nav><button id="nav-projects" class="on">Projects</button><button id="nav-library">Library</button></nav>
+<span class="muted" id="hint" style="margin-left:auto;font-size:13px">Notes save to the project; ask Claude to apply them.</span></header>
+<main id="app-projects"><aside id="list"></aside><section id="detail"><p class="muted">Pick a project.</p></section></main>
+<main id="app-library" style="display:none;grid-template-columns:1fr"><section id="library"></section></main>
+<script>
+const $ = s => document.querySelector(s);
+const h = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = t => t == null ? '' : `${Math.floor(t/60)}:${(t%60).toFixed(1).padStart(4,'0')}`;
+const api = (p, body) => fetch(p, body ? {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)} : {}).then(r => r.json());
+let cur = null, data = null, tab = 'review', noteFilter = 'open';
+
+async function loadList(){
+  const ps = await api('/api/projects');
+  $('#list').innerHTML = ps.length ? ps.map(p => `<div class="proj ${p.slug===cur?'on':''}" data-s="${h(p.slug)}">
+    <b dir="auto">${h(p.title || p.slug)}</b>
+    <span class="tag ${p.mode==='A'?'blue':'red'}">${p.mode==='A'?'Cut-out':'Doodle'}</span>
+    <span class="tag">${h(p.stage||'')}</span>${p.reel_id?`<span class="tag">${h(p.reel_id)}</span>`:''}
+    ${p.open_notes?`<span class="tag red">${p.open_notes} open</span>`:''}</div>`).join('')
+    : '<p class="muted">No projects yet. Run <code>python3 reel.py new my-reel --mode A</code>.</p>';
+  document.querySelectorAll('.proj').forEach(el => el.onclick = () => open(el.dataset.s));
+}
+
+async function open(slug){ cur = slug; data = await api('/api/project/' + slug); loadList(); render(); }
+
+function stagesHtml(){
+  const ap = data.approvals, st = data.project.stage;
+  return `<div class="stages">${data.stages.map(s => `<span class="stage ${ap[s]?'done':''} ${s===st?'now':''}">${s}${ap[s]&&ap[s].version?' · '+h(ap[s].version):''}</span>`).join('')}</div>`;
+}
+
+function render(){
+  const p = data.project;
+  const tabs = ['review','storyboards','script','status'];
+  $('#detail').innerHTML = `<h2 dir="auto" style="margin:0">${h(p.title)}</h2>
+   <div class="muted">${h(p.slug)} · mode ${p.mode} ${p.reel_id?'· '+h(p.reel_id):''} ${p.cta_keyword?'· CTA '+h(p.cta_keyword):''}</div>
+   ${stagesHtml()}
+   <nav style="margin-bottom:14px">${tabs.map(t => `<button data-t="${t}" class="${t===tab?'on':''}">${t[0].toUpperCase()+t.slice(1)}</button>`).join('')}</nav>
+   <div id="tab"></div>`;
+  document.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { tab = b.dataset.t; render(); });
+  ({review: renderReview, storyboards: renderBoards, script: renderScript, status: renderStatus})[tab]();
+}
+
+function notesHtml(filterVersion){
+  let ns = data.notes.filter(n => noteFilter === 'all' || n.status === 'open');
+  if (filterVersion) ns = ns.filter(n => !n.version || n.version === filterVersion || noteFilter === 'all');
+  return `<div style="display:flex;gap:8px;align-items:center;margin-bottom:6px"><b>Notes</b>
+     <select id="nf" style="width:auto"><option value="open">open</option><option value="all" ${noteFilter==='all'?'selected':''}>all</option></select>
+     <button class="btn ghost" id="copy">Copy request for Claude</button></div>` +
+   (ns.length ? ns.map(n => `<div class="note ${n.status}"><span class="t" data-seek="${n.t ?? ''}">${h(n.version||'')} ${fmt(n.t)}</span>
+     <span class="tag">${h(n.scene||'')}</span><span dir="auto">${h(n.text)}</span>
+     <div><button class="btn ghost" data-st="${n.id}" data-v="${n.status==='open'?'applied':'open'}" style="padding:1px 8px;font-size:12px">${n.status==='open'?'mark applied':'reopen'}</button></div></div>`).join('') : '<p class="muted">No notes.</p>');
+}
+
+function bindNotes(){
+  $('#nf').onchange = e => { noteFilter = e.target.value; render(); };
+  $('#copy').onclick = () => {
+    const txt = `Apply the open review notes for reel project "${cur}" (python3 reel.py notes ${cur}), re-render, then mark them applied.`;
+    navigator.clipboard.writeText(txt).then(() => $('#copy').textContent = 'Copied ✓');
+  };
+  document.querySelectorAll('[data-st]').forEach(b => b.onclick = async () => { await api(`/api/project/${cur}/notes/${b.dataset.st}`, {status: b.dataset.v}); open(cur); });
+  document.querySelectorAll('[data-seek]').forEach(s => s.onclick = () => { const v = $('video'); if (v && s.dataset.seek !== '') { v.currentTime = +s.dataset.seek; v.pause(); } });
+}
+
+function renderReview(){
+  const vids = data.versions.filter(v => (v.kind==='render' || v.kind==='roughcut') && v.exists).reverse();
+  if (!vids.length){ $('#tab').innerHTML = `<p class="muted">No rendered versions yet. Check the Storyboards tab, or run <code>python3 reel.py render ${h(cur)}</code>.</p>` + `<div class="panel" style="max-width:560px">${notesHtml()}</div>`; bindNotes(); return; }
+  const sel = window._ver && vids.find(v => v.id === window._ver) || vids[0];
+  const sc = data.scenes, total = sc.length ? sc[sc.length-1].end : 0;
+  const isRough = sel.kind === 'roughcut';
+  $('#tab').innerHTML = `<div class="row">
+   <div><select id="ver" style="width:340px;margin-bottom:8px">${vids.map(v => `<option value="${v.id}" ${v.id===sel.id?'selected':''}>${v.id} · ${v.kind}${v.draft?' (draft)':''} · ${h(v.created.slice(0,16).replace('T',' '))}</option>`).join('')}</select>
+     <video id="vid" controls playsinline src="/media/${cur}/${sel.file}"></video>
+     ${!isRough && total ? `<div class="timeline">${sc.map(s => `<div style="width:${(s.end-s.start)/total*100}%" data-seek="${s.start}" title="${h(s.id)}">${h(s.id)}</div>`).join('')}</div>` : ''}
+     <div class="muted" style="font-size:13px">${sel.qa ? `${sel.qa.width}×${sel.qa.height} · ${sel.qa.fps}fps · ${sel.qa.duration}s · ${sel.qa.mbps} Mbps ${sel.qa.problems.length?'· ⚠ '+h(sel.qa.problems.join(', ')):'· QA ok'}` : ''}</div>
+     <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+       <a class="btn ghost" style="text-decoration:none;color:inherit;padding:6px 14px;border:2px solid var(--ink);border-radius:10px" download href="/media/${cur}/${sel.file}">Download</a>
+       <button class="btn ok" id="appr">Approve ${isRough?'rough cut':'as final'} (${sel.id})</button></div></div>
+   <div class="panel" style="flex:1;min-width:300px">
+     <b>Note at <span id="nt">0:00.0</span></b> <span class="muted" style="font-size:13px">(pauses the video)</span>
+     <textarea id="ntext" dir="auto" placeholder="e.g. make the 15,000 bigger / card comes in too early"></textarea>
+     <div style="margin:8px 0 14px"><button class="btn" id="addn">Save note</button></div>
+     ${notesHtml(sel.id)}</div></div>`;
+  const v = $('#vid');
+  $('#ver').onchange = e => { window._ver = e.target.value; render(); };
+  v.ontimeupdate = () => $('#nt').textContent = fmt(v.currentTime);
+  $('#ntext').onfocus = () => v.pause();
+  $('#addn').onclick = async () => { const text = $('#ntext').value.trim(); if (!text) return;
+    await api(`/api/project/${cur}/notes`, {version: sel.id, t: v.currentTime, text}); open(cur); };
+  $('#appr').onclick = async () => { await api(`/api/project/${cur}/approve`, {stage: isRough?'roughcut':'final', version: sel.id}); open(cur); };
+  bindNotes();
+}
+
+function renderBoards(){
+  const sbs = data.versions.filter(v => v.kind==='storyboard' && v.exists).reverse();
+  $('#tab').innerHTML = sbs.length ? sbs.map((s,i) => `<div class="panel" style="margin-bottom:18px">
+     <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px"><b>${s.id}</b><span class="muted">${h(s.created.slice(0,16).replace('T',' '))}</span>
+     ${s.anchor_misses && s.anchor_misses.length ? `<span class="tag red">${s.anchor_misses.length} anchors missing</span>`:''}
+     ${i===0?`<button class="btn ok" data-ap="${s.id}" style="margin-left:auto">Approve storyboard</button>`:''}</div>
+     <img class="sb" src="/media/${cur}/${s.file}">
+     <div style="display:flex;gap:8px;margin-top:10px"><select data-scene="${s.id}" style="width:150px">${data.scenes.map(c => `<option value="${h(c.id)}">${h(c.id)}</option>`).join('')}</select>
+     <input data-sbn="${s.id}" dir="auto" placeholder="Note on this frame"><button class="btn" data-sbadd="${s.id}">Save</button></div></div>`).join('') + `<div class="panel">${notesHtml()}</div>`
+    : `<p class="muted">No storyboard yet. Run <code>python3 reel.py storyboard ${h(cur)}</code>.</p>`;
+  document.querySelectorAll('[data-ap]').forEach(b => b.onclick = async () => { await api(`/api/project/${cur}/approve`, {stage:'storyboard', version:b.dataset.ap}); open(cur); });
+  document.querySelectorAll('[data-sbadd]').forEach(b => b.onclick = async () => { const id = b.dataset.sbadd;
+    const text = document.querySelector(`[data-sbn="${id}"]`).value.trim(); if (!text) return;
+    const scene = document.querySelector(`[data-scene="${id}"]`).value;
+    const s = data.scenes.find(c => c.id === scene);
+    await api(`/api/project/${cur}/notes`, {version:id, scene, t: s ? s.storyboard_t : null, text}); open(cur); });
+  if (sbs.length) bindNotes();
+}
+
+function renderScript(){
+  const ap = data.approvals.script;
+  $('#tab').innerHTML = `<div class="row"><div class="panel" style="flex:1;min-width:300px"><b>Brief</b><pre dir="auto">${h(data.text['brief.md'])}</pre></div>
+   <div class="panel" style="flex:1.4;min-width:300px"><div style="display:flex;align-items:center;gap:10px"><b>Script</b>
+   ${ap?`<span class="tag green">approved</span>`:`<button class="btn ok" id="aps" style="margin-left:auto">Approve script</button>`}</div>
+   <pre dir="auto">${h(data.text['script.md'])}</pre>
+   <input id="sn" dir="auto" placeholder="Note on the script"><div style="margin-top:8px"><button class="btn" id="snb">Save note</button></div></div></div>`;
+  if ($('#aps')) $('#aps').onclick = async () => { await api(`/api/project/${cur}/approve`, {stage:'script'}); open(cur); };
+  $('#snb').onclick = async () => { const text = $('#sn').value.trim(); if (!text) return; await api(`/api/project/${cur}/notes`, {version:'script', text}); open(cur); };
+}
+
+function renderStatus(){
+  $('#tab').innerHTML = `<div class="panel"><pre>${h(data.text['STATUS.md'])}</pre></div>`;
+}
+
+async function renderLibrary(){
+  const lib = await api('/api/library');
+  const tech = lib.techniques, refs = lib.references;
+  $('#library').innerHTML = `<h2 style="margin-top:0">Techniques</h2><p class="muted">Ask Claude to use one by its id, e.g. “use money-math-reveal in the payoff”.</p>
+   <div class="grid">${tech.map(t => `<div class="panel"><b>${h(t.name)}</b> <span class="tag ${t.mode==='A'?'blue':t.mode==='B'?'red':''}">${h(t.mode)}</span>
+     <div class="muted" style="font-size:13px">${h(t.id)}</div><p style="margin:6px 0">${h(t.purpose)}</p><div style="font-size:13px">${h(t.how)}</div></div>`).join('')}</div>
+   <h2>References</h2>
+   <div class="panel" style="max-width:640px;margin-bottom:16px"><b>Save a reel you like</b>
+     <input id="ru" placeholder="https://www.instagram.com/reel/..." style="margin:6px 0"><input id="rt" dir="auto" placeholder="Title (optional)" style="margin-bottom:6px">
+     <input id="rc" dir="auto" placeholder="Creator (optional)" style="margin-bottom:6px"><textarea id="rn" dir="auto" placeholder="What do you like about it? (the hook, the number reveal, the pacing…)"></textarea>
+     <div style="margin-top:8px"><button class="btn" id="radd">Save reference</button></div></div>
+   <div class="grid">${refs.slice().reverse().map(r => `<div class="panel"><a href="${h(r.url)}" target="_blank" rel="noopener noreferrer"><b dir="auto">${h(r.title || r.url)}</b></a>
+     <div class="muted" dir="auto">${h(r.creator)}</div><p dir="auto" style="margin:6px 0">${h(r.notes)}</p>
+     ${(r.techniques||[]).map(t => `<span class="tag">${h(t)}</span>`).join('')}
+     ${r.analysis?`<pre dir="auto" style="font-size:13px">${h(r.analysis)}</pre>`:'<div class="muted" style="font-size:13px">Not analysed yet — ask Claude to analyse it.</div>'}</div>`).join('') || '<p class="muted">No references yet.</p>'}</div>`;
+  $('#radd').onclick = async () => { const r = await api('/api/library/references', {url:$('#ru').value, title:$('#rt').value, creator:$('#rc').value, notes:$('#rn').value, techniques:[]});
+    if (r.error) alert(r.error); else renderLibrary(); };
+}
+
+$('#nav-projects').onclick = () => { $('#app-projects').style.display=''; $('#app-library').style.display='none'; $('#nav-projects').classList.add('on'); $('#nav-library').classList.remove('on'); };
+$('#nav-library').onclick = () => { $('#app-projects').style.display='none'; $('#app-library').style.display=''; $('#nav-library').classList.add('on'); $('#nav-projects').classList.remove('on'); renderLibrary(); };
+loadList();
+</script>
+</body>
+</html>
