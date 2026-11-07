@@ -131,5 +131,23 @@
     ],
     "anchor_misses": [],
     "note": "full board with all fixes"
+  },
+  {
+    "id": "v001",
+    "kind": "render",
+    "file": "exports/v001.mp4",
+    "sheet": "exports/v001_sheet.png",
+    "created": "2026-11-08T00:40:06+02:00",
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 51.27,
+      "mbps": 5.63,
+      "audio": true,
+      "problems": []
+    },
+    "draft": false,
+    "note": ""
   }
 ]

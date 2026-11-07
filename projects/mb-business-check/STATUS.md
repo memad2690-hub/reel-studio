@@ -13,3 +13,5 @@
 - 2026-11-08T00:20:40+02:00: storyboard sb002 (9 frames)
 - 2026-11-08T00:20:51+02:00: storyboard sb003 (1 frames)
 - 2026-11-08T00:21:07+02:00: storyboard sb004 (9 frames)
+- 2026-11-08T00:28:09+02:00: approved storyboard sb004
+- 2026-11-08T00:40:06+02:00: render v001 1080x1920 51.27s  QA ok
