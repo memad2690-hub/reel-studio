@@ -12,3 +12,5 @@
 - 2026-11-08T00:44:04+02:00: storyboard sb002 (9 frames)
 - 2026-11-08T01:03:43+02:00: approved storyboard sb002
 - 2026-11-08T01:19:40+02:00: render v001 1080x1920 71.77s  QA ok
+- 2026-11-08T01:56:36+02:00: approved final v001
+- 2026-11-08T01:56:36+02:00: final approved (v001); build/cf card frames cleared (re-create with finalize-cut)

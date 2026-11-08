@@ -71,5 +71,23 @@
     ],
     "anchor_misses": [],
     "note": ""
+  },
+  {
+    "id": "v001",
+    "kind": "render",
+    "file": "exports/v001.mp4",
+    "sheet": "exports/v001_sheet.png",
+    "created": "2026-11-08T02:07:20+02:00",
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 48.17,
+      "mbps": 5.97,
+      "audio": true,
+      "problems": []
+    },
+    "draft": false,
+    "note": ""
   }
 ]
