@@ -1,0 +1,171 @@
+{
+ "project": "_acc-6-collage",
+ "video": "exports/v002.mp4",
+ "verdict": "pass",
+ "checks": [
+  {
+   "id": "finance",
+   "name": "No incorrect financial calculations",
+   "status": "pass",
+   "detail": "0 financial component(s) checked by the build (totals, results, tones, chart sums)",
+   "evidence": []
+  },
+  {
+   "id": "assets",
+   "name": "No missing assets",
+   "status": "pass",
+   "detail": "audio present; 2153 card frames for 71.8s; fonts bundled",
+   "evidence": []
+  },
+  {
+   "id": "timing",
+   "name": "Graphics timed to speech",
+   "status": "pass",
+   "detail": "every anchor found; nothing timed after its scene ends",
+   "evidence": []
+  },
+  {
+   "id": "captions",
+   "name": "Caption timing",
+   "status": "pass",
+   "detail": "75 captions, 185 words; each caption starts on its first spoken word (±1 frame)",
+   "evidence": []
+  },
+  {
+   "id": "clip",
+   "name": "No clipped text",
+   "status": "pass",
+   "detail": "80 moments checked; every visible text box inside the 1080×1920 frame",
+   "evidence": []
+  },
+  {
+   "id": "overlap-caption",
+   "name": "Graphics clear of captions",
+   "status": "pass",
+   "detail": "no text graphic covers more than 20% of a caption",
+   "evidence": []
+  },
+  {
+   "id": "overlap-face",
+   "name": "Graphics clear of the face",
+   "status": "pass",
+   "detail": "face found at 80/80 moments; no front graphic covers more than 30% of it (full-frame dim behind: 01 نفس النوع ولا مختلف؟, 02 Creative Diversity metric جوه Ads Man)",
+   "evidence": []
+  },
+  {
+   "id": "safe-zone",
+   "name": "Text clear of platform UI (heuristic)",
+   "status": "pass",
+   "detail": "no text in the bottom 220 px or the lower right 100 px column",
+   "evidence": []
+  },
+  {
+   "id": "shaping",
+   "name": "Correct Arabic shaping",
+   "status": "pass",
+   "detail": "89 distinct texts; Cairo loaded; letters join (shaped width ≠ isolated-letter width)",
+   "evidence": []
+  },
+  {
+   "id": "rtl",
+   "name": "No broken RTL",
+   "status": "pass",
+   "detail": "every line with Arabic runs right→left (also when it starts with a Latin word); numbers read left→right",
+   "evidence": []
+  },
+  {
+   "id": "stable",
+   "name": "Page runs without errors",
+   "status": "pass",
+   "detail": "no page or console errors",
+   "evidence": []
+  },
+  {
+   "id": "export",
+   "name": "Export format (1080×1920 · 9:16 · 30 fps · H.264 · MP4)",
+   "status": "pass",
+   "detail": "1080×1920, 30/1, h264 High yuv420p, faststart yes, 71.77s, 7689 kb/s, 69.0 MB",
+   "evidence": []
+  },
+  {
+   "id": "audio",
+   "name": "Consistent audio",
+   "status": "pass",
+   "detail": "aac 48000 Hz 2ch 191 kb/s; integrated -17.1 LUFS, LRA 4.6 LU, true peak -1.5 dBTP; audio length = video length ±0.1 s",
+   "evidence": []
+  },
+  {
+   "id": "stable-render",
+   "name": "Stable rendering (decodes cleanly, no black frames)",
+   "status": "pass",
+   "detail": "whole file decodes without errors; no black frames ≥ 0.1 s",
+   "evidence": []
+  },
+  {
+   "id": "transitions",
+   "name": "Smooth transitions",
+   "status": "pass",
+   "detail": "6 designed transition(s) (same:zoom, why:zoom, metric:blur, path:blur, angles:zoom, cta:blur); no frozen picture ≥ 1.5 s",
+   "evidence": []
+  },
+  {
+   "id": "determinism",
+   "name": "Deterministic rerenders",
+   "status": "pass",
+   "detail": "4 frames rendered twice: byte-identical PNGs",
+   "evidence": []
+  }
+ ],
+ "flagged_sheet": null,
+ "scenes": [
+  {
+   "id": "hook",
+   "style": "cinematic",
+   "layout": "full",
+   "tr": null
+  },
+  {
+   "id": "same",
+   "style": "collage",
+   "layout": "sticker",
+   "tr": "zoom"
+  },
+  {
+   "id": "why",
+   "style": "collage",
+   "layout": "sticker",
+   "tr": "zoom"
+  },
+  {
+   "id": "metric",
+   "style": "cinematic",
+   "layout": "full",
+   "tr": "blur"
+  },
+  {
+   "id": "path",
+   "style": null,
+   "layout": "pip-right",
+   "tr": "blur"
+  },
+  {
+   "id": "levels",
+   "style": null,
+   "layout": "top",
+   "tr": null
+  },
+  {
+   "id": "angles",
+   "style": "collage",
+   "layout": "sticker",
+   "tr": "zoom"
+  },
+  {
+   "id": "cta",
+   "style": null,
+   "layout": "top",
+   "tr": "blur"
+  }
+ ],
+ "duration": 71.767
+}

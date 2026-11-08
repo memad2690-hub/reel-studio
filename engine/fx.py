@@ -293,7 +293,8 @@ def underline(el, times):
 
 
 def hand_arrow(el, times):
-    d1, d2 = arrow_path(0, 0, el.get('dx', -200), el.get('dy', 120), el.get('bend', 0.25))
+    bend = max(-1.0, min(1.0, float(el.get('bend', 0.25))))      # a fraction of the arrow length
+    d1, d2 = arrow_path(0, 0, el.get('dx', -200), el.get('dy', 120), bend)
     c = col(el.get('color', 'ink'))
     return stroke(d1, c, el.get('width', 8), times[0], 0.5) + stroke(d2, c, el.get('width', 8), times[0] + 0.45, 0.2)
 

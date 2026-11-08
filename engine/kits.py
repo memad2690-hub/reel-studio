@@ -225,6 +225,24 @@ def b_wcard(e):
             f'<rect class="fitbox" rx="26" fill="#fff" stroke="{B["ink"]}" stroke-width="6"/>{inner}</g>')
 
 
+PAPER = {'cream': '#fffaf0', 'kraft': '#e3c99a', 'note': '#fff1a8', 'white': '#ffffff', 'pink': '#f8d7d2', 'blue': '#d7e6f5'}
+
+
+def b_paper(e):
+    """Style 03 collage: a taped paper note (template, no image), slightly rotated."""
+    lines = e.get('lines') or [e.get('text', '')]
+    size = e.get('size', 48)
+    fill = PAPER.get(e.get('paper', 'cream'), e.get('paper', '#fffaf0'))
+    tc = col(e.get('text_color', 'ink'), B)
+    inner = ''.join(text(l, size, tc, e.get('weight', 800), y=(i - (len(lines) - 1) / 2) * size * 1.3)
+                    for i, l in enumerate(lines))
+    return (f'<g transform="rotate({float(e.get("rot", -2)):.2f})"><g data-fit="{e.get("pad", 28)}">'
+            f'<rect class="fitbox" rx="4" fill="rgba(0,0,0,.20)" transform="translate(8,10)"/>'
+            f'<rect class="fitbox" rx="4" fill="{fill}" stroke="rgba(0,0,0,.18)" stroke-width="2"/>{inner}'
+            f'<rect class="tapeL" width="70" height="26" fill="rgba(240,226,170,.88)" transform="rotate(-8)"/>'
+            f'<rect class="tapeR" width="70" height="26" fill="rgba(240,226,170,.88)" transform="rotate(7)"/></g></g>')
+
+
 def b_pill(e):
     c = col(e.get('color', 'red'), B)
     return (f'<g data-fit="{e.get("pad", 22)}" data-fitround="1">'
@@ -389,7 +407,7 @@ BUILDERS = {
           'money': a_money, 'ballot': a_ballot, 'siren': a_siren, 'calendar': a_calendar, 'card': a_card,
           'stamp': a_stamp},
     'B': {'icon': b_icon, 'wcard': b_wcard, 'pill': b_pill, 'headline': b_headline, 'cta': b_cta,
-          'statcard': b_statcard, 'chapter': b_chapter},
+          'statcard': b_statcard, 'chapter': b_chapter, 'paper': b_paper},
 }
 SHARED = {'xmark': x_mark, 'check': check, 'arrow': arrow, 'text': plain_text, 'number': number, 'svg': raw_svg}
 

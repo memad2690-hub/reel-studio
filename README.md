@@ -31,6 +31,8 @@ Each ✔ is your approval. Nothing expensive (voiceover credits, full renders) h
 - [AGENTS.md](AGENTS.md) — the workflow and rules the assistant follows
 - [docs/SCENES.md](docs/SCENES.md) — scene and element reference
 - [docs/STUDIO.md](docs/STUDIO.md) — the studio app: pipeline, editor, transcript fixes, compare
+- [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md) — acceptance checks (`reel.py accept`)
+- [docs/V2_REPORT.md](docs/V2_REPORT.md) — V2 delivery report: results, measured performance, limitations
 - [SETUP.md](SETUP.md) — cloud and local setup
 
 Inspired by the structure of [mattp68/ai-video-studio](https://github.com/mattp68/ai-video-studio) (projects, storyboards, timestamped feedback, reference library); the engine is our own Arabic RTL renderer. Cairo font © The Cairo Project Authors, SIL Open Font License (`fonts/OFL.txt`).

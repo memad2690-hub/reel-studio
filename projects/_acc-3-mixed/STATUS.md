@@ -1,0 +1,3 @@
+- 2026-11-08T19:13:18+02:00: final cut prepared: card frames only, 1523 card frames
+- 2026-11-08T19:13:22+02:00: storyboard sb001 (8 frames)
+- 2026-11-08T19:59:24+02:00: render v001 1080x1920 50.77s  QA ok

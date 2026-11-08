@@ -1,0 +1,98 @@
+[
+  {
+    "id": "sb001",
+    "kind": "storyboard",
+    "file": "storyboard/sb001.png",
+    "created": "2026-11-08T03:52:40+02:00",
+    "times": [
+      4.813,
+      9.47,
+      22.67,
+      30.93,
+      35.57,
+      42.283,
+      48.25
+    ],
+    "anchor_misses": [],
+    "note": ""
+  },
+  {
+    "id": "sb002",
+    "kind": "storyboard",
+    "file": "storyboard/sb002.png",
+    "created": "2026-11-08T03:53:03+02:00",
+    "times": [
+      4.8,
+      9.5,
+      22.7
+    ],
+    "anchor_misses": [],
+    "note": "fixes check"
+  },
+  {
+    "id": "v001",
+    "kind": "render",
+    "file": "exports/v001.mp4",
+    "sheet": "exports/v001_sheet.png",
+    "created": "2026-11-08T04:03:08+02:00",
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 48.6,
+      "mbps": 4.67,
+      "audio": true,
+      "problems": []
+    },
+    "draft": false,
+    "note": ""
+  },
+  {
+    "id": "sb003",
+    "kind": "storyboard",
+    "file": "storyboard/sb003.png",
+    "created": "2026-11-08T04:03:46+02:00",
+    "times": [
+      10.05,
+      36.2
+    ],
+    "anchor_misses": [],
+    "note": "caption follows target layout"
+  },
+  {
+    "id": "v002",
+    "kind": "render",
+    "file": "exports/v002.mp4",
+    "sheet": "exports/v002_sheet.png",
+    "created": "2026-11-08T04:13:43+02:00",
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 48.6,
+      "mbps": 4.67,
+      "audio": true,
+      "problems": []
+    },
+    "draft": false,
+    "note": ""
+  },
+  {
+    "id": "v003",
+    "kind": "render",
+    "file": "exports/v003.mp4",
+    "sheet": "exports/v003_sheet.png",
+    "created": "2026-11-08T20:08:04+02:00",
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 48.6,
+      "mbps": 4.69,
+      "audio": true,
+      "problems": []
+    },
+    "draft": false,
+    "note": "acceptance render"
+  }
+]

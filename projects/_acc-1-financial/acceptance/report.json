@@ -1,0 +1,176 @@
+{
+ "project": "_acc-1-financial",
+ "video": "exports/v003.mp4",
+ "verdict": "warn",
+ "checks": [
+  {
+   "id": "finance",
+   "name": "No incorrect financial calculations",
+   "status": "pass",
+   "detail": "6 financial component(s) checked by the build (totals, results, tones, chart sums)",
+   "evidence": []
+  },
+  {
+   "id": "assets",
+   "name": "No missing assets",
+   "status": "pass",
+   "detail": "audio present; 1458 card frames for 48.6s; fonts bundled",
+   "evidence": []
+  },
+  {
+   "id": "timing",
+   "name": "Graphics timed to speech",
+   "status": "pass",
+   "detail": "every anchor found; nothing timed after its scene ends",
+   "evidence": []
+  },
+  {
+   "id": "captions",
+   "name": "Caption timing",
+   "status": "pass",
+   "detail": "57 captions, 147 words; each caption starts on its first spoken word (±1 frame)",
+   "evidence": []
+  },
+  {
+   "id": "clip",
+   "name": "No clipped text",
+   "status": "pass",
+   "detail": "60 moments checked; every visible text box inside the 1080×1920 frame",
+   "evidence": []
+  },
+  {
+   "id": "overlap-caption",
+   "name": "Graphics clear of captions",
+   "status": "warn",
+   "detail": "1 overlap(s) to review",
+   "evidence": [
+    {
+     "t": 5,
+     "text": "بيخسر أكتر",
+     "caption": "أكتر"
+    }
+   ]
+  },
+  {
+   "id": "overlap-face",
+   "name": "Graphics clear of the face",
+   "status": "pass",
+   "detail": "face found at 60/60 moments; no front graphic covers more than 30% of it",
+   "evidence": []
+  },
+  {
+   "id": "safe-zone",
+   "name": "Text clear of platform UI (heuristic)",
+   "status": "warn",
+   "detail": "1 text box(es) where app buttons/captions may cover them",
+   "evidence": [
+    {
+     "t": 30.98,
+     "text": "وبرضو خسران 5,000 ج"
+    }
+   ]
+  },
+  {
+   "id": "shaping",
+   "name": "Correct Arabic shaping",
+   "status": "pass",
+   "detail": "74 distinct texts; Cairo loaded; letters join (each word drawn shaped differs from its letters drawn apart)",
+   "evidence": []
+  },
+  {
+   "id": "rtl",
+   "name": "No broken RTL",
+   "status": "pass",
+   "detail": "every line with Arabic runs right→left (also when it starts with a Latin word); numbers read left→right",
+   "evidence": []
+  },
+  {
+   "id": "stable",
+   "name": "Page runs without errors",
+   "status": "pass",
+   "detail": "no page or console errors",
+   "evidence": []
+  },
+  {
+   "id": "export",
+   "name": "Export format (1080×1920 · 9:16 · 30 fps · H.264 · MP4)",
+   "status": "pass",
+   "detail": "1080×1920, 30/1, h264 High yuv420p, faststart yes, 48.60s, 4689 kb/s, 28.5 MB",
+   "evidence": []
+  },
+  {
+   "id": "audio",
+   "name": "Consistent audio",
+   "status": "pass",
+   "detail": "aac 48000 Hz 2ch 193 kb/s; integrated -20.2 LUFS, LRA 5.9 LU, true peak -2.0 dBTP; audio length = video length ±0.1 s",
+   "evidence": []
+  },
+  {
+   "id": "stable-render",
+   "name": "Stable rendering (decodes cleanly, no black frames)",
+   "status": "pass",
+   "detail": "whole file decodes without errors; no black frames ≥ 0.1 s",
+   "evidence": []
+  },
+  {
+   "id": "transitions",
+   "name": "Smooth transitions",
+   "status": "pass",
+   "detail": "cuts only; no frozen picture ≥ 1.5 s",
+   "evidence": []
+  },
+  {
+   "id": "determinism",
+   "name": "Deterministic rerenders",
+   "status": "pass",
+   "detail": "4 frames rendered twice: byte-identical PNGs",
+   "evidence": []
+  }
+ ],
+ "flagged_sheet": "acceptance/flagged.png",
+ "scenes": [
+  {
+   "id": "hook",
+   "style": null,
+   "layout": "full",
+   "tr": null
+  },
+  {
+   "id": "setup",
+   "style": null,
+   "layout": "top",
+   "tr": null
+  },
+  {
+   "id": "math",
+   "style": null,
+   "layout": "pip-right",
+   "tr": null
+  },
+  {
+   "id": "roas",
+   "style": null,
+   "layout": "hero",
+   "tr": null
+  },
+  {
+   "id": "margin",
+   "style": null,
+   "layout": "bottom",
+   "tr": null
+  },
+  {
+   "id": "breakeven",
+   "style": null,
+   "layout": "pip-left",
+   "tr": null
+  },
+  {
+   "id": "cta",
+   "style": null,
+   "layout": "top",
+   "tr": null
+  }
+ ],
+ "duration": 48.6
+}

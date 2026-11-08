@@ -1,0 +1,7 @@
+- 2026-11-08T19:16:25+02:00: grade set: {"preset": "RC_Warm_Cinematic_v1", "intensity": 0.85} (re-run finalize-cut to apply)
+- 2026-11-08T19:22:53+02:00: final cut prepared: card frames only, 2153 card frames
+- 2026-11-08T19:31:46+02:00: segment: frames 175-567, mask quality mean 0.689 min 0.564
+- 2026-11-08T19:36:56+02:00: segment: frames 1591-1942, mask quality mean 0.696 min 0.571
+- 2026-11-08T19:37:09+02:00: storyboard sb001 (8 frames)
+- 2026-11-08T20:33:42+02:00: render v001 1080x1920 71.77s  QA ok
+- 2026-11-08T20:54:54+02:00: render v002 1080x1920 71.77s  QA ok

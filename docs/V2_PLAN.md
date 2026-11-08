@@ -239,3 +239,13 @@ anchor word broke timing; regenerate with no proposal wiped the scene.
 Not built (future): drag-to-retime on the timeline, caption line-break editing, a frame-accurate preview of grade
 changes inside the editor (grade-preview job covers it), undo button (backups exist; restore is manual for now).
 Tests: 72 in tests/test_pipeline.py (11 new).
+
+### Milestone 9 — Acceptance suite, comparison exports, final docs (2026-11-08)
+Built `reel.py accept` (`engine/accept.py` + `engine/inspect.js`): caption timing, Arabic shaping (pixel comparison),
+RTL incl. Latin-first lines and digit order, clipping, overlap with captions / detected face (OpenCV) / platform bands,
+finance, assets, export format, audio (EBU R128, silence), decode/black/freeze, determinism. Six brief cases as
+`projects/_acc-*` (case 2 CEOS blocked); all five rendered cases pass (case 1: two reviewed warnings). Fixes found by
+acceptance: caption max bottom, waterfall negative labels, arrow bend clamp, per-scene cut-out fallback, finalize-cut
+`--frames-only` + words backup, single raster thread (determinism under load), −1.5 dBTP audio limiter, `paper` note
+for collage. Comparison exports via `scripts/compare_exports.sh`. Results and measured performance: `docs/V2_REPORT.md`.
+Tests: 79 in tests/test_pipeline.py, 86 in the whole suite.

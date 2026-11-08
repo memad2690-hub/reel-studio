@@ -14,3 +14,8 @@ projects/*/exports/*.mp4
 projects/*/exports/*.mov
 # synthetic demos are recreated by scripts/make_demo.py
 projects/_demo-*/
+
+# acceptance: keep report.md/json + flagged.png; inspect dumps are regenerated
+projects/*/acceptance/inspect*.json
+# comparison exports are regenerated with scripts/compare_exports.sh
+exports/

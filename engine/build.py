@@ -406,6 +406,17 @@ def build(project_dir, out_dir=None):
                     cam['cap'] = s['caption_style']
             if s.get('_style'):
                 cam['style'] = s['_style']
+            if has_cut:
+                # cut-out effects are decided per scene (no flicker between cut-out and fallback frame to frame):
+                # the scene keeps them if at most 15% of its frames fall below the mask threshold
+                f0, f1 = int(st * M['fps']), max(int(st * M['fps']) + 1, int(en * M['fps']))
+                qs = (maskq + [0.0] * f1)[f0:f1]
+                low = sum(1 for q in qs if q < spec.get('mask_min_quality', 0.62)) / max(1, len(qs))
+                cam['cutok'] = low <= spec.get('mask_max_low', 0.15)
+                uses = s.get('layout') == 'sticker' or s.get('parallax') or any(e.get('behind') for e in s.get('elements', []))
+                if uses and not cam['cutok']:
+                    notes.append(f'{s.get("id", i)}: {low:.0%} of frames have a weak speaker mask: cut-out effects fall '
+                                 'back to a normal frame for the whole scene')
         scene_meta.append({'id': s.get('id', f's{i + 1}'), 'title': s.get('title', ''), 'start': round(st, 3),
                            'end': round(en, 3), 'card': card_pos if mode == 'B' else None,
                            'storyboard_t': round(max(st, sb), 3), **cam})
@@ -450,7 +461,7 @@ def build(project_dir, out_dir=None):
             'layouts': LAYOUTS, 'slide': CARD_SLIDE, 'cf': cfi, 'focus': focus, 'capStyle': caption_style,
             'hlColor': kits.B['yellow'], 'scenes': scene_meta, 'captions': captions, 'cap': cap_cfg,
             'cut': has_cut, 'maskq': maskq, 'maskMin': spec.get('mask_min_quality', 0.62),
-            'film': bool(film and film.get('grain'))}
+            'film': bool(film and film.get('grain')), 'audio_peak_db': cfg.get('output', {}).get('audio_peak_db')}
 
     g = M['grid']
     bg = f'''<svg id="bg" width="{W}" height="{H}" style="position:absolute;left:0;top:0">

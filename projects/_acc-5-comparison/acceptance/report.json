@@ -1,0 +1,159 @@
+{
+ "project": "_acc-5-comparison",
+ "video": "exports/v001.mp4",
+ "verdict": "pass",
+ "checks": [
+  {
+   "id": "finance",
+   "name": "No incorrect financial calculations",
+   "status": "pass",
+   "detail": "0 financial component(s) checked by the build (totals, results, tones, chart sums)",
+   "evidence": []
+  },
+  {
+   "id": "assets",
+   "name": "No missing assets",
+   "status": "pass",
+   "detail": "audio present; 1419 card frames for 47.3s; fonts bundled",
+   "evidence": []
+  },
+  {
+   "id": "timing",
+   "name": "Graphics timed to speech",
+   "status": "pass",
+   "detail": "every anchor found; nothing timed after its scene ends",
+   "evidence": []
+  },
+  {
+   "id": "captions",
+   "name": "Caption timing",
+   "status": "pass",
+   "detail": "52 captions, 130 words; each caption starts on its first spoken word (±1 frame)",
+   "evidence": []
+  },
+  {
+   "id": "clip",
+   "name": "No clipped text",
+   "status": "pass",
+   "detail": "55 moments checked; every visible text box inside the 1080×1920 frame",
+   "evidence": []
+  },
+  {
+   "id": "overlap-caption",
+   "name": "Graphics clear of captions",
+   "status": "pass",
+   "detail": "no text graphic covers more than 20% of a caption",
+   "evidence": []
+  },
+  {
+   "id": "overlap-face",
+   "name": "Graphics clear of the face",
+   "status": "pass",
+   "detail": "face found at 55/55 moments; no front graphic covers more than 30% of it",
+   "evidence": []
+  },
+  {
+   "id": "safe-zone",
+   "name": "Text clear of platform UI (heuristic)",
+   "status": "pass",
+   "detail": "no text in the bottom 220 px or the lower right 100 px column",
+   "evidence": []
+  },
+  {
+   "id": "shaping",
+   "name": "Correct Arabic shaping",
+   "status": "pass",
+   "detail": "68 distinct texts; Cairo loaded; letters join (each word drawn shaped differs from its letters drawn apart)",
+   "evidence": []
+  },
+  {
+   "id": "rtl",
+   "name": "No broken RTL",
+   "status": "pass",
+   "detail": "every line with Arabic runs right→left (also when it starts with a Latin word); numbers read left→right",
+   "evidence": []
+  },
+  {
+   "id": "stable",
+   "name": "Page runs without errors",
+   "status": "pass",
+   "detail": "no page or console errors",
+   "evidence": []
+  },
+  {
+   "id": "export",
+   "name": "Export format (1080×1920 · 9:16 · 30 fps · H.264 · MP4)",
+   "status": "pass",
+   "detail": "1080×1920, 30/1, h264 High yuv420p, faststart yes, 47.30s, 4480 kb/s, 26.5 MB",
+   "evidence": []
+  },
+  {
+   "id": "audio",
+   "name": "Consistent audio",
+   "status": "pass",
+   "detail": "aac 48000 Hz 2ch 194 kb/s; integrated -21.3 LUFS, LRA 4.0 LU, true peak -4.4 dBTP; audio length = video length ±0.1 s",
+   "evidence": []
+  },
+  {
+   "id": "stable-render",
+   "name": "Stable rendering (decodes cleanly, no black frames)",
+   "status": "pass",
+   "detail": "whole file decodes without errors; no black frames ≥ 0.1 s",
+   "evidence": []
+  },
+  {
+   "id": "transitions",
+   "name": "Smooth transitions",
+   "status": "pass",
+   "detail": "4 designed transition(s) (ads:whip, mistake:blur, test:whip, recap:zoom); no frozen picture ≥ 1.5 s",
+   "evidence": []
+  },
+  {
+   "id": "determinism",
+   "name": "Deterministic rerenders",
+   "status": "pass",
+   "detail": "4 frames rendered twice: byte-identical PNGs",
+   "evidence": []
+  }
+ ],
+ "flagged_sheet": null,
+ "scenes": [
+  {
+   "id": "hook",
+   "style": "parallax",
+   "layout": "full",
+   "tr": null
+  },
+  {
+   "id": "ads",
+   "style": "battle",
+   "layout": "half-top",
+   "tr": "whip"
+  },
+  {
+   "id": "mistake",
+   "style": null,
+   "layout": "top",
+   "tr": "blur"
+  },
+  {
+   "id": "three",
+   "style": null,
+   "layout": "pip-left",
+   "tr": null
+  },
+  {
+   "id": "test",
+   "style": "battle",
+   "layout": "half-bottom",
+   "tr": "whip"
+  },
+  {
+   "id": "recap",
+   "style": null,
+   "layout": "top",
+   "tr": "zoom"
+  }
+ ],
+ "duration": 47.3
+}

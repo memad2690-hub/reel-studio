@@ -1,0 +1,36 @@
+[
+  {
+    "id": "sb001",
+    "kind": "storyboard",
+    "file": "storyboard/sb001.png",
+    "created": "2026-11-08T19:08:40+02:00",
+    "times": [
+      2.6,
+      10.5,
+      16.5,
+      30.0,
+      42.5,
+      46.5
+    ],
+    "anchor_misses": [],
+    "note": ""
+  },
+  {
+    "id": "v001",
+    "kind": "render",
+    "file": "exports/v001.mp4",
+    "sheet": "exports/v001_sheet.png",
+    "created": "2026-11-08T20:17:09+02:00",
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 47.3,
+      "mbps": 4.48,
+      "audio": true,
+      "problems": []
+    },
+    "draft": false,
+    "note": "acceptance render"
+  }
+]

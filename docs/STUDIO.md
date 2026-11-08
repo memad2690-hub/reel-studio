@@ -31,4 +31,5 @@ Local only (binds 127.0.0.1, rejects other hosts/origins). Everything it changes
 Every write first copies the previous file (`scenes.prev-<time>.json`, `words.prev-<time>.json`) and appends to
 `edits.json`. If an edit makes the project unbuildable it is rolled back. Source media, exports, approvals and
 brand/grade presets are never written by the editor. Jobs are a fixed allowlist (build, storyboard, plan,
-render-draft, render, segment, grade-preview, finalize-cut, roughcut, stt); nothing else can be run.
+render-draft, render, segment, grade-preview, finalize-cut, card-frames (`finalize-cut --frames-only`), roughcut,
+accept, stt); nothing else can be run.

@@ -1,0 +1,101 @@
+{
+  "intensity": "medium",
+  "budget": {
+    "graphic_scenes": 6,
+    "min_scene": 4.0,
+    "duration": 47.0
+  },
+  "segments": [
+    {
+      "start": 0.11,
+      "end": 12.37,
+      "text": "مين في الإعلانات دول شكله أغلى؟ ومين فيهم تتوقع يبيع أكتر؟ الإعلان الأولاني الـ design بتاعه ممتاز، الألوان، الـ typography متظبطين. عندك إعلان تاني بقى أبسط بس بيبدأ بسؤال العميل بيسأله فعلاً.",
+      "w0": 0,
+      "w1": 31,
+      "lang": "ar",
+      "numbers": [],
+      "keywords": [
+        "design",
+        "typography",
+        "إعلانات",
+        "الإعلانات"
+      ],
+      "role": "comparison",
+      "confidence": 0.55,
+      "reason": "first/second option cue",
+      "style": "split",
+      "component": "versus",
+      "treatment_reason": "two options → split-screen"
+    },
+    {
+      "start": 12.7,
+      "end": 18.66,
+      "text": "الغلطة إنك بتفترض إن الإعلان الأجمل هو اللي هيكسب. بس الجمال مش هو العامل الوحيد اللي بيحدد الـ conversion.",
+      "w0": 32,
+      "w1": 50,
+      "lang": "ar",
+      "numbers": [],
+      "keywords": [
+        "conversion"
+      ],
+      "role": "contrast",
+      "confidence": 0.6,
+      "reason": "starts with الغلطة",
+      "style": "kinetic",
+      "component": "kinetic",
+      "treatment_reason": "turn in the argument → kinetic words"
+    },
+    {
+      "start": 18.94,
+      "end": 38.95,
+      "text": "الإعلان محتاج تلات حاجات. أول حاجة الـ Attention. ليه؟ عشان يوقف العميل. تاني حاجة هي الـ Relevance عشان يخلي العميل يحس إن الكلام عنه. تالت حاجة هو الـ Reason to buy. يوضح ليه المنتج ده يستحق أصلًا. ومحتاج دليل حقيقي تدعم بيه الرسالة بتاعتك. إعلان بسيط ممكن يكسب إعلان إنتاجه أغلى، بس ده قرار لازم يتحسب باختبار فعلي مش بالتخمين.",
+      "w0": 51,
+      "w1": 110,
+      "lang": "ar",
+      "numbers": [
+        {
+          "value": 3.0,
+          "i0": 2,
+          "i1": 2,
+          "start": 19.64,
+          "end": 19.82,
+          "text": "تلات",
+          "kind": "count"
+        }
+      ],
+      "keywords": [
+        "Attention",
+        "Reason",
+        "Relevance",
+        "buy"
+      ],
+      "role": "setup",
+      "confidence": 0.35,
+      "reason": "no strong cue",
+      "style": "talking-head",
+      "component": null,
+      "treatment_reason": "low confidence → clean talking head"
+    },
+    {
+      "start": 39.25,
+      "end": 47.12,
+      "text": "لو عندك إعلانين مش بتختار لكن بتعمل اختبار ويكون على أساس النقط اللي قلناها. Attention، Relevance وReason to buy.",
+      "w0": 111,
+      "w1": 129,
+      "lang": "ar",
+      "numbers": [],
+      "keywords": [
+        "Attention",
+        "Reason",
+        "Relevance",
+        "buy"
+      ],
+      "role": "example",
+      "confidence": 0.6,
+      "reason": "example cue: لو عندك",
+      "style": "editorial",
+      "component": "pill+statcard",
+      "treatment_reason": "example → labelled مثال card"
+    }
+  ]
+}

@@ -5,7 +5,9 @@
     "width": 1080,
     "height": 1920,
     "codec": "h264 high, yuv420p, AAC 192k 48kHz, +faststart",
-    "rule": "Always deliver 1080x1920. Keep intermediates lossless. Encode with x264 once at the end."
+    "rule": "Always deliver 1080x1920. Keep intermediates lossless. Encode with x264 once at the end.",
+    "audio_peak_db": -1.5,
+    "audio_note": "audio_peak_db: peak limiter on the exported audio (only peaks above it are touched); null = off"
   },
   "modes": {
     "A": {
@@ -44,8 +46,10 @@
       "size": 54,
       "weight": 900,
       "max_chars": 20,
-      "orphan_slack": 0
-    }
+      "orphan_slack": 0,
+      "max_bottom": 1680
+    },
+    "B_note": "max_bottom: caption box bottom limit in px on full-height layouts (keeps captions clear of app buttons); 0 = old placement"
   },
   "elevenlabs": {
     "default_voice": {

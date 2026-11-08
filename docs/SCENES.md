@@ -279,3 +279,17 @@ In `studio.config.json` → `brands`: `bg`, `grid_color`, `palette`, default `ca
 Current: `media-buying` (highlight captions, cuts), `ceos` (lime/black, energy captions, blur), `whiteboard`.
 Per-reel tweaks go in that reel's scenes.json, never in the preset:
 `"brand_overrides": {"palette": {"red": "#e0413a"}, "caption_style": "minimal"}`. Unknown brand names block render.
+
+## V2 — Milestone 9 additions
+- `paper` (Style 03 collage, templates only): `{"type":"paper","text":"إعلان بيحل مشكلة","paper":"cream|kraft|note|white|pink|blue",
+  "rot":-3,"size":46}` — a taped paper note with a soft shadow, slightly rotated. `lines` for several lines.
+- Cut-out effects (sticker / parallax / behind) are now decided **per scene**: a scene keeps them when at most 15% of
+  its frames score below `mask_min_quality` (`mask_max_low` changes the 15%); otherwise the whole scene falls back and
+  `notes` says so. No more flicker between cut-out and fallback frame to frame.
+- Captions on full-height layouts (`full`, `bottom`, `half-bottom`, `hero`) keep their bottom at or above
+  `captions.B.max_bottom` (1680 px, in studio.config.json) so app buttons and platform captions don't cover them.
+  `0` restores the old placement.
+- `hand_arrow.bend` is a fraction of the arrow length and is clamped to −1…1.
+- `reel.py finalize-cut --frames-only` remakes card frames + cut audio and leaves `words.json` alone; a normal
+  `finalize-cut` now backs up `words.json` (`words.prev-<time>.json`) before mapping raw words onto the cut.
+- `reel.py accept <slug> [--video exports/vNNN.mp4]` — acceptance checks (see docs/ACCEPTANCE.md).

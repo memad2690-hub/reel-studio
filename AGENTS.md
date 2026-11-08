@@ -131,3 +131,6 @@ After `finalize-cut` (use `--full-frame` for V2 layouts) and `align`:
    Brand look comes from `studio.config.json` presets; per-reel tweaks only via `brand_overrides`.
 7. The user may edit in the studio (docs/STUDIO.md). Before changing a project, read `edits.json` and respect
    `locked` scenes; never overwrite a locked scene, a variant, or a `*.prev-*` backup.
+8. Before delivering a final render, run `python3 reel.py accept <slug>` and review every ⚠️/❌ (stills in
+   `acceptance/flagged.png`). To remake card frames of an aligned project use `finalize-cut --full-frame --frames-only`
+   (a plain `finalize-cut` re-maps raw words; it backs up `words.json` first).

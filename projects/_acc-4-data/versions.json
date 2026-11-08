@@ -1,0 +1,60 @@
+[
+  {
+    "id": "sb001",
+    "kind": "storyboard",
+    "file": "storyboard/sb001.png",
+    "created": "2026-11-08T19:03:22+02:00",
+    "times": [
+      4.813,
+      8.707,
+      22.67,
+      28.7,
+      42.283,
+      48.25
+    ],
+    "anchor_misses": [],
+    "note": ""
+  },
+  {
+    "id": "sb002",
+    "kind": "storyboard",
+    "file": "storyboard/sb002.png",
+    "created": "2026-11-08T19:03:50+02:00",
+    "times": [
+      4.8,
+      22.7
+    ],
+    "anchor_misses": [],
+    "note": ""
+  },
+  {
+    "id": "sb003",
+    "kind": "storyboard",
+    "file": "storyboard/sb003.png",
+    "created": "2026-11-08T19:04:03+02:00",
+    "times": [
+      12.5,
+      22.7
+    ],
+    "anchor_misses": [],
+    "note": ""
+  },
+  {
+    "id": "v001",
+    "kind": "render",
+    "file": "exports/v001.mp4",
+    "sheet": "exports/v001_sheet.png",
+    "created": "2026-11-08T19:51:16+02:00",
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 48.6,
+      "mbps": 4.92,
+      "audio": true,
+      "problems": []
+    },
+    "draft": false,
+    "note": "acceptance render"
+  }
+]

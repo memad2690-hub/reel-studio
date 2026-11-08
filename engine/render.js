@@ -25,7 +25,7 @@ const fps = meta.fps;
 const lossless = meta.mode === 'B' || !!args.lossless;
 
 (async () => {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({ args: process.env.REEL_RASTER === 'multi' ? [] : ['--num-raster-threads=1', '--disable-partial-raster'] });
   const page = await browser.newPage({ viewport: { width: meta.W, height: meta.H }, deviceScaleFactor: meta.scale });
   page.on('pageerror', e => console.error('page error:', e.message));
   await page.goto(pathToFileURL(path.join(build, 'page.html')).href);  // works on Windows paths too
@@ -39,7 +39,7 @@ const lossless = meta.mode === 'B' || !!args.lossless;
       const n = Math.min(cfCount, Math.floor(t * fps + 1e-6) + 1);
       await page.evaluate(async src => {
         const img = document.getElementById('cardimg');
-        if (img.getAttribute('src') !== src) { img.src = src; await img.decode().catch(() => {}); }
+        if (img.getAttribute('src') !== src) { img.src = src; await new Promise(r => { if (img.complete && img.naturalWidth) r(); else { img.onload = img.onerror = () => r(); } }); await img.decode().catch(() => {}); }
       }, 'cf/' + String(n).padStart(5, '0') + '.png');
       if (hasCut) {
         const kind = await page.evaluate(t => window.cutKind(t), t);
@@ -49,7 +49,7 @@ const lossless = meta.mode === 'B' || !!args.lossless;
           const img = document.getElementById('cutimg');
           if (!img) return;
           if (!src) { img.removeAttribute('src'); return; }
-          if (img.getAttribute('src') !== src) { img.src = src; await img.decode().catch(() => {}); }
+          if (img.getAttribute('src') !== src) { img.src = src; await new Promise(r => { if (img.complete && img.naturalWidth) r(); else { img.onload = img.onerror = () => r(); } }); await img.decode().catch(() => {}); }
         }, src);
       }
     }
@@ -76,7 +76,11 @@ const lossless = meta.mode === 'B' || !!args.lossless;
     '-c:v', lossless ? 'png' : 'mjpeg', '-i', '-'];
   if (args.audio) ff.push('-ss', String(from), '-t', String(to - from), '-i', args.audio);
   ff.push('-map', '0:v');
-  if (args.audio) ff.push('-map', '1:a', '-c:a', 'aac', '-b:a', '192k', '-ar', '48000');
+  if (args.audio) {
+    ff.push('-map', '1:a');
+    if (meta.audio_peak_db != null) ff.push('-af', `alimiter=limit=${Math.pow(10, meta.audio_peak_db / 20).toFixed(4)}:level=false`);
+    ff.push('-c:a', 'aac', '-b:a', '192k', '-ar', '48000');
+  }
   ff.push('-c:v', 'libx264', '-preset', args.preset || 'slow', '-crf', String(args.crf || (meta.mode === 'A' ? 16 : 15)),
     '-profile:v', 'high', '-pix_fmt', 'yuv420p', '-r', String(fps), '-movflags', '+faststart', '-shortest', args.out);
   const proc = spawn('ffmpeg', ff, { stdio: ['pipe', 'inherit', 'inherit'] });

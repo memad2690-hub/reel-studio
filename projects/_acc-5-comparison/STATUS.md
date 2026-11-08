@@ -1,0 +1,4 @@
+- 2026-11-08T19:07:09+02:00: final cut prepared: card frames only, 1419 card frames
+- 2026-11-08T19:08:31+02:00: segment: frames 1-110, mask quality mean 0.773 min 0.638
+- 2026-11-08T19:08:40+02:00: storyboard sb001 (6 frames)
+- 2026-11-08T20:17:09+02:00: render v001 1080x1920 47.3s  QA ok

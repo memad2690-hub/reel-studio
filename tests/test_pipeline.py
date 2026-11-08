@@ -202,6 +202,18 @@ class Style09Tests(Tmp):
         self.assertFalse(any('behind' in n for n in m['notes']))
         self.assertIn('id="behind"', self.page())
 
+    def test_cutout_fallback_decided_per_scene(self):
+        from PIL import Image
+        os.makedirs(os.path.join(self.d, 'build', 'cut')); os.makedirs(os.path.join(self.d, 'build', 'mask'))
+        Image.new('RGBA', (4, 4)).save(os.path.join(self.d, 'build', 'cut', '00001.png'))
+        q = [0.8] * 75 + [0.5, 0.8] * 20 + [0.3] * 65                 # scene a: clean · b: 50% weak, scattered
+        with open(os.path.join(self.d, 'build', 'mask', 'quality.json'), 'w') as f:
+            json.dump({'per_frame': q}, f)
+        m = self.scenes([{'id': 'a', 'layout': 'sticker', 'elements': []},
+                         {'id': 'b', 'layout': 'sticker', 'start': 'والإعلانات', 'elements': []}])
+        self.assertEqual([x['cutok'] for x in m['scenes']], [True, False])
+        self.assertTrue(any(n.startswith('b:') and 'whole scene' in n for n in m['notes']), m['notes'])
+
     def test_sticker_layout_known(self):
         self.assertTrue(builder.LAYOUTS['sticker'].get('sticker'))
         misses = self.scenes([{'id': 'a', 'layout': 'sticker', 'elements': []}])['anchor_misses']
@@ -404,6 +416,61 @@ class EditorTests(Tmp):
         d = {x['scene']: x for x in self.ed.scene_diff(a, b)}
         self.assertEqual(d['a']['keys'], ['layout']); self.assertEqual(d['a']['elements'], [['text'], ['statcard']])
         self.assertEqual(d['n']['change'], 'added'); self.assertEqual(d['(reel)']['keys'], ['brand'])
+
+
+class AcceptanceTests(Tmp):
+    """Milestone 9: acceptance checker logic and the fixes it led to."""
+
+    def test_caption_timing_check(self):
+        import accept
+        words = [{'text': 'المبيعات،', 'start': 0.0, 'end': 0.4}, {'text': 'مية', 'start': 0.5, 'end': 0.9},
+                 {'text': 'ألف', 'start': 1.0, 'end': 1.4}]
+        good = {'captions': [{'text': 'المبيعات مية', 'start': 0.0, 'end': 0.95, 'wt': [0.0, 0.5]},
+                             {'text': 'ألف', 'start': 1.0, 'end': 1.6, 'wt': [1.0]}]}
+        r = accept.Report(); accept.check_captions(r, good, words, 30)
+        self.assertEqual(r.checks[0]['status'], 'pass', r.checks[0]['evidence'])   # punctuation dropped in captions is fine
+        late = json.loads(json.dumps(good)); late['captions'][1]['start'] = 1.2
+        r = accept.Report(); accept.check_captions(r, late, words, 30)
+        self.assertEqual(r.checks[0]['status'], 'fail')
+        r = accept.Report(); accept.check_captions(r, {'captions': [{'text': 'المبيعات مية', 'start': 0, 'end': 1}]}, words, 30)
+        self.assertEqual(r.checks[0]['status'], 'fail')                                # a word is missing from the captions
+
+    def test_box_math_and_faststart(self):
+        import accept
+        self.assertEqual(accept.inter([0, 0, 10, 10], [5, 5, 20, 20]), 25)
+        self.assertEqual(accept.area([0, 0, -1, 5]), 0)
+        p = os.path.join(self.d, 'x.mp4')
+        with open(p, 'wb') as f:
+            f.write((16).to_bytes(4, 'big') + b'ftyp' + b'isom0000' + (8).to_bytes(4, 'big') + b'moov' + (8).to_bytes(4, 'big') + b'mdat')
+        self.assertTrue(accept.faststart(p))
+        with open(p, 'wb') as f:
+            f.write((8).to_bytes(4, 'big') + b'mdat' + (8).to_bytes(4, 'big') + b'moov')
+        self.assertFalse(accept.faststart(p))
+
+    def test_paper_note_and_arrow_clamp(self):
+        import kits, fx
+        svg = kits.build({'type': 'paper', 'text': 'إعلان بيحل مشكلة', 'rot': 3, 'paper': 'kraft'}, 'B')
+        self.assertIn('rotate(3.00)', svg); self.assertIn('#e3c99a', svg); self.assertIn('tapeL', svg)
+        wild = fx.hand_arrow({'dx': 0, 'dy': 150, 'bend': 30}, [0.0])
+        tame = fx.hand_arrow({'dx': 0, 'dy': 150, 'bend': 1}, [0.0])
+        self.assertEqual(wild, tame)
+
+    def test_waterfall_negative_label_below_value(self):
+        import re, charts
+        svg = charts.waterfall({'rows': [{'label': 'مبيعات', 'value': 100000}, {'label': 'تكاليف', 'value': 105000, 'op': '-'}],
+                                'result': {'label': 'ربح', 'label_negative': 'خسارة', 'value': -5000}, 'h': 500}, [0, 1, 2])
+        ys = {m.group(2): float(m.group(1)) for m in re.finditer(r'y="(-?[\d.]+)"[^>]*>([^<]+)</text>', svg)}
+        self.assertGreater(ys['خسارة'], ys['5,000 ج'] + 30)
+
+    def test_caption_max_bottom_in_config(self):
+        cfg = builder.load_config()
+        self.assertEqual(cfg['captions']['B']['max_bottom'], 1680)
+
+    def test_finalize_cut_frames_only_keeps_words(self):
+        import reel as R
+        src = open(os.path.join(ROOT, 'reel.py'), encoding='utf-8').read()
+        self.assertIn("'--frames-only'", src)
+        self.assertIn('words.prev-', src[src.index('def cmd_finalize_cut'):src.index('def cmd_crop_preview')])
 
 
 class ChartCheckTests(unittest.TestCase):

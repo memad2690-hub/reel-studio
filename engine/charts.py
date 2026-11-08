@@ -218,7 +218,10 @@ def waterfall(el, times):
         amount = abs(b - a) if 0 < i < n - 1 else abs(b)
         vy = (y2 + 40) if (down or (i == n - 1 and b < 0)) else (y1 - 34)
         out += f'<g {t0(times, i, 0.3)}>' + text(short(amount, unit), 36, col, 900, x=cx, y=vy) + '</g>'
-        out += f'<g {t0(times, i, 0.3)}>' + label_lines(labels[i], 30, max(base, h / 2) + 46, x=cx) + '</g>'
+        ly = max(base, h / 2) + 46
+        if vy > base and vy + 50 > ly:                      # value hangs below a falling/negative bar: label goes under it
+            ly = vy + 56
+        out += f'<g {t0(times, i, 0.3)}>' + label_lines(labels[i], 30, ly, x=cx) + '</g>'
     return out
 
 

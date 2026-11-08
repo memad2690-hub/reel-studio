@@ -128,6 +128,19 @@ def cmd_new(a):
     print(f'projects/{a.slug} created. Next: fill brief.md, then script.md.')
 
 
+def cmd_accept(a):
+    import accept
+    d = pdir(a.slug)
+    video = a.video
+    if not video:
+        vs = [v for v in rj(os.path.join(d, 'versions.json'), []) if v['kind'] == 'render' and os.path.exists(os.path.join(d, v['file']))]
+        video = vs[-1]['file'] if vs else None
+    out = accept.run(d, os.path.join(d, video) if video else None, determinism=not a.no_determinism)
+    for c in out['checks']:
+        print(f'{accept.ICON[c["status"]]} {c["name"]}: {c["detail"]}')
+    print(f'verdict: {out["verdict"]} → acceptance/report.md')
+
+
 def cmd_brands(a):
     cfg = builder.load_config()
     for name, b in cfg.get('brands', {}).items():
@@ -300,8 +313,10 @@ def cmd_join(a):
     cmd = ['ffmpeg', '-y', '-v', 'error', '-f', 'concat', '-safe', '0', '-i', lst]
     if m['audio']:
         # one continuous audio track for the whole reel (the parts are silent)
-        cmd += ['-i', os.path.join(d, m['audio']), '-map', '0:v', '-map', '1:a', '-c:v', 'copy',
-                '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-t', f'{t:.3f}']
+        cmd += ['-i', os.path.join(d, m['audio']), '-map', '0:v', '-map', '1:a', '-c:v', 'copy']
+        if m.get('audio_peak_db') is not None:                # peak limiter: only peaks above the limit are touched
+            cmd += ['-af', f'alimiter=limit={10 ** (m["audio_peak_db"] / 20):.4f}:level=false']
+        cmd += ['-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-t', f'{t:.3f}']
     else:
         cmd += ['-c', 'copy']
     subprocess.run(cmd + ['-movflags', '+faststart', out], check=True)
@@ -449,9 +464,16 @@ def cmd_finalize_cut(a):
     cuts = rj(os.path.join(d, 'cuts.json'))
     raw = os.path.join(d, cuts['source'])
     segs = footage.snap(cuts['segments'])  # same frame-aligned cuts as the audio and card frames
-    words = load_words(os.path.join(d, a.words))
     os.makedirs(os.path.join(d, 'build'), exist_ok=True)
-    wj(os.path.join(d, 'words.json'), map_through_cuts(words, segs))
+    out_words = None
+    if not a.frames_only:
+        # words.json may already hold the aligned clean script: never lose it silently
+        cur = os.path.join(d, 'words.json')
+        if os.path.exists(cur):
+            bak = os.path.join(d, f'words.prev-{dt.datetime.now().strftime("%Y%m%d-%H%M%S")}.json')
+            shutil.copy(cur, bak); out_words = os.path.basename(bak)
+        words = load_words(os.path.join(d, a.words))
+        wj(cur, map_through_cuts(words, segs))
     footage.render_cut(raw, segs, os.path.join(d, 'build', 'cut_audio.m4a'), audio_only=True)
     import grade as grading
     g = grading.project_grade(d)
@@ -467,8 +489,9 @@ def cmd_finalize_cut(a):
     if a.crop:
         cuts['crop'] = a.crop
     wj(os.path.join(d, 'cuts.json'), cuts)
-    log_status(d, f'final cut prepared: words.json mapped, {n} card frames')
-    print(json.dumps({'words': 'words.json', 'audio': 'build/cut_audio.m4a', 'card_frames': n}))
+    log_status(d, f'final cut prepared: {"card frames only" if a.frames_only else "words.json mapped"}, {n} card frames')
+    print(json.dumps({'words': 'unchanged' if a.frames_only else 'words.json', 'words_backup': out_words,
+                      'audio': 'build/cut_audio.m4a', 'card_frames': n}))
 
 
 def cmd_crop_preview(a):
@@ -741,7 +764,11 @@ def main():
     s = sp.add_parser('finalize-cut', help='Mode B: words, audio and card frames for the approved cut'); s.add_argument('slug')
     s.add_argument('--words', default='words_raw.json'); s.add_argument('--crop')
     s.add_argument('--full-frame', action='store_true', help='V2 layouts: full 1080x1920 card frames (cropped live per layout)')
+    s.add_argument('--frames-only', action='store_true', help='only (re)make card frames + cut audio; keep words.json')
     s.set_defaults(f=cmd_finalize_cut)
+    s = sp.add_parser('accept', help='acceptance checks: captions, shaping, RTL, clipping, overlap, finance, assets, export, audio, determinism')
+    s.add_argument('slug'); s.add_argument('--video', help='e.g. exports/v002.mp4 (default: latest render)')
+    s.add_argument('--no-determinism', action='store_true'); s.set_defaults(f=cmd_accept)
     s = sp.add_parser('align', help='Mode B: time an approved clean script'); s.add_argument('slug')
     s.add_argument('--script', default='script_clean.txt'); s.add_argument('--words', default='words.json'); s.set_defaults(f=cmd_align)
     s = sp.add_parser('brands', help='list brand presets, styles and transitions'); s.set_defaults(f=cmd_brands)

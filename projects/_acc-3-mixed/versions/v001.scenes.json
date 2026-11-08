@@ -1,0 +1,299 @@
+{
+ "mode": "B",
+ "brand": "whiteboard",
+ "words": "words.json",
+ "audio": "build/cut_audio.m4a",
+ "captions": true,
+ "caption_style": "highlight",
+ "caption_keywords": [
+  "testing",
+  "plan",
+  "KPIs",
+  "BUDGET"
+ ],
+ "scenes": [
+  {
+   "id": "hook",
+   "layout": "top",
+   "style": "kinetic",
+   "elements": [
+    {
+     "type": "statcard",
+     "label": "ads budget",
+     "value": 50000,
+     "tone": "neutral",
+     "x": 540,
+     "y": 120,
+     "size": 84,
+     "in": "50",
+     "anim": "rise"
+    },
+    {
+     "type": "kinetic",
+     "from": "ما",
+     "count": 5,
+     "emphasis": [
+      "تحرقهمش"
+     ],
+     "intensity": "high",
+     "size": 86,
+     "w": 940,
+     "x": 540,
+     "y": 430,
+     "color": "red"
+    }
+   ]
+  },
+  {
+   "id": "mistake",
+   "start": "أكتر خطأ",
+   "style": "whiteboard",
+   "elements": [
+    {
+     "type": "text",
+     "text": "معظم الميزانية",
+     "size": 64,
+     "weight": 900,
+     "x": 540,
+     "y": 110,
+     "in": "معظم",
+     "anim": "fade"
+    },
+    {
+     "type": "hand_arrow",
+     "x": 540,
+     "y": 200,
+     "dx": 0,
+     "dy": 150,
+     "bend": 30,
+     "color": "blue",
+     "in": "على"
+    },
+    {
+     "type": "text",
+     "text": "creative واحد",
+     "size": 78,
+     "weight": 900,
+     "color": "red",
+     "x": 540,
+     "y": 440,
+     "in": "creative",
+     "anim": "blur-in"
+    },
+    {
+     "type": "circle_mark",
+     "x": 540,
+     "y": 440,
+     "rx": 300,
+     "ry": 95,
+     "color": "red",
+     "width": 7,
+     "in": "عاجبه"
+    }
+   ]
+  },
+  {
+   "id": "fail",
+   "start": "فلو",
+   "style": "whiteboard",
+   "layout": "pip-right",
+   "elements": [
+    {
+     "type": "text",
+     "text": "الإعلان فشل… المشكلة فين؟",
+     "size": 60,
+     "weight": 900,
+     "x": 540,
+     "y": 60,
+     "in": "فشل",
+     "anim": "fade"
+    },
+    {
+     "type": "flow",
+     "x": 540,
+     "y": 170,
+     "direction": "down",
+     "box_w": 520,
+     "box_h": 120,
+     "gap": 70,
+     "nodes": [
+      {
+       "label": "audience؟",
+       "color": "blue",
+       "in": "audience"
+      },
+      {
+       "label": "offer؟",
+       "color": "blue",
+       "in": "offer"
+      },
+      {
+       "label": "creative angle؟",
+       "color": "blue",
+       "in": "angle"
+      }
+     ]
+    },
+    {
+     "type": "pill",
+     "text": "مفيش اختبار بيفصل ما بينهم",
+     "color": "red",
+     "x": 540,
+     "y": 900,
+     "size": 46,
+     "in": "اختبار",
+     "anim": "rise"
+    }
+   ]
+  },
+  {
+   "id": "plan",
+   "start": "قبل ما",
+   "style": "kinetic",
+   "layout": "top",
+   "transition": "flash",
+   "elements": [
+    {
+     "type": "kinetic",
+     "from": "اعمل",
+     "count": 3,
+     "emphasis": [
+      "plan."
+     ],
+     "intensity": "high",
+     "size": 110,
+     "w": 940,
+     "x": 540,
+     "y": 330
+    }
+   ]
+  },
+  {
+   "id": "angles",
+   "start": "يعني لو",
+   "layout": "pip-left",
+   "elements": [
+    {
+     "type": "pill",
+     "text": "جزء محدود من الميزانية",
+     "color": "blue",
+     "x": 540,
+     "y": 120,
+     "size": 48,
+     "in": "محدود",
+     "anim": "rise"
+    },
+    {
+     "type": "kinetic",
+     "from": "three",
+     "count": 3,
+     "emphasis": [
+      "three"
+     ],
+     "intensity": "medium",
+     "size": 100,
+     "w": 900,
+     "x": 540,
+     "y": 420
+    }
+   ]
+  },
+  {
+   "id": "rules",
+   "start": "ثبت",
+   "style": "whiteboard",
+   "transition": "blur",
+   "elements": [
+    {
+     "type": "text",
+     "text": "قبل التشغيل",
+     "size": 66,
+     "weight": 900,
+     "x": 540,
+     "y": 70,
+     "in": "التشغيل",
+     "anim": "fade"
+    },
+    {
+     "type": "underline",
+     "x": 540,
+     "y": 120,
+     "w": 360,
+     "color": "red",
+     "in": "التشغيل"
+    },
+    {
+     "type": "numbered",
+     "x": 540,
+     "y": 260,
+     "gap": 150,
+     "steps": [
+      {
+       "text": "ثبت المتغيرات",
+       "in": "ثبت"
+      },
+      {
+       "text": "حدد KPIs",
+       "in": "KPIs"
+      },
+      {
+       "text": "stop rules",
+       "in": "وstop"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "payoff",
+   "start": "كده",
+   "style": "whiteboard",
+   "layout": "bottom",
+   "transition": "blur",
+   "elements": [
+    {
+     "type": "flow",
+     "x": 540,
+     "y": 300,
+     "direction": "rtl",
+     "box_w": 280,
+     "box_h": 120,
+     "gap": 60,
+     "nodes": [
+      {
+       "label": "الميزانية",
+       "color": "ink",
+       "in": "الميزانية"
+      },
+      {
+       "label": "مبيعات",
+       "color": "green",
+       "in": "مبيعات"
+      },
+      {
+       "label": "+ معلومات",
+       "color": "blue",
+       "in": "معلومات"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "cta",
+   "start": "لو عايز",
+   "layout": "top",
+   "elements": [
+    {
+     "type": "cta",
+     "keyword": "BUDGET",
+     "magnet": "مثال عملي لـ testing plan",
+     "x": 540,
+     "y": 160,
+     "in": "اكتبلي",
+     "anim": "spring"
+    }
+   ]
+  }
+ ]
+}

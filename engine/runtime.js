@@ -121,7 +121,10 @@
     return out;
   }
 
-  const maskOK = t => { if (!D.cut) return false; const q = D.maskq[Math.floor(t * D.fps + 1e-6)]; return q === undefined || q >= D.maskMin; };
+  const maskOK = t => { if (!D.cut) return false;
+    const sc = D.scenes.find(s => t >= s.start && t < s.end);
+    if (sc && sc.cutok !== undefined) return sc.cutok;          // decided per scene by the build (no flicker)
+    const q = D.maskq[Math.floor(t * D.fps + 1e-6)]; return q === undefined || q >= D.maskMin; };
   function camZoom(sc, t) {
     let z = 1;
     if (!sc) return z;
@@ -232,7 +235,10 @@
     // placement follows the scene's target layout, so the caption never rides a shrinking card
     const tg = rc.target || rc, big = tg.h >= 600;
     cap.style.left = (big ? rc.x + rc.w / 2 : 540) + 'px';
-    cap.style.top = (big ? rc.y + rc.h - 110 : 1560) + 'px';
+    const mb = (D.cap && D.cap.max_bottom) || 0;                // keep captions above platform buttons/captions
+    let top = big ? rc.y + rc.h - 110 : 1560;
+    if (mb && big) top = Math.min(top, mb - 120);
+    cap.style.top = top + 'px';
     if (style === 'clean') { cap.style.background = 'none'; cap.style.textShadow = '0 3px 0 #000, 0 0 14px rgba(0,0,0,.7)'; }
     // light-on-dark presets sitting on the page (not on the video card) switch to dark text for contrast
     if (!big && (style === 'kinetic' || style === 'minimal' || style === 'clean')) { cap.style.color = '#111'; cap.style.textShadow = 'none'; }

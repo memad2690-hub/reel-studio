@@ -122,6 +122,7 @@ def job_args(cmd, slug, data, mode):
     table = {'build': ['build', slug], 'storyboard': ['storyboard', slug], 'plan': ['plan', slug, '--intensity', I],
              'render-draft': ['render', slug, '--draft'], 'render': ['render', slug], 'segment': ['segment', slug],
              'grade-preview': ['grade-preview', slug], 'finalize-cut': ['finalize-cut', slug, '--full-frame'],
+             'card-frames': ['finalize-cut', slug, '--full-frame', '--frames-only'], 'accept': ['accept', slug],
              'roughcut': ['roughcut', slug], 'stt': ['stt', slug, 'audio/vo.mp3' if mode == 'A' else 'raw/raw.mp4']}
     return table.get(cmd)
 
