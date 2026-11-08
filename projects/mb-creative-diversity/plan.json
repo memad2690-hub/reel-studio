@@ -1,0 +1,206 @@
+{
+  "intensity": "medium",
+  "budget": {
+    "graphic_scenes": 10,
+    "min_scene": 4.0,
+    "duration": 71.5
+  },
+  "segments": [
+    {
+      "start": 0.11,
+      "end": 5.47,
+      "text": "بقولك إيه، إزاي تعرف المحتوى اللي بتطلعه عندك في الإعلانات نفس النوع ولا مختلف.",
+      "w0": 0,
+      "w1": 13,
+      "lang": "ar",
+      "numbers": [],
+      "keywords": [
+        "إعلانات",
+        "الإعلانات"
+      ],
+      "role": "hook",
+      "confidence": 0.75,
+      "reason": "opening sentence",
+      "style": "editorial",
+      "component": "headline+statcard",
+      "treatment_reason": "hook: earn the first 3 seconds"
+    },
+    {
+      "start": 5.8,
+      "end": 13.81,
+      "text": "يعني أنت ممكن تكون مشغل عشر إعلانات على Meta بس Meta شايفاهم تقريبا نفس الإعلان. ليه ده بيحصل؟ عشان أنت مجرد غيرت الصورة أو غيرت",
+      "w0": 14,
+      "w1": 38,
+      "lang": "mixed",
+      "numbers": [
+        {
+          "value": 10.0,
+          "i0": 5,
+          "i1": 5,
+          "start": 7.48,
+          "end": 7.76,
+          "text": "عشر",
+          "kind": "count"
+        }
+      ],
+      "keywords": [
+        "Meta",
+        "hook",
+        "إعلانات"
+      ],
+      "role": "setup",
+      "confidence": 0.35,
+      "reason": "no strong cue",
+      "style": "talking-head",
+      "component": null,
+      "treatment_reason": "low confidence → clean talking head"
+    },
+    {
+      "start": 13.87,
+      "end": 18.55,
+      "text": "اللون أو كتبت hook جديد. ده مش معناه إنك عملت three creative angles مختلفين.",
+      "w0": 39,
+      "w1": 52,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "angles",
+        "creative",
+        "three"
+      ],
+      "role": "emphasis",
+      "confidence": 0.5,
+      "reason": "short emphatic line (مش)",
+      "style": "kinetic",
+      "component": "kinetic",
+      "treatment_reason": "strong line → kinetic words"
+    },
+    {
+      "start": 18.87,
+      "end": 39.94,
+      "text": "هوريك حاجة جوة Ads Manager ناس كتير مش بتبص لها اسمها Creative Diversity. Creative Diversity ده metric بيساعدك تفهم قد إيه الـ creatives عندك متنوعة. تفتح Ads Manager تدخل على Columns وبعدها Customize Columns وبعد كده تدور على Creative Diversity. لو متاحة عندك في الـ account ضيفها. هتشوف",
+      "w0": 53,
+      "w1": 100,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "Ads",
+        "Columns",
+        "Creative",
+        "Customize",
+        "Diversity",
+        "High"
+      ],
+      "role": "setup",
+      "confidence": 0.35,
+      "reason": "no strong cue",
+      "style": "talking-head",
+      "component": null,
+      "treatment_reason": "low confidence → clean talking head"
+    },
+    {
+      "start": 39.98,
+      "end": 44.73,
+      "text": "تصنيفات زي Low وMedium وHigh. خد بالك High مش معناها إن الإعلان هيبيع أكتر.",
+      "w0": 101,
+      "w1": 114,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "High"
+      ],
+      "role": "emphasis",
+      "confidence": 0.5,
+      "reason": "short emphatic line (مش)",
+      "style": "kinetic",
+      "component": "kinetic",
+      "treatment_reason": "strong line → kinetic words"
+    },
+    {
+      "start": 45.05,
+      "end": 50.89,
+      "text": "هو بس معناها إن أنت عندك variation كتير أو عندك angles كتير متنوعة",
+      "w0": 115,
+      "w1": 127,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "angles",
+        "creatives",
+        "variation"
+      ],
+      "role": "setup",
+      "confidence": 0.35,
+      "reason": "no strong cue",
+      "style": "talking-head",
+      "component": null,
+      "treatment_reason": "low confidence → clean talking head"
+    },
+    {
+      "start": 50.97,
+      "end": 55.49,
+      "text": "من الـ creatives اللي بتنزلها. فالتنوع الحقيقي مش إنك تغير لون الخلفية.",
+      "w0": 128,
+      "w1": 139,
+      "lang": "ar",
+      "numbers": [],
+      "keywords": [],
+      "role": "conclusion",
+      "confidence": 0.6,
+      "reason": "conclusion cue: الحقيقي",
+      "style": "kinetic",
+      "component": "kinetic",
+      "treatment_reason": "payoff → kinetic words"
+    },
+    {
+      "start": 55.59,
+      "end": 68.65,
+      "text": "التنوع إنك تغير بس الـ angle نفسها. إعلان بيحل مشكلة. إعلان بيشرح ميزة. إعلان بيرد على اعتراض عند عميل. إعلان بيرد على تساؤل مختلف. قبل ما تطلع عشر إعلانات شبه بعض جرب three angles مختلفين بجد.",
+      "w0": 140,
+      "w1": 175,
+      "lang": "mixed",
+      "numbers": [
+        {
+          "value": 10.0,
+          "i0": 3,
+          "i1": 3,
+          "start": 65.327,
+          "end": 65.567,
+          "text": "عشر",
+          "kind": "count"
+        }
+      ],
+      "keywords": [
+        "angle",
+        "angles",
+        "three",
+        "إعلانات"
+      ],
+      "role": "setup",
+      "confidence": 0.35,
+      "reason": "no strong cue",
+      "style": "talking-head",
+      "component": null,
+      "treatment_reason": "low confidence → clean talking head"
+    },
+    {
+      "start": 68.94,
+      "end": 71.58,
+      "text": "اكتبلي ANGLES في الـ comment لو عايز أمثلة عملية.",
+      "w0": 176,
+      "w1": 184,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "ANGLES",
+        "comment"
+      ],
+      "role": "cta",
+      "confidence": 0.95,
+      "reason": "comment keyword + call-to-action verb",
+      "style": "editorial",
+      "component": "cta",
+      "treatment_reason": "call to action → high-contrast keyword"
+    }
+  ]
+}

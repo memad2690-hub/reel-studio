@@ -1,0 +1,225 @@
+{
+  "mode": "B",
+  "brand": "media-buying",
+  "words": "words.json",
+  "audio": "build/cut_audio.m4a",
+  "captions": true,
+  "caption_style": "highlight",
+  "caption_keywords": [
+    "ANGLES",
+    "Ads",
+    "Columns",
+    "Creative",
+    "Customize",
+    "Diversity",
+    "High",
+    "Meta"
+  ],
+  "scenes": [
+    {
+      "id": "hook-1",
+      "title": "hook (0.75)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "بقولك",
+          "count": 10,
+          "intensity": "medium",
+          "emphasis": [
+            "الإعلانات"
+          ],
+          "x": 540,
+          "y": 380,
+          "size": 92,
+          "w": 920
+        }
+      ],
+      "_plan": {
+        "role": "hook",
+        "confidence": 0.75,
+        "reason": "opening sentence",
+        "treatment": "hook: earn the first 3 seconds"
+      },
+      "layout": "top"
+    },
+    {
+      "id": "setup-2",
+      "title": "setup (0.35)",
+      "elements": [],
+      "_plan": {
+        "role": "setup",
+        "confidence": 0.35,
+        "reason": "no strong cue",
+        "treatment": "low confidence → clean talking head"
+      },
+      "start": {
+        "at": "يعني",
+        "after": 5.5
+      },
+      "layout": "hero"
+    },
+    {
+      "id": "emphasis-3",
+      "title": "emphasis (0.5)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "اللون",
+          "count": 5,
+          "intensity": "medium",
+          "emphasis": [
+            "مش"
+          ],
+          "x": 540,
+          "y": 380,
+          "size": 92,
+          "w": 920
+        }
+      ],
+      "_plan": {
+        "role": "emphasis",
+        "confidence": 0.5,
+        "reason": "short emphatic line (مش)",
+        "treatment": "strong line → kinetic words"
+      },
+      "start": {
+        "at": "اللون",
+        "after": 13.57
+      },
+      "layout": "bottom"
+    },
+    {
+      "id": "setup-4",
+      "title": "setup (0.35)",
+      "elements": [],
+      "_plan": {
+        "role": "setup",
+        "confidence": 0.35,
+        "reason": "no strong cue",
+        "treatment": "low confidence → clean talking head"
+      },
+      "start": {
+        "at": "هوريك",
+        "after": 18.57
+      },
+      "layout": "hero"
+    },
+    {
+      "id": "emphasis-5",
+      "title": "emphasis (0.5)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "تصنيفات",
+          "count": 5,
+          "intensity": "medium",
+          "emphasis": [
+            "مش"
+          ],
+          "x": 540,
+          "y": 380,
+          "size": 92,
+          "w": 920
+        }
+      ],
+      "_plan": {
+        "role": "emphasis",
+        "confidence": 0.5,
+        "reason": "short emphatic line (مش)",
+        "treatment": "strong line → kinetic words"
+      },
+      "start": {
+        "at": "تصنيفات",
+        "after": 39.68
+      },
+      "layout": "pip-right"
+    },
+    {
+      "id": "setup-6",
+      "title": "setup (0.35)",
+      "elements": [],
+      "_plan": {
+        "role": "setup",
+        "confidence": 0.35,
+        "reason": "no strong cue",
+        "treatment": "low confidence → clean talking head"
+      },
+      "start": {
+        "at": "هو",
+        "after": 44.75
+      },
+      "layout": "hero"
+    },
+    {
+      "id": "conclusion-7",
+      "title": "conclusion (0.6)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "من",
+          "count": 5,
+          "intensity": "medium",
+          "emphasis": [
+            "مش"
+          ],
+          "x": 540,
+          "y": 380,
+          "size": 92,
+          "w": 920
+        }
+      ],
+      "_plan": {
+        "role": "conclusion",
+        "confidence": 0.6,
+        "reason": "conclusion cue: الحقيقي",
+        "treatment": "payoff → kinetic words"
+      },
+      "start": {
+        "at": "من",
+        "after": 50.67
+      },
+      "layout": "hero"
+    },
+    {
+      "id": "setup-8",
+      "title": "setup (0.35)",
+      "elements": [],
+      "_plan": {
+        "role": "setup",
+        "confidence": 0.35,
+        "reason": "no strong cue",
+        "treatment": "low confidence → clean talking head"
+      },
+      "start": {
+        "at": "التنوع",
+        "after": 55.29
+      },
+      "layout": "hero"
+    },
+    {
+      "id": "cta-9",
+      "title": "cta (0.95)",
+      "elements": [
+        {
+          "type": "cta",
+          "keyword": "ANGLES",
+          "x": 540,
+          "y": 160,
+          "in": "اكتبلي",
+          "anim": "spring"
+        }
+      ],
+      "_plan": {
+        "role": "cta",
+        "confidence": 0.95,
+        "reason": "comment keyword + call-to-action verb",
+        "treatment": "call to action → high-contrast keyword"
+      },
+      "start": {
+        "at": "اكتبلي",
+        "after": 68.64
+      },
+      "layout": "top"
+    }
+  ]
+}

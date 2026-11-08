@@ -1,0 +1,150 @@
+{
+  "intensity": "medium",
+  "budget": {
+    "graphic_scenes": 7,
+    "min_scene": 4.0,
+    "duration": 50.5
+  },
+  "segments": [
+    {
+      "start": 0.13,
+      "end": 4.7,
+      "text": "بص لو عندك 50 ألف جنيه ads budget ما تحرقهمش على إعلان واحد. أكتر خطأ",
+      "w0": 0,
+      "w1": 14,
+      "lang": "mixed",
+      "numbers": [
+        {
+          "value": 50000.0,
+          "i0": 3,
+          "i1": 4,
+          "start": 0.833,
+          "end": 1.273,
+          "text": "50 ألف",
+          "kind": "money"
+        },
+        {
+          "value": 1.0,
+          "i0": 12,
+          "i1": 12,
+          "start": 3.253,
+          "end": 3.573,
+          "text": "واحد.",
+          "kind": "count"
+        }
+      ],
+      "keywords": [
+        "ads",
+        "budget"
+      ],
+      "role": "hook",
+      "confidence": 0.75,
+      "reason": "opening sentence",
+      "style": "editorial",
+      "component": "headline+statcard",
+      "treatment_reason": "hook: earn the first 3 seconds"
+    },
+    {
+      "start": 4.88,
+      "end": 24.42,
+      "text": "بشوفه إن صاحب الـ brand بيصرف معظم الميزانية بتاعته على creative واحد لأنه عاجبه أو لأنه ما عندوش غيره. فلو الإعلان فشل، المشكلة ساعتها مش في الـ audience ولا في الـ offer ولا الـ creative angle. أنت أصلًا ما عندكش اختبار بيفصل ما بينهم. يعني أنت ما عندكش حاجة غير هو creative واحد، فإنت هتقدر تحدد بناء على إيه؟ قبل ما تصرف اعمل testing plan.",
+      "w0": 15,
+      "w1": 79,
+      "lang": "mixed",
+      "numbers": [
+        {
+          "value": 1.0,
+          "i0": 13,
+          "i1": 13,
+          "start": 8.86,
+          "end": 9.14,
+          "text": "واحد",
+          "kind": "count"
+        },
+        {
+          "value": 1.0,
+          "i0": 8,
+          "i1": 8,
+          "start": 20.887,
+          "end": 21.107,
+          "text": "واحد،",
+          "kind": "count"
+        }
+      ],
+      "keywords": [
+        "angle",
+        "audience",
+        "brand",
+        "creative",
+        "offer",
+        "plan"
+      ],
+      "role": "setup",
+      "confidence": 0.35,
+      "reason": "no strong cue",
+      "style": "talking-head",
+      "component": null,
+      "treatment_reason": "low confidence → clean talking head"
+    },
+    {
+      "start": 24.71,
+      "end": 31.79,
+      "text": "يعني لو عندك حملة مستقرة بالفعل ممكن تخصص جزء محدود من الميزانية علشان تختبر مثلًا three angles مختلفين.",
+      "w0": 80,
+      "w1": 97,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "angles",
+        "three"
+      ],
+      "role": "example",
+      "confidence": 0.6,
+      "reason": "example cue: مثلا",
+      "style": "editorial",
+      "component": "pill+statcard",
+      "treatment_reason": "example → labelled مثال card"
+    },
+    {
+      "start": 32.1,
+      "end": 43.02,
+      "text": "ثبت متغيرات تقدر تثبتها وحدد KPIs وstop rules قبل التشغيل. كده الميزانية مش بس بتجيب مبيعات، دي كمان بتشتريلك معلومات تساعدك تاخد القرار اللي بعده هيبقى عامل ازاي.",
+      "w0": 98,
+      "w1": 125,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "KPIs",
+        "rules",
+        "stop",
+        "مبيعات"
+      ],
+      "role": "setup",
+      "confidence": 0.35,
+      "reason": "no strong cue",
+      "style": "talking-head",
+      "component": null,
+      "treatment_reason": "low confidence → clean talking head"
+    },
+    {
+      "start": 43.33,
+      "end": 50.59,
+      "text": "لو عايز مثال عملي لميزانية تقدر تعملها أو testing plan تقدر تعملها، اكتبلي BUDGET وهبعتلك مثال تقدر تشتغل عليه.",
+      "w0": 126,
+      "w1": 144,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "BUDGET",
+        "plan",
+        "testing"
+      ],
+      "role": "cta",
+      "confidence": 0.95,
+      "reason": "comment keyword + call-to-action verb",
+      "style": "editorial",
+      "component": "cta",
+      "treatment_reason": "call to action → high-contrast keyword"
+    }
+  ]
+}

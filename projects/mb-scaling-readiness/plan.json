@@ -1,0 +1,156 @@
+{
+  "intensity": "medium",
+  "budget": {
+    "graphic_scenes": 6,
+    "min_scene": 4.0,
+    "duration": 47.9
+  },
+  "segments": [
+    {
+      "start": 0.11,
+      "end": 4.83,
+      "text": "ممكن brand يقول لي: \"معايا budget كبيرة للـ ads.\" وبرضو ما نبقاش مناسبين نشتغل مع بعض.",
+      "w0": 0,
+      "w1": 15,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "ads",
+        "brand",
+        "budget"
+      ],
+      "role": "hook",
+      "confidence": 0.75,
+      "reason": "opening sentence",
+      "style": "editorial",
+      "component": "headline+statcard",
+      "treatment_reason": "hook: earn the first 3 seconds"
+    },
+    {
+      "start": 5.11,
+      "end": 9.43,
+      "text": "لإن حجم الـ budget مش هو اللي بيحدد إذا كان الـ business جاهز للـ scaling أصلًا ولا لأ.",
+      "w0": 16,
+      "w1": 33,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "budget",
+        "business",
+        "scaling"
+      ],
+      "role": "setup",
+      "confidence": 0.35,
+      "reason": "no strong cue",
+      "style": "talking-head",
+      "component": null,
+      "treatment_reason": "low confidence → clean talking head"
+    },
+    {
+      "start": 9.72,
+      "end": 15.85,
+      "text": "تخيل brand عنده stock أصلًا هو limited، ومش عارف الـ margins بتاعته إيه، ولسه مفيش tracking واضح للـ e-commerce بتاعه.",
+      "w0": 34,
+      "w1": 53,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "brand",
+        "e-commerce",
+        "limited",
+        "margin",
+        "margins",
+        "stock"
+      ],
+      "role": "example",
+      "confidence": 0.6,
+      "reason": "example cue: تخيل",
+      "style": "editorial",
+      "component": "pill+statcard",
+      "treatment_reason": "example → labelled مثال card"
+    },
+    {
+      "start": 16.15,
+      "end": 20.93,
+      "text": "فقبل ما نزود الصرف محتاجين نجاوب على أصلًا هل المخزون يستحمل؟ هل Contribution",
+      "w0": 54,
+      "w1": 66,
+      "lang": "ar",
+      "numbers": [],
+      "keywords": [
+        "Contribution",
+        "contribution",
+        "positive"
+      ],
+      "role": "setup",
+      "confidence": 0.35,
+      "reason": "no strong cue",
+      "style": "talking-head",
+      "component": null,
+      "treatment_reason": "low confidence → clean talking head"
+    },
+    {
+      "start": 20.95,
+      "end": 25.61,
+      "text": "أصلًا is positive؟ يعني هل إحنا في الأول وفي الآخر لما نطلع إعلانات بنطلع عليها ربح ولا لأ؟",
+      "w0": 67,
+      "w1": 84,
+      "lang": "ar",
+      "numbers": [],
+      "keywords": [
+        "إعلانات",
+        "ربح"
+      ],
+      "role": "comparison",
+      "confidence": 0.6,
+      "reason": "either/or question",
+      "style": "split",
+      "component": "versus",
+      "treatment_reason": "two options → split-screen"
+    },
+    {
+      "start": 25.91,
+      "end": 37.21,
+      "text": "هل الـ tracking validated أو موثوق فيه؟ وهل فيه creatives جديدة جاهزة إن إحنا نعملها testing؟ الـ scaling الحقيقي مش إنك تصرف فلوس أكتر. الـ scaling إنك تعرف امتى زيادة الصرف ممكن تبقى قرار منطقي.",
+      "w0": 85,
+      "w1": 119,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "creatives",
+        "scaling",
+        "testing",
+        "tracking",
+        "validated"
+      ],
+      "role": "conclusion",
+      "confidence": 0.6,
+      "reason": "conclusion cue: الحقيقي",
+      "style": "kinetic",
+      "component": "kinetic",
+      "treatment_reason": "payoff → kinetic words"
+    },
+    {
+      "start": 37.51,
+      "end": 47.99,
+      "text": "لو عندك brand وبتفكر تزود الـ ads budget، ابعت لي SCALE، نوع المنتج بتاعك والميزانية الحالية بتاعتك عاملة إزاي، الـ ads budget عاملة إزاي، ونقدر نتكلم نشوف نقدر أصلًا نعمل scaling ولا لأ.",
+      "w0": 120,
+      "w1": 152,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "SCALE",
+        "ads",
+        "brand",
+        "budget",
+        "scaling"
+      ],
+      "role": "cta",
+      "confidence": 0.95,
+      "reason": "comment keyword + call-to-action verb",
+      "style": "editorial",
+      "component": "cta",
+      "treatment_reason": "call to action → high-contrast keyword"
+    }
+  ]
+}

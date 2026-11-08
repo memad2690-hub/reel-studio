@@ -473,6 +473,37 @@ def cmd_align(a):
 
 
 # ------------------------------------------------------------------ library
+def cmd_plan(a):
+    """AI director, first pass: words.json → plan.md / plan.json / scenes.draft.json (never overwrites scenes.json
+    unless --apply, which first backs the current one up)."""
+    import planner
+    d = pdir(a.slug)
+    words = load_words(os.path.join(d, 'words.json'))
+    if not words:
+        sys.exit('no words.json yet (run stt/finalize-cut/align first)')
+    proj = project(a.slug)
+    pl = planner.plan(words, a.intensity)
+    wj(os.path.join(d, 'plan.json'), pl)
+    with open(os.path.join(d, 'plan.md'), 'w', encoding='utf-8') as f:
+        f.write(planner.plan_markdown(pl, f'— {proj.get("title", a.slug)}'))
+    draft = planner.draft_scenes(pl, words, brand=a.brand, cta_keyword=proj.get('cta_keyword'))
+    wj(os.path.join(d, 'scenes.draft.json'), draft)
+    out = {'segments': len(pl['segments']), 'graphic_scenes': sum(1 for x in pl['segments'] if x['style'] != 'talking-head'),
+           'plan': 'plan.md', 'draft': 'scenes.draft.json'}
+    if a.apply:
+        cur = os.path.join(d, 'scenes.json')
+        if os.path.exists(cur):
+            bak = os.path.join(d, f'scenes.prev-{dt.datetime.now().strftime("%Y%m%d-%H%M%S")}.json')
+            shutil.copy(cur, bak); out['backup'] = os.path.basename(bak)
+        clean = json.loads(json.dumps(draft))
+        for sc in clean['scenes']:
+            sc.pop('_plan', None)
+        wj(cur, clean); out['applied'] = True
+    log_status(d, f'plan ({a.intensity}): {out["segments"]} segments, {out["graphic_scenes"]} with graphics'
+                  + (' — applied to scenes.json' if a.apply else ' — draft only'))
+    print(json.dumps(out, ensure_ascii=False))
+
+
 def cmd_library(a):
     tech = rj(os.path.join(LIB, 'techniques.json'), [])
     refs = rj(os.path.join(LIB, 'references.json'), [])
@@ -567,6 +598,10 @@ def main():
     s.set_defaults(f=cmd_finalize_cut)
     s = sp.add_parser('align', help='Mode B: time an approved clean script'); s.add_argument('slug')
     s.add_argument('--script', default='script_clean.txt'); s.add_argument('--words', default='words.json'); s.set_defaults(f=cmd_align)
+    s = sp.add_parser('plan', help='AI director first pass: plan.md + scenes.draft.json from words.json')
+    s.add_argument('slug'); s.add_argument('--intensity', choices=['low', 'medium', 'high'], default='medium')
+    s.add_argument('--brand', default='media-buying'); s.add_argument('--apply', action='store_true')
+    s.set_defaults(f=cmd_plan)
     s = sp.add_parser('library', help='techniques and references'); s.add_argument('action', choices=['list', 'show', 'add-ref'])
     s.add_argument('--id'); s.add_argument('--url'); s.add_argument('--title'); s.add_argument('--creator')
     s.add_argument('--notes'); s.add_argument('--tech'); s.set_defaults(f=cmd_library)

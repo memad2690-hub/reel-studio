@@ -174,3 +174,15 @@ Built `engine/fx.py`: `kinetic` (exact spoken words, per-word timing, RTL wrap, 
 (box, highlight, clean, kinetic, editorial, energy, minimal) with an active-word highlight driven by word times.
 Gallery `_demo-styles` (draft render 1368 frames in 79 s). Tests: 40 passing.
 Deferred to milestone 5 (needs segmentation): text behind the speaker.
+
+### Milestone 4 — AI editing director, first pass (2026-11-08)
+`engine/planner.py` + `reel.py plan`: sentences → roles (hook, data, process, comparison, contrast, emphasis, example,
+conclusion, cta, setup) with confidence and reason; Egyptian-Arabic + digit number parser (money / percent / ratio / count,
+e.g. "خمسة وعشرين ألف" = 25,000, "عشرين في المية" = 20%, "بـ5 آلاف" = 5,000); pacing presets low/medium/high
+(min scene length, graphic-scene budget per minute, layout rotation, caption preset); merging rules (same-role
+neighbours, ordinal lists across explanation sentences, short scenes fold into plain neighbours without stretching
+visuals); draft scenes with statcards (heard numbers only), numbered lists, versus (either/or), kinetic lines, CTA.
+Output `plan.md` / `plan.json` / `scenes.draft.json`; `--apply` backs up `scenes.json` first.
+Evaluated on the six real reels (plans in each project). Known limits: step names from Arabic-only sentences are rough
+(Claude rewrites them); comparisons need "ولا" or "الأولاني/التاني"; calculations are drafted as stat cards, not equations.
+Tests: 46 passing (6 new).

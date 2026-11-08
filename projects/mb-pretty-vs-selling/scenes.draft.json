@@ -1,0 +1,133 @@
+{
+  "mode": "B",
+  "brand": "media-buying",
+  "words": "words.json",
+  "audio": "build/cut_audio.m4a",
+  "captions": true,
+  "caption_style": "highlight",
+  "caption_keywords": [
+    "Attention",
+    "Reason",
+    "Relevance",
+    "buy",
+    "conversion",
+    "design",
+    "typography",
+    "إعلانات"
+  ],
+  "scenes": [
+    {
+      "id": "comparison-1",
+      "title": "comparison (0.55)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "مين",
+          "count": 6,
+          "intensity": "medium",
+          "emphasis": [
+            "الإعلانات"
+          ],
+          "x": 540,
+          "y": 380,
+          "size": 92,
+          "w": 920
+        }
+      ],
+      "_plan": {
+        "role": "comparison",
+        "confidence": 0.55,
+        "reason": "first/second option cue",
+        "treatment": "two options → split-screen"
+      },
+      "layout": "top"
+    },
+    {
+      "id": "contrast-2",
+      "title": "contrast (0.6)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "الغلطة",
+          "count": 9,
+          "intensity": "medium",
+          "emphasis": [
+            "مش"
+          ],
+          "x": 540,
+          "y": 380,
+          "size": 92,
+          "w": 920
+        }
+      ],
+      "_plan": {
+        "role": "contrast",
+        "confidence": 0.6,
+        "reason": "starts with الغلطة",
+        "treatment": "turn in the argument → kinetic words"
+      },
+      "start": {
+        "at": "الغلطة",
+        "after": 12.4
+      },
+      "layout": "bottom"
+    },
+    {
+      "id": "setup-3",
+      "title": "setup (0.35)",
+      "elements": [],
+      "_plan": {
+        "role": "setup",
+        "confidence": 0.35,
+        "reason": "no strong cue",
+        "treatment": "low confidence → clean talking head"
+      },
+      "start": {
+        "at": "الإعلان",
+        "after": 18.64
+      },
+      "layout": "hero"
+    },
+    {
+      "id": "example-4",
+      "title": "example (0.6)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "لو",
+          "count": 10,
+          "intensity": "medium",
+          "emphasis": [
+            "مش"
+          ],
+          "x": 540,
+          "y": 380,
+          "size": 92,
+          "w": 920
+        },
+        {
+          "type": "pill",
+          "text": "مثال",
+          "color": "blue",
+          "x": 540,
+          "y": 60,
+          "size": 36,
+          "in": {
+            "rel": 0.05
+          }
+        }
+      ],
+      "_plan": {
+        "role": "example",
+        "confidence": 0.6,
+        "reason": "example cue: لو عندك",
+        "treatment": "example → labelled مثال card"
+      },
+      "start": {
+        "at": "لو",
+        "after": 38.95
+      },
+      "layout": "pip-right"
+    }
+  ]
+}

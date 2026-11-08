@@ -17,3 +17,7 @@
 - 2026-11-08T00:40:06+02:00: render v001 1080x1920 51.27s  QA ok
 - 2026-11-08T01:56:35+02:00: approved final v001
 - 2026-11-08T01:56:35+02:00: final approved (v001); build/cf card frames cleared (re-create with finalize-cut)
+- 2026-11-08T12:23:53+02:00: plan (medium): 10 segments, 7 with graphics — draft only
+- 2026-11-08T12:27:20+02:00: plan (medium): 5 segments, 3 with graphics — draft only
+- 2026-11-08T12:27:36+02:00: plan (medium): 5 segments, 3 with graphics — draft only
+- 2026-11-08T12:27:55+02:00: plan (medium): 6 segments, 4 with graphics — draft only

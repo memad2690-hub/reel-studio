@@ -111,3 +111,14 @@ ElevenLabs flow / generation IDs · Versions made (sb/v/rc) + QA · Notes applie
 Tests run + results · Blockers & risks · Exact next action · Approvals still needed
 ```
 Never include the API key.
+
+## V2 editing director (Styles 01–09, milestone 4+)
+After `finalize-cut` (use `--full-frame` for V2 layouts) and `align`:
+1. `python3 reel.py plan <slug> --intensity low|medium|high [--brand media-buying|ceos|whiteboard]` writes
+   `plan.md` (segment, role, confidence, numbers heard, proposed treatment and why), `plan.json`, `scenes.draft.json`.
+   It never touches `scenes.json` unless `--apply` (which first saves `scenes.prev-<time>.json`).
+2. Read `plan.md` like an editor: keep what fits, fix roles, write real step names/labels, upgrade money scenes to an
+   `equation`/`waterfall` when the narration walks through a calculation. Low-confidence segments stay plain talking head.
+3. Every number on screen must be one the speaker said (the planner only drafts heard numbers); illustrative values get a
+   `مثال` pill; the build's finance checks must pass.
+4. Storyboard → approval gate as before. Reference docs: `docs/SCENES.md` (all components), `docs/V2_PLAN.md` (status).

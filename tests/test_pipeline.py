@@ -253,6 +253,70 @@ class FxCheckTests(unittest.TestCase):
         self.assertTrue(all(len(c['wt']) == len(c['text'].split()) for c in caps))
 
 
+class PlannerTests(unittest.TestCase):
+    def nums(self, t):
+        import planner
+        return [(x['value'], x['kind']) for x in planner.numbers(W(t))]
+
+    def test_egyptian_numbers(self):
+        self.assertEqual(self.nums('صرفت خمسة وعشرين ألف جنيه'), [(25000, 'money')])
+        self.assertEqual(self.nums('المبيعات بـ100 ألف'), [(100000, 'money')])
+        self.assertEqual(self.nums('الهامش عشرين في المية'), [(20, 'percent')])
+        self.assertEqual(self.nums('الـ CPA كان مية وخمسين جنيه وبقى تسعين'), [(150, 'money'), (90, 'money')])
+        self.assertEqual(self.nums('عشرة آلاف زيارة ألفين add to cart'), [(10000, 'count'), (2000, 'count')])
+        self.assertEqual(self.nums('على creative واحد من الميزانية'), [(1, 'count')])
+
+    def test_cues_respect_word_boundaries(self):
+        import planner
+        self.assertEqual(planner.has('عاجبه أو لأنه ما عندوش', planner.CUES['process']), [])
+        self.assertTrue(planner.has('أول حاجة الـ hook', planner.CUES['process']))
+
+    def test_single_ordinal_is_not_a_list(self):
+        import planner
+        r = planner.classify({'text': 'أول حاجة لازم تعرفها', 'numbers': []}, 3, 10)
+        self.assertNotEqual(r[0], 'process')
+
+    def test_cta_and_min_scene(self):
+        import planner
+        words = W('مين في الإعلانات دول شكله أغلى؟ ومين بيبيع؟ ' + 'كلام عادي جدا ' * 12 +
+                  'لو عايز الشيت اكتب PROFIT', step=0.5)
+        pl = planner.plan(words, 'medium')
+        self.assertEqual(pl['segments'][-1]['role'], 'cta')
+        for s in pl['segments'][:-1]:
+            self.assertGreaterEqual(s['end'] - s['start'], planner.INTENSITY['medium']['min_scene'] - 0.6)
+
+    def test_draft_numbers_come_from_speech(self):
+        import planner
+        words = W('تخيل الـ brand عنده sales بـ100 ألف جنيه صرف 25 ألف على الـ ads. والمبيعات بتقول كده بقى.', step=0.5)
+        pl = planner.plan(words, 'medium')
+        heard = {x['value'] for s in pl['segments'] for x in s['numbers']}
+        draft = planner.draft_scenes(pl, words)
+        vals = [e['value'] for sc in draft['scenes'] for e in sc['elements'] if 'value' in e]
+        self.assertTrue(vals and set(vals) <= heard, (vals, heard))
+
+
+class PlanCommandTests(Tmp):
+    def test_apply_backs_up_existing_scenes(self):
+        import subprocess as sp
+        slug = '_test-plan-backup'
+        d = os.path.join(ROOT, 'projects', slug)
+        shutil.rmtree(d, ignore_errors=True)
+        try:
+            sp.run([sys.executable, 'reel.py', 'new', slug, '--mode', 'B'], cwd=ROOT, check=True, capture_output=True)
+            with open(os.path.join(d, 'words.json'), 'w', encoding='utf-8') as f:
+                json.dump(W('بص لو عندك 50 ألف جنيه ميزانية ما تحرقهمش. اكتبلي BUDGET'), f, ensure_ascii=False)
+            with open(os.path.join(d, 'scenes.json'), 'w', encoding='utf-8') as f:
+                json.dump({'mode': 'B', 'scenes': [{'id': 'mine'}]}, f)
+            out = json.loads(sp.run([sys.executable, 'reel.py', 'plan', slug, '--apply'], cwd=ROOT, check=True,
+                                    capture_output=True, text=True).stdout.strip().splitlines()[-1])
+            self.assertTrue(out['applied'])
+            bak = json.load(open(os.path.join(d, out['backup'])))
+            self.assertEqual(bak['scenes'][0]['id'], 'mine')
+            self.assertTrue(os.path.exists(os.path.join(d, 'plan.md')))
+        finally:
+            shutil.rmtree(d, ignore_errors=True)
+
+
 class SnapTests(unittest.TestCase):
     def test_snap_to_frames(self):
         import footage

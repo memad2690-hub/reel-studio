@@ -1,0 +1,170 @@
+{
+  "mode": "B",
+  "brand": "media-buying",
+  "words": "words.json",
+  "audio": "build/cut_audio.m4a",
+  "captions": true,
+  "caption_style": "highlight",
+  "caption_keywords": [
+    "AUDIT",
+    "add",
+    "brand",
+    "business",
+    "buyer",
+    "buying",
+    "campaign",
+    "cart"
+  ],
+  "scenes": [
+    {
+      "id": "hook-1",
+      "title": "hook (0.75)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "قبل",
+          "count": 10,
+          "intensity": "medium",
+          "emphasis": [
+            "مش"
+          ],
+          "x": 540,
+          "y": 380,
+          "size": 92,
+          "w": 920
+        }
+      ],
+      "_plan": {
+        "role": "hook",
+        "confidence": 0.75,
+        "reason": "opening sentence",
+        "treatment": "hook: earn the first 3 seconds"
+      },
+      "layout": "top"
+    },
+    {
+      "id": "setup-2",
+      "title": "setup (0.35)",
+      "elements": [],
+      "_plan": {
+        "role": "setup",
+        "confidence": 0.35,
+        "reason": "no strong cue",
+        "treatment": "low confidence → clean talking head"
+      },
+      "start": {
+        "at": "موجودة",
+        "after": 4.24
+      },
+      "layout": "hero"
+    },
+    {
+      "id": "process-3",
+      "title": "process (0.75)",
+      "elements": [
+        {
+          "type": "numbered",
+          "x": 540,
+          "y": 150,
+          "gap": 150,
+          "steps": [
+            {
+              "text": "ناس",
+              "in": "أول"
+            },
+            {
+              "text": "طلب على",
+              "in": "تاني"
+            },
+            {
+              "text": "الـ offer",
+              "in": "تالت"
+            }
+          ]
+        }
+      ],
+      "_plan": {
+        "role": "process",
+        "confidence": 0.75,
+        "reason": "ordinal list (first + later ordinals)",
+        "treatment": "step-by-step → numbered whiteboard"
+      },
+      "start": {
+        "at": "أول",
+        "after": 9.97
+      },
+      "layout": "bottom"
+    },
+    {
+      "id": "emphasis-4",
+      "title": "emphasis (0.5)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "هنا",
+          "count": 6,
+          "intensity": "medium",
+          "emphasis": [
+            "لازم"
+          ],
+          "x": 540,
+          "y": 380,
+          "size": 92,
+          "w": 920
+        }
+      ],
+      "_plan": {
+        "role": "emphasis",
+        "confidence": 0.5,
+        "reason": "short emphatic line (لازم)",
+        "treatment": "strong line → kinetic words"
+      },
+      "start": {
+        "at": "هنا",
+        "after": 25.68
+      },
+      "layout": "pip-right"
+    },
+    {
+      "id": "setup-5",
+      "title": "setup (0.35)",
+      "elements": [],
+      "_plan": {
+        "role": "setup",
+        "confidence": 0.35,
+        "reason": "no strong cue",
+        "treatment": "low confidence → clean talking head"
+      },
+      "start": {
+        "at": "الـ",
+        "after": 30.11
+      },
+      "layout": "hero"
+    },
+    {
+      "id": "cta-6",
+      "title": "cta (0.95)",
+      "elements": [
+        {
+          "type": "cta",
+          "keyword": "AUDIT",
+          "x": 540,
+          "y": 160,
+          "in": "اكتب",
+          "anim": "spring"
+        }
+      ],
+      "_plan": {
+        "role": "cta",
+        "confidence": 0.95,
+        "reason": "comment keyword + call-to-action verb",
+        "treatment": "call to action → high-contrast keyword"
+      },
+      "start": {
+        "at": "لو",
+        "after": 44.52
+      },
+      "layout": "top"
+    }
+  ]
+}

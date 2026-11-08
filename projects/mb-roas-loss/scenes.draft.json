@@ -1,0 +1,240 @@
+{
+  "mode": "B",
+  "brand": "media-buying",
+  "words": "words.json",
+  "audio": "build/cut_audio.m4a",
+  "captions": true,
+  "caption_style": "highlight",
+  "caption_keywords": [
+    "Ads",
+    "Break-even",
+    "Contribution",
+    "Manager",
+    "Margin",
+    "PROFIT",
+    "ROAS",
+    "ads"
+  ],
+  "scenes": [
+    {
+      "id": "hook-1",
+      "title": "hook (0.75)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "في",
+          "count": 7,
+          "intensity": "medium",
+          "emphasis": [
+            "أكتر"
+          ],
+          "x": 540,
+          "y": 380,
+          "size": 92,
+          "w": 920
+        },
+        {
+          "type": "statcard",
+          "label": "مبيعات",
+          "value": 100000.0,
+          "tone": "positive",
+          "x": 540,
+          "y": 640,
+          "size": 72,
+          "in": "بـ100",
+          "anim": "spring"
+        }
+      ],
+      "_plan": {
+        "role": "hook",
+        "confidence": 0.75,
+        "reason": "opening sentence",
+        "treatment": "hook: earn the first 3 seconds"
+      },
+      "layout": "top"
+    },
+    {
+      "id": "data-2",
+      "title": "data (0.8)",
+      "elements": [
+        {
+          "type": "statcard",
+          "label": "مبيعات",
+          "value": 100000.0,
+          "unit": "ج",
+          "tone": "positive",
+          "count": true,
+          "x": 790,
+          "y": 200,
+          "size": 70,
+          "in": "بـ100",
+          "anim": "spring"
+        },
+        {
+          "type": "statcard",
+          "label": "مبيعات",
+          "value": 25000.0,
+          "unit": "ج",
+          "tone": "positive",
+          "count": true,
+          "x": 290,
+          "y": 200,
+          "size": 70,
+          "in": "25",
+          "anim": "spring"
+        },
+        {
+          "type": "statcard",
+          "label": "مبيعات",
+          "value": 80000.0,
+          "unit": "ج",
+          "tone": "positive",
+          "count": true,
+          "x": 790,
+          "y": 480,
+          "size": 70,
+          "in": "ألف",
+          "anim": "spring"
+        },
+        {
+          "type": "statcard",
+          "label": "إعلانات",
+          "value": 20000.0,
+          "unit": "ج",
+          "tone": "negative",
+          "count": true,
+          "x": 290,
+          "y": 480,
+          "size": 70,
+          "in": "الـ",
+          "anim": "spring"
+        }
+      ],
+      "_plan": {
+        "role": "data",
+        "confidence": 0.8,
+        "reason": "2 money value(s) + finance terms",
+        "treatment": "financial values → animated stat cards"
+      },
+      "start": {
+        "at": "تخيل",
+        "after": 4.93
+      },
+      "layout": "pip-right"
+    },
+    {
+      "id": "data-3",
+      "title": "data (0.7)",
+      "elements": [
+        {
+          "type": "statcard",
+          "label": "المبلغ",
+          "value": 4.0,
+          "unit": "",
+          "tone": "neutral",
+          "count": false,
+          "x": 790,
+          "y": 200,
+          "size": 70,
+          "in": "4،",
+          "anim": "spring"
+        },
+        {
+          "type": "statcard",
+          "label": "إعلانات",
+          "value": 4.0,
+          "unit": "ج",
+          "tone": "negative",
+          "count": true,
+          "x": 290,
+          "y": 200,
+          "size": 70,
+          "in": "4",
+          "anim": "spring"
+        }
+      ],
+      "_plan": {
+        "role": "data",
+        "confidence": 0.7,
+        "reason": "1 money value(s) + finance terms",
+        "treatment": "financial values → animated stat cards"
+      },
+      "start": {
+        "at": "رغم",
+        "after": 22.72
+      },
+      "layout": "pip-right"
+    },
+    {
+      "id": "conclusion-4",
+      "title": "conclusion (0.6)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "عشان",
+          "count": 8,
+          "intensity": "medium",
+          "emphasis": [
+            "مش"
+          ],
+          "x": 540,
+          "y": 380,
+          "size": 92,
+          "w": 920
+        }
+      ],
+      "_plan": {
+        "role": "conclusion",
+        "confidence": 0.6,
+        "reason": "conclusion cue: عشان كدا",
+        "treatment": "payoff → kinetic words"
+      },
+      "start": {
+        "at": "عشان",
+        "after": 30.98
+      },
+      "layout": "bottom"
+    },
+    {
+      "id": "setup-5",
+      "title": "setup (0.35)",
+      "elements": [],
+      "_plan": {
+        "role": "setup",
+        "confidence": 0.35,
+        "reason": "no strong cue",
+        "treatment": "low confidence → clean talking head"
+      },
+      "start": {
+        "at": "الـ",
+        "after": 35.36
+      },
+      "layout": "hero"
+    },
+    {
+      "id": "cta-6",
+      "title": "cta (0.95)",
+      "elements": [
+        {
+          "type": "cta",
+          "keyword": "PROFIT",
+          "x": 540,
+          "y": 160,
+          "in": "اكتب",
+          "anim": "spring"
+        }
+      ],
+      "_plan": {
+        "role": "cta",
+        "confidence": 0.95,
+        "reason": "comment keyword + call-to-action verb",
+        "treatment": "call to action → high-contrast keyword"
+      },
+      "start": {
+        "at": "لو",
+        "after": 42.33
+      },
+      "layout": "top"
+    }
+  ]
+}

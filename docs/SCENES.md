@@ -177,3 +177,8 @@ Brand `whiteboard` (white board, marker colours). Strokes draw on with determini
 `box` (default) · `highlight` (keywords on the highlighter) · `clean` (documentary: no box, shadowed) · `kinetic` (big, current
 word highlighted) · `editorial` (black-and-white, square) · `energy` (highlighter box, current word on red) · `minimal` (small,
 cinematic). Light presets switch to dark text when the caption sits on the page instead of the video.
+
+## V2 — Editing director (`reel.py plan`)
+Pacing presets: `low` (min scene 6 s, ≤4 graphic scenes/min, captions `clean`), `medium` (4 s, ≤8/min, `highlight`),
+`high` (2.5 s, ≤14/min, `kinetic`, opens full-frame). Draft scenes keep a `_plan` note (role, confidence, reason) that
+`--apply` strips. See AGENTS.md "V2 editing director" for the review steps.

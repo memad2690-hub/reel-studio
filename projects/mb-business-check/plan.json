@@ -1,0 +1,152 @@
+{
+  "intensity": "medium",
+  "budget": {
+    "graphic_scenes": 7,
+    "min_scene": 4.0,
+    "duration": 51.0
+  },
+  "segments": [
+    {
+      "start": 0.13,
+      "end": 4.5,
+      "text": "قبل ما تغير الـ media buyer اتأكد إن المشكلة مش في الـ business نفسه. فيه تلات حاجات لو",
+      "w0": 0,
+      "w1": 17,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "business",
+        "buyer",
+        "media"
+      ],
+      "role": "hook",
+      "confidence": 0.75,
+      "reason": "opening sentence",
+      "style": "editorial",
+      "component": "headline+statcard",
+      "treatment_reason": "hook: earn the first 3 seconds"
+    },
+    {
+      "start": 4.54,
+      "end": 9.94,
+      "text": "موجودة تغيير الـ campaign structure والـ strategy لوحدها مش هيحل المشكلة.",
+      "w0": 18,
+      "w1": 28,
+      "lang": "mixed",
+      "numbers": [
+        {
+          "value": 3.0,
+          "i0": 1,
+          "i1": 1,
+          "start": 3.76,
+          "end": 3.96,
+          "text": "تلات",
+          "kind": "count"
+        }
+      ],
+      "keywords": [
+        "campaign",
+        "strategy",
+        "structure"
+      ],
+      "role": "setup",
+      "confidence": 0.35,
+      "reason": "no strong cue",
+      "style": "talking-head",
+      "component": null,
+      "treatment_reason": "low confidence → clean talking head"
+    },
+    {
+      "start": 10.27,
+      "end": 25.69,
+      "text": "أول حاجة لازم تبقى عارف إنه لو ناس كتير بتعمل add to cart بس نسبة قليلة بتكمل الـ checkout، أنت أكيد عندك مشكلة. تاني واحدة لو فيه طلب على المنتج بس المقاسات أو الألوان المهمة مش متوفرة. تالت حاجة لو الـ offer بتاعك أصلًا مش واضح أو مش منافس.",
+      "w0": 29,
+      "w1": 77,
+      "lang": "mixed",
+      "numbers": [
+        {
+          "value": 1.0,
+          "i0": 1,
+          "i1": 1,
+          "start": 17.727,
+          "end": 18.147,
+          "text": "واحدة",
+          "kind": "count"
+        }
+      ],
+      "keywords": [
+        "add",
+        "cart",
+        "checkout",
+        "offer"
+      ],
+      "role": "process",
+      "confidence": 0.75,
+      "reason": "ordinal list (first + later ordinals)",
+      "style": "whiteboard",
+      "component": "numbered",
+      "treatment_reason": "step-by-step → numbered whiteboard"
+    },
+    {
+      "start": 25.98,
+      "end": 30.33,
+      "text": "هنا لازم نراجع الـ funnel كله. نتأكد من الـ product page، الـ shipping،",
+      "w0": 78,
+      "w1": 90,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "funnel"
+      ],
+      "role": "emphasis",
+      "confidence": 0.5,
+      "reason": "short emphatic line (لازم)",
+      "style": "kinetic",
+      "component": "kinetic",
+      "treatment_reason": "strong line → kinetic words"
+    },
+    {
+      "start": 30.41,
+      "end": 44.51,
+      "text": "الـ inventory، الـ pricing، الـ customer experience. نقدر بعد كده نحدد المشكلة في traffic ولا operations ولا conversion quality. أحسن media buying strategy مش هتعوض الـ business operations لو فيها مشكلة كبيرة.",
+      "w0": 91,
+      "w1": 122,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "business",
+        "buying",
+        "conversion",
+        "customer",
+        "experience",
+        "inventory"
+      ],
+      "role": "setup",
+      "confidence": 0.35,
+      "reason": "no strong cue",
+      "style": "talking-head",
+      "component": null,
+      "treatment_reason": "low confidence → clean talking head"
+    },
+    {
+      "start": 44.82,
+      "end": 51.08,
+      "text": "لو عاوز checklist تعرف بيها المشكلة عندك فين، اكتب AUDIT وهبعتلك الـ checklist تقدر تطبقها على الـ brand بتاعك.",
+      "w0": 123,
+      "w1": 141,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "AUDIT",
+        "brand",
+        "checklist"
+      ],
+      "role": "cta",
+      "confidence": 0.95,
+      "reason": "comment keyword + call-to-action verb",
+      "style": "editorial",
+      "component": "cta",
+      "treatment_reason": "call to action → high-contrast keyword"
+    }
+  ]
+}
