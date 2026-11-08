@@ -122,3 +122,7 @@ After `finalize-cut` (use `--full-frame` for V2 layouts) and `align`:
 3. Every number on screen must be one the speaker said (the planner only drafts heard numbers); illustrative values get a
    `مثال` pill; the build's finance checks must pass.
 4. Storyboard → approval gate as before. Reference docs: `docs/SCENES.md` (all components), `docs/V2_PLAN.md` (status).
+5. Cut-out effects (text behind the speaker, parallax, sticker collage) need `python3 reel.py segment <slug>` after
+   `finalize-cut --full-frame`; check `build/mask/quality.json` and the storyboard stills: frames below
+   `mask_min_quality` fall back automatically. Budget ≈0.7 s per frame for segmentation and ≈22 s per output second to
+   render with the cut layer (measured, 2 vCPU). Photos/collage images come only from the user's uploads in `assets/`.

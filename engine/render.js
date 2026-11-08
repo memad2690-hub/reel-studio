@@ -32,6 +32,7 @@ const lossless = meta.mode === 'B' || !!args.lossless;
   await page.evaluate(() => window.ready);
   const hasCard = meta.mode === 'B' && fs.existsSync(path.join(build, 'cf'));
   const cfCount = hasCard ? fs.readdirSync(path.join(build, 'cf')).filter(f => f.endsWith('.png')).length : 0;
+  const hasCut = hasCard && fs.existsSync(path.join(build, 'cut'));
 
   async function draw(t) {
     if (hasCard) {
@@ -40,6 +41,17 @@ const lossless = meta.mode === 'B' || !!args.lossless;
         const img = document.getElementById('cardimg');
         if (img.getAttribute('src') !== src) { img.src = src; await img.decode().catch(() => {}); }
       }, 'cf/' + String(n).padStart(5, '0') + '.png');
+      if (hasCut) {
+        const kind = await page.evaluate(t => window.cutKind(t), t);
+        const rel = kind + '/' + String(n).padStart(5, '0') + '.png';
+        const src = fs.existsSync(path.join(build, rel)) ? rel : '';
+        await page.evaluate(async src => {
+          const img = document.getElementById('cutimg');
+          if (!img) return;
+          if (!src) { img.removeAttribute('src'); return; }
+          if (img.getAttribute('src') !== src) { img.src = src; await img.decode().catch(() => {}); }
+        }, src);
+      }
     }
     await page.evaluate(t => window.setTime(t), t);
   }

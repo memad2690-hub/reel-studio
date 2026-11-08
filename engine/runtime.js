@@ -5,7 +5,7 @@
   const easeOut = p => 1 - Math.pow(1 - p, 3);
   const easeInOut = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  let scenes, anims, counts, cap, card, cardImg, parts = [], kws = [], dims = [];
+  let scenes, anims, counts, cap, card, cardImg, parts = [], kws = [], dims = [], kbs = [], cutDiv, cutImg, grainT;
 
   function fitBoxes() {
     document.querySelectorAll('[data-fit]').forEach(g => {
@@ -84,6 +84,10 @@
       });
     });
     dims = [...document.querySelectorAll('.dim')].map(el => ({ el, t0: +el.dataset.t0 }));
+    kbs = [...document.querySelectorAll('.kb')].map(el => ({ el, z: +el.dataset.z, d: +el.dataset.d,
+      t0: el.closest('.a') ? +el.closest('.a').dataset.in : 0 }));
+    kbs.forEach(o => { o.el.style.transformBox = 'fill-box'; o.el.style.transformOrigin = '50% 50%'; });
+    cutDiv = document.getElementById('cut'); cutImg = document.getElementById('cutimg'); grainT = document.getElementById('grt');
     parts = [...document.querySelectorAll('.grow,.draw,.arc,.tl')].map(el => {
       const k = el.classList.contains('grow') ? 'grow' : el.classList.contains('draw') ? 'draw' : el.classList.contains('arc') ? 'arc' : 'tl';
       const o = { el, k, t0: T(el), d: +el.dataset.d || 0.5 };
@@ -109,27 +113,56 @@
     const target = L(sc[idx].card || 'top');
     const prev = idx > 0 ? L(sc[idx - 1].card || 'top') : target;
     const p = easeInOut(clamp((t - sc[idx].start) / SLIDE, 0, 1));
-    const out = { target };
+    const out = { target, scene: sc[idx] };
     ['x', 'y', 'w', 'h', 'r', 'b'].forEach(k => { out[k] = prev[k] + (target[k] - prev[k]) * p; });
+    out.rot = (prev.rot || 0) + ((target.rot || 0) - (prev.rot || 0)) * p;
+    out.sticker = target.sticker ? p : (prev.sticker ? 1 - p : 0);
     return out;
   }
 
-  function placeCard(rc) {
+  const maskOK = t => { if (!D.cut) return false; const q = D.maskq[Math.floor(t * D.fps + 1e-6)]; return q === undefined || q >= D.maskMin; };
+  function camZoom(sc, t) {
+    let z = 1;
+    if (!sc) return z;
+    if (sc.zoom) z *= sc.zoom[0] + (sc.zoom[1] - sc.zoom[0]) * clamp((t - sc.start) / Math.max(0.1, sc.end - sc.start), 0, 1);
+    if (sc.punch && t >= sc.punch[0]) z *= 1 + (sc.punch[1] - 1) * easeOut(clamp((t - sc.punch[0]) / 0.25, 0, 1));
+    return z;
+  }
+  function fit(img, iw, ih, z) {
+    // full-frame (1080x1920) card frames: cover the box, keep the face focus point near the centre, zoom z
+    const s = Math.max(iw / 1080, ih / 1920) * z;
+    const W = 1080 * s, H = 1920 * s;
+    const left = clamp(iw / 2 - D.focus[0] * W, iw - W, 0), top = clamp(ih * 0.5 - D.focus[1] * H, ih - H, 0);
+    const is = img.style;
+    is.objectFit = 'fill'; is.width = W + 'px'; is.height = H + 'px'; is.left = left + 'px'; is.top = top + 'px';
+  }
+  function placeCard(rc, t) {
+    const ok = maskOK(t);
+    const stick = rc.sticker > 0.5 && ok;                      // sticker layout falls back to a normal card on a bad mask
+    const b = stick ? 0 : (rc.sticker > 0.5 ? 6 : rc.b), r = stick ? 0 : (rc.sticker > 0.5 ? 40 : rc.r);
     const st = card.style;
     st.left = rc.x + 'px'; st.top = rc.y + 'px'; st.width = rc.w + 'px'; st.height = rc.h + 'px';
-    st.borderRadius = rc.r + 'px'; st.borderWidth = rc.b + 'px';
-    st.boxShadow = rc.b > 0.5 ? '12px 14px 0 rgba(34,34,34,.22)' : 'none';
-    if (D.cf && D.cf.full && cardImg) {
-      // full-frame (1080x1920) card frames: cover the card, keep the face focus point near the centre
-      const iw = rc.w - 2 * rc.b, ih = rc.h - 2 * rc.b;
-      const s = Math.max(iw / 1080, ih / 1920);
-      const W = 1080 * s, H = 1920 * s;
-      const fx = D.focus[0] * W, fy = D.focus[1] * H;
-      const left = clamp(iw / 2 - fx, iw - W, 0), top = clamp(ih * 0.5 - fy, ih - H, 0);
-      const is = cardImg.style;
-      is.objectFit = 'fill'; is.width = W + 'px'; is.height = H + 'px'; is.left = left + 'px'; is.top = top + 'px';
+    st.borderRadius = r + 'px'; st.borderWidth = b + 'px'; st.transform = `rotate(${rc.rot || 0}deg)`;
+    st.boxShadow = b > 0.5 ? '12px 14px 0 rgba(34,34,34,.22)' : 'none';
+    st.background = stick ? 'transparent' : '#333';
+    if (!(D.cf && D.cf.full && cardImg)) return;
+    const sc = rc.scene, z = camZoom(sc, t);
+    const par = sc && sc.parallax && ok ? sc.parallax * clamp((t - sc.start) / Math.max(0.1, sc.end - sc.start), 0, 1) : 0;
+    const iw = rc.w - 2 * b, ih = rc.h - 2 * b;
+    fit(cardImg, iw, ih, z * (1 + 0.035 * par));
+    cardImg.style.opacity = stick ? 0 : 1;
+    cardImg.style.filter = par > 0 ? `blur(${(2.5 * Math.min(1, par * 3)).toFixed(2)}px)` : 'none';  // soft depth of field hides ghosting
+    if (cutDiv && cutImg) {
+      const cs = cutDiv.style;
+      cs.left = rc.x + 'px'; cs.top = rc.y + 'px'; cs.width = rc.w + 'px'; cs.height = rc.h + 'px';
+      cs.borderRadius = r + 'px'; cs.borderWidth = b + 'px'; cs.transform = st.transform;
+      cs.overflow = stick ? 'visible' : 'hidden';
+      fit(cutImg, iw, ih, z * (1 + 0.012 * par));
+      cutImg.style.visibility = ok ? 'visible' : 'hidden';
+      if (par > 0) cutImg.style.top = (parseFloat(cutImg.style.top) - 8 * par) + 'px';
     }
   }
+  window.cutKind = t => { const rc = card ? cardRect(t) : null; return rc && rc.sticker > 0.5 ? 'sticker' : 'cut'; };
 
   function entrance(a, t) {
     const p = clamp((t - a.i) / 0.4, 0, 1);
@@ -230,7 +263,9 @@
       c.t.textContent = c.pre + fmt(c.from + (c.to - c.from) * easeOut(p)) + c.suf;
     });
     let rc = null;
-    if (card) { rc = cardRect(t); placeCard(rc); }
+    if (card) { rc = cardRect(t); placeCard(rc, t); }
+    kbs.forEach(o => { o.el.style.transform = `scale(${1 + (o.z - 1) * clamp((t - o.t0) / o.d, 0, 1)})`; });
+    if (grainT) grainT.setAttribute('seed', String(Math.floor(t * D.fps) % 997 + 1));
     const c = D.captions.find(c => t >= c.start && t < c.end);
     if (c) showCaption(c, rc || {}, t); else cap.style.display = 'none';
   };

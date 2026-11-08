@@ -201,3 +201,40 @@ python3 reel.py finalize-cut <slug> --full-frame                                
 A project whose `scenes.json` has `"style": "cinematic"` gets RC Warm Cinematic at 100% unless `grade.json` says otherwise.
 `grade-preview` reports highlight clipping, crushed shadows, skin hue/saturation shift, neutral-white cast and luma spread
 across shots (flagged > 0.12 → add a per-clip exposure correction).
+
+## V2 — Styles 09 Cinematic Mini-Doc · 06 Parallax · 03 Collage (Mode B)
+Needs full-frame card frames: `python3 reel.py finalize-cut <slug> --full-frame`.
+
+### Project keys
+- `"style": "cinematic"` → RC Warm Cinematic grade at 100% (see grading) + film grain 0.07.
+- `"film": {"grain": 0.05, "letterbox": true}` overrides the grain/letterbox for any style.
+- `"mask_min_quality": 0.62` → frames whose cut-out scores lower fall back (see segmentation).
+
+### Scene keys
+- `zoom: [1.0, 1.1]` slow camera push over the scene; `punch: {"at": "<word>", "zoom": 1.15}` a cut-in on a word.
+- `parallax: 1` (0–1): background pushes and softens (blur ≤ 2.5 px) while the cut-out speaker moves less → depth.
+  Without cut-outs it is a plain zoom.
+- `layout: "sticker"` (Style 03): the speaker cut out with a white outline and shadow, tilted −3°, on the page.
+
+### Elements
+- `behind: true` on any element draws it **between the background and the speaker** (text behind the head).
+  Without cut-outs it is drawn in front and `notes` says so.
+- `chapter`: `{"type":"chapter","number":"01","text":"الحسبة","sub":"مثال","backdrop":false}` — minimal chapter title.
+- `photo`: `{"type":"photo","src":"receipt.jpg","frame":"plain|polaroid|archival|tape","w":640,"h":480,
+  "caption":"...","kenburns":1.08}` — file must be in `projects/<slug>/assets/` (uploads only; a missing file blocks
+  render). `archival` = sepia + paper border.
+
+### Segmentation (`reel.py segment`)
+```bash
+python3 reel.py segment <slug> [--every 2] [--frames 1-370] [--exclude 0.76,0.27,1,0.47 ...]
+```
+U²-Net human segmentation (onnxruntime, CPU, model fetched once from the rembg GitHub release into
+`~/.cache/reel-studio/models/`). Each mask is cleaned (exclude zones, cut thin bridges, keep the body touching the bottom
+edge, fill shirt holes, soft edge), smoothed over time, and scored 0–1 from the raw model output. Writes
+`build/mask/`, `build/cut/` (speaker only), `build/sticker/` (outline + shadow) and `build/mask/quality.json`.
+`--exclude` zones (normalised x0,y0,x1,y1) are saved in `cuts.json` and reused.
+
+**Fallback:** a frame scoring below `mask_min_quality` shows no cut-out: `behind` elements are then seen in front of the
+speaker (never a broken silhouette), parallax becomes a plain zoom, and the sticker layout becomes a normal card.
+**Known limit:** objects touching the speaker in the same colour range (car-seat backs by the shoulders) can stay
+attached to the cut-out; works best against a contrasting background; use `--exclude` for fixed objects.

@@ -195,4 +195,17 @@ sheet + split-screen test MP4 + checks (`reel.py grade-preview`). Measured on mb
 clipping 0.34% → 0%, crushed shadows < 0.6% (dark seats), skin hue +1.0–1.1°, skin saturation −5.7%, cyan shirt
 saturation −19%, neutral cast 0.021, luma spread across shots 0.001. Calibration is by measurement on this footage,
 not a side-by-side with CapCut: a CapCut-exported frame of the same shot would let calibration v2 match it exactly.
-Tests: 52 passing (6 new).
+Tests: 45 passing (an earlier note said 52 — recounted).
+
+### Milestone 5 — Styles 09 Cinematic · 06 Parallax · 03 Collage + segmentation (2026-11-08)
+Built: `engine/segment.py` (U²-Net human seg via onnxruntime from the rembg GitHub release — MediaPipe's bundled models
+are gone and Google storage is blocked here), mask cleanup + temporal smoothing + per-frame quality score, `reel.py
+segment`; runtime cut-out layer, `behind` elements, parallax, `sticker` layout with quality fallback; scene `zoom` /
+`punch`; film grain/letterbox; `chapter` and `photo` (uploads only, plain/polaroid/archival/tape, Ken Burns);
+cinematic style defaults (RC Warm Cinematic grade + grain).
+Measured on mb-roas-loss raw (copy `_style09-test`): segmentation 370 frames in 249 s (≈0.67 s/frame, every 2nd frame
+inferred), quality mean 0.787, min 0.675, 0 frames below 0.62; render with cut layer + parallax 12 s (360 frames) in
+266 s ≈ 22 s per output second (vs ≈12–14 s/s without the cut layer).
+Known limit: car-seat backs adjacent to the shoulders partly stay in the cut-out (exclusion zones reduce it).
+Tests: 55 passing (10 new: cinematic defaults, chapter, missing photo, behind fallback / behind with cut-outs, sticker,
+mask refine, exclude zone, quality score, mask threshold).

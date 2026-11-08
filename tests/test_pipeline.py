@@ -165,6 +165,93 @@ class EditorialV2Tests(Tmp):
         self.assertIn('25,000 ج', svg); self.assertNotIn('-25,000', svg)
 
 
+class Style09Tests(Tmp):
+    """Cinematic style, chapter titles, photos, sticker layout and behind-the-speaker fallback."""
+    scenes = EditorialV2Tests.scenes
+
+    def page(self):
+        return open(os.path.join(self.d, 'build', 'page.html'), encoding='utf-8').read()
+
+    def test_cinematic_defaults_grain(self):
+        self.scenes([{'id': 'a', 'elements': []}], style='cinematic')
+        self.assertIn('id="grt"', self.page())
+        self.scenes([{'id': 'a', 'elements': []}])
+        self.assertNotIn('id="grt"', self.page())
+
+    def test_chapter_renders(self):
+        self.scenes([{'id': 'a', 'elements': [{'type': 'chapter', 'number': '01', 'text': 'الحسبة', 'sub': 'مثال'}]}])
+        page = self.page()
+        for t in ('01', 'الحسبة', 'مثال'):
+            self.assertIn(t, page)
+
+    def test_photo_missing_asset_blocks(self):
+        misses = self.scenes([{'id': 'a', 'elements': [{'type': 'photo', 'src': 'nope.jpg'}]}])['anchor_misses']
+        self.assertTrue(any('missing asset' in m['problem'] for m in misses), misses)
+
+    def test_behind_without_cutouts_drawn_in_front_with_note(self):
+        m = self.scenes([{'id': 'a', 'layout': 'full', 'elements': [{'type': 'text', 'text': 'خسارة', 'behind': True}]}])
+        self.assertTrue(any('behind' in n for n in m['notes']), m['notes'])
+        self.assertNotIn('id="behind"', self.page())
+        self.assertIn('خسارة', self.page())
+
+    def test_behind_with_cutouts_goes_behind(self):
+        from PIL import Image
+        os.makedirs(os.path.join(self.d, 'build', 'cut'))
+        Image.new('RGBA', (4, 4)).save(os.path.join(self.d, 'build', 'cut', '00001.png'))
+        m = self.scenes([{'id': 'a', 'layout': 'full', 'elements': [{'type': 'text', 'text': 'خسارة', 'behind': True}]}])
+        self.assertFalse(any('behind' in n for n in m['notes']))
+        self.assertIn('id="behind"', self.page())
+
+    def test_sticker_layout_known(self):
+        self.assertTrue(builder.LAYOUTS['sticker'].get('sticker'))
+        misses = self.scenes([{'id': 'a', 'layout': 'sticker', 'elements': []}])['anchor_misses']
+        self.assertFalse(any('layout' in m['problem'] for m in misses))
+
+
+class SegmentTests(unittest.TestCase):
+    """Mask cleanup and the quality score that decides the fallback (no model needed)."""
+
+    def body(self):
+        import numpy as np
+        m = np.zeros((200, 120), np.float32)
+        m[60:, 30:90] = 0.95          # torso touching the bottom edge
+        m[20:60, 45:75] = 0.95        # head
+        return m
+
+    def test_refine_drops_blob_and_fills_holes(self):
+        import numpy as np
+        import segment
+        m = self.body()
+        m[5:25, 0:15] = 0.9           # seat blob, not touching the bottom
+        m[120:135, 50:70] = 0.1       # shirt stripe read as background
+        r = segment.refine(m)
+        self.assertLess(r[10, 5], 0.1)
+        self.assertGreater(r[128, 60], 0.9)
+
+    def test_exclude_zone(self):
+        import segment
+        m = self.body()
+        r = segment.refine(m, exclude=[(0, 0.8, 1, 1)])
+        self.assertLess(r[190, 60], 0.05)
+
+    def test_quality_clean_vs_noisy(self):
+        import numpy as np
+        import segment
+        good, _ = segment.quality(self.body())
+        noisy = self.body() * 0.6 + np.random.default_rng(1).random((200, 120)).astype(np.float32) * 0.35
+        bad, _ = segment.quality(noisy)
+        empty, _ = segment.quality(np.zeros((200, 120), np.float32))
+        self.assertGreater(good, 0.62)
+        self.assertLess(bad, 0.62)
+        self.assertEqual(empty, 0.0)
+
+    def test_mask_min_passed_to_page(self):
+        with tempfile.TemporaryDirectory() as d:
+            t = Style09Tests('test_sticker_layout_known'); t.d = d
+            t.scenes([{'id': 'a', 'elements': []}], mask_min_quality=0.7)
+            self.assertIn('"maskMin": 0.7', open(os.path.join(d, 'build', 'page.html'), encoding='utf-8').read())
+
+
 class ChartCheckTests(unittest.TestCase):
     def check(self, el):
         import charts

@@ -282,6 +282,57 @@ def b_statcard(e):
             f'<rect class="fitbox" rx="26" fill="#fff" stroke="{B["ink"]}" stroke-width="6"/>{inner}</g>')
 
 
+def b_chapter(e):
+    """Cinematic chapter title: small number, big title, thin rules (minimal editorial typography)."""
+    size = e.get('size', 96)
+    num = e.get('number', '')
+    c = col(e.get('color', 'ink'), B)
+    out = ''
+    if e.get('backdrop'):
+        out += f'<rect x="-600" y="-1100" width="1200" height="2200" fill="#0d0d0d" opacity="{e.get("backdrop_opacity", 0.82)}"/>'
+        c = '#f4eddd'
+    w = e.get('w', 760)
+    out += f'<line x1="{-w / 2}" y1="{-size * 1.05}" x2="{w / 2}" y2="{-size * 1.05}" stroke="{c}" stroke-width="3"/>'
+    if num:
+        out += text(str(num), size * 0.42, B['red'] if not e.get('backdrop') else '#f2cf4a', 900, y=-size * 0.62)
+    out += text(e.get('text', ''), size, c, 800, y=size * 0.12)
+    if e.get('sub'):
+        out += text(e['sub'], size * 0.36, c, 600, y=size * 0.82)
+    out += f'<line x1="{-w / 2}" y1="{size * 1.2}" x2="{w / 2}" y2="{size * 1.2}" stroke="{c}" stroke-width="3"/>'
+    return out
+
+
+def photo_svg(e, href, uid):
+    """User photo with a frame: plain | polaroid | archival | tape. Optional slow Ken Burns zoom (kb)."""
+    w, h = e.get('w', 640), e.get('h', 480)
+    frame = e.get('frame', 'plain')
+    kb = e.get('kenburns')
+    img = (f'<image href="{esc(href)}" x="{-w / 2}" y="{-h / 2}" width="{w}" height="{h}" preserveAspectRatio="xMidYMid slice"'
+           + (' filter="url(#sepia)"' if frame == 'archival' else '') + '/>')
+    if kb:
+        img = (f'<g class="kb" data-z="{float(kb if not isinstance(kb, bool) else 1.08):.3f}" data-d="{e.get("kb_dur", 6)}">'
+               f'{img}</g>')
+    clip = f'<clipPath id="pc{uid}"><rect x="{-w / 2}" y="{-h / 2}" width="{w}" height="{h}"/></clipPath>'
+    body = f'{clip}<g clip-path="url(#pc{uid})">{img}</g>'
+    ink = B['ink']
+    if frame == 'polaroid':
+        pad, bot = 24, 96
+        out = (f'<rect x="{-w / 2 - pad + 12}" y="{-h / 2 - pad + 14}" width="{w + 2 * pad}" height="{h + pad + bot}" fill="rgba(0,0,0,.18)"/>'
+               f'<rect x="{-w / 2 - pad}" y="{-h / 2 - pad}" width="{w + 2 * pad}" height="{h + pad + bot}" fill="#fff" stroke="#ddd"/>'
+               + body + (text(e['caption'], 40, ink, 700, y=h / 2 + bot / 2) if e.get('caption') else ''))
+    elif frame == 'archival':
+        pad = 18
+        out = (f'<rect x="{-w / 2 - pad}" y="{-h / 2 - pad}" width="{w + 2 * pad}" height="{h + 2 * pad + 50}" fill="#efe3c6" stroke="#b9a27a" stroke-width="3"/>'
+               + body + (text(e['caption'], 34, '#5b4a2e', 700, y=h / 2 + 34) if e.get('caption') else ''))
+    elif frame == 'tape':
+        out = (f'<rect x="{-w / 2 + 10}" y="{-h / 2 + 12}" width="{w}" height="{h}" fill="rgba(0,0,0,.18)"/>' + body +
+               f'<rect x="{-w / 2 - 30}" y="{-h / 2 - 22}" width="140" height="44" fill="#f2cf4a" opacity=".75" transform="rotate(-24 {-w / 2 + 40} {-h / 2})"/>'
+               f'<rect x="{w / 2 - 110}" y="{-h / 2 - 22}" width="140" height="44" fill="#f2cf4a" opacity=".75" transform="rotate(22 {w / 2 - 40} {-h / 2})"/>')
+    else:
+        out = body + f'<rect x="{-w / 2}" y="{-h / 2}" width="{w}" height="{h}" fill="none" stroke="{ink}" stroke-width="6"/>'
+    return out
+
+
 def eq_row(r, i, size, w, mode):
     """One equation row: label (right, RTL) ... value (left), operator in its own circle at the far left."""
     pal = B if mode == 'B' else A
@@ -338,7 +389,7 @@ BUILDERS = {
           'money': a_money, 'ballot': a_ballot, 'siren': a_siren, 'calendar': a_calendar, 'card': a_card,
           'stamp': a_stamp},
     'B': {'icon': b_icon, 'wcard': b_wcard, 'pill': b_pill, 'headline': b_headline, 'cta': b_cta,
-          'statcard': b_statcard},
+          'statcard': b_statcard, 'chapter': b_chapter},
 }
 SHARED = {'xmark': x_mark, 'check': check, 'arrow': arrow, 'text': plain_text, 'number': number, 'svg': raw_svg}
 
@@ -357,4 +408,4 @@ def build(e, mode):
 
 
 def element_types():
-    return sorted(set(BUILDERS['A']) | set(BUILDERS['B']) | set(SHARED) | {'seats', 'steps', 'equation'})
+    return sorted(set(BUILDERS['A']) | set(BUILDERS['B']) | set(SHARED) | {'seats', 'steps', 'equation', 'photo'})

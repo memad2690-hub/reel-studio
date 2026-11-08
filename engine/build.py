@@ -29,8 +29,11 @@ LAYOUTS = {
     'pip-left':  {'x': 40,  'y': 150, 'w': 350,  'h': 430,  'r': 36, 'b': 6, 'y0': 620,  'rh': 1200},
     'half-top':    {'x': 0, 'y': 0,   'w': 1080, 'h': 960, 'r': 0, 'b': 0, 'y0': 1000, 'rh': 880},   # split screen
     'half-bottom': {'x': 0, 'y': 960, 'w': 1080, 'h': 960, 'r': 0, 'b': 0, 'y0': 40,   'rh': 880},
+    # collage: the speaker as a paper sticker (cut-out with white outline), no video rectangle
+    'sticker':     {'x': 300, 'y': 700, 'w': 760, 'h': 1220, 'r': 0, 'b': 0, 'y0': 60, 'rh': 760, 'rot': -3, 'sticker': 1},
 }
 REGION = {k: v['y0'] for k, v in LAYOUTS.items()}
+PROJECT = {'dir': '', 'out': '', 'n': 0}     # set per build (photo assets are resolved against the project)
 
 
 def load_config():
@@ -81,6 +84,14 @@ def expand(el, mode, anchors, s_start, s_end, idx, ins=None, floor=None):
     t = el['type']
     if t == 'equation':
         return expand_equation(el, mode, anchors, s_start, t_in, t_out, ins, floor, kind, ex)
+    if t == 'photo':
+        src = os.path.join(PROJECT['dir'], el.get('src', ''))
+        if not el.get('src') or not os.path.isfile(src):
+            anchors.misses.append({'anchor': None, 'element': 'photo', 'problem': f'missing asset {el.get("src")!r} (put it in assets/)'})
+            return ''
+        PROJECT['n'] += 1
+        href = os.path.relpath(src, PROJECT['out']).replace(os.sep, '/')
+        return anim_group(kits.photo_svg(el, href, PROJECT['n']), t_in, t_out, kind, x, y, rot, sc, exit=ex)
     if t in charts.TYPES or t in fx.TYPES:
         return expand_chart(el, mode, anchors, s_start, t_in, t_out, ins, floor, kind, ex)
     if t == 'seats':
@@ -251,6 +262,7 @@ def build(project_dir, out_dir=None):
     words_path = os.path.join(pdir, spec.get('words', 'words.json'))
     words = load_words(words_path) if os.path.exists(words_path) else []
     fx.WORDS = words
+    PROJECT.update(dir=pdir, out=out_dir or os.path.join(pdir, 'build'), n=0)
     anchors = Anchors(words)
 
     audio = spec.get('audio') or ('audio/vo.mp3' if mode == 'A' else 'build/cut_audio.m4a')
@@ -274,7 +286,10 @@ def build(project_dir, out_dir=None):
     os.makedirs(out_dir, exist_ok=True)
     font = os.path.relpath(os.path.join(ROOT, 'fonts', 'Cairo-Variable.ttf'), out_dir).replace(os.sep, '/')
 
-    scene_meta, scene_svg = [], []
+    scene_meta, scene_svg, behind_svg, notes = [], [], [], []
+    cut_dir = os.path.join(out_dir, 'cut')
+    has_cut = mode == 'B' and os.path.isdir(cut_dir) and any(f.endswith('.png') for f in os.listdir(cut_dir))
+    maskq = (rj_safe(os.path.join(out_dir, 'mask', 'quality.json')) or {}).get('per_frame', []) if has_cut else []
     card_pos = 'bottom'
     for i, s in enumerate(scenes):
         st, en = starts[i], ends[i]
@@ -287,7 +302,7 @@ def build(project_dir, out_dir=None):
                 card_pos = 'top'
         # Mode B: the card slides for CARD_SLIDE s when it changes side; graphics wait until it has landed
         floor = st + CARD_SLIDE if (mode == 'B' and i > 0 and card_pos != prev_pos) else None
-        els = []
+        els, behind = [], []
         latest_in = st
         for j, el in enumerate(s.get('elements', [])):
             ins = []
@@ -295,15 +310,40 @@ def build(project_dir, out_dir=None):
                          floor=None if el.get('space') == 'canvas' else floor)
             if mode == 'B' and el.get('space') != 'canvas':
                 svg = f'<g transform="translate(0,{LAYOUTS[card_pos]["y0"]})">{svg}</g>'
-            els.append(svg)
+            (behind if (el.get('behind') and has_cut) else els).append(svg)
+            if el.get('behind') and not has_cut:
+                notes.append(f'{s.get("id", i)}: "behind" element drawn in front (run reel.py segment for cut-outs)')
             latest_in = max([latest_in] + [t for t in ins if t < en])
         sb = min(max(latest_in + 0.6, st + 1.0), en - 0.35)
+        cam = {}
+        if mode == 'B':
+            z = s.get('zoom')                                    # slow drift: [start, end] scale over the scene
+            if z:
+                cam['zoom'] = [float(z[0]), float(z[1])] if isinstance(z, list) else [float(z), float(z)]
+            if s.get('punch'):                                   # punch-in on a word: {"at": anchor, "zoom": 1.25}
+                pt = anchors.resolve(s['punch'].get('at'), st, default=st)
+                cam['punch'] = [round(pt, 3), float(s['punch'].get('zoom', 1.22))]
+            if s.get('parallax'):
+                cam['parallax'] = float(s['parallax'] if not isinstance(s['parallax'], bool) else 1.0)
         scene_meta.append({'id': s.get('id', f's{i + 1}'), 'title': s.get('title', ''), 'start': round(st, 3),
                            'end': round(en, 3), 'card': card_pos if mode == 'B' else None,
-                           'storyboard_t': round(max(st, sb), 3)})
+                           'storyboard_t': round(max(st, sb), 3), **cam})
         scene_svg.append(f'<g class="scene" data-start="{st:.3f}" data-end="{en:.3f}">{"".join(els)}</g>')
+        behind_svg.append(f'<g class="scene" data-start="{st:.3f}" data-end="{en:.3f}">{"".join(behind)}</g>')
 
     cap_cfg = cfg['captions'][mode]
+    film = spec.get('film') or ({'grain': 0.07, 'letterbox': False} if spec.get('style') == 'cinematic' else None)
+    film_html = ''
+    if film and mode == 'B':
+        if film.get('grain'):
+            film_html += (f'<svg id="grain" width="{W}" height="{H}" style="position:absolute;left:0;top:0;pointer-events:none;'
+                          f'mix-blend-mode:overlay;opacity:{float(film["grain"]):.3f}"><filter id="gr"><feTurbulence id="grt" '
+                          f'type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="1"/><feColorMatrix type="saturate" values="0"/>'
+                          f'</filter><rect width="100%" height="100%" filter="url(#gr)"/></svg>')
+        if film.get('letterbox'):
+            lb = int(film.get('letterbox_px', 150))
+            film_html += (f'<div style="position:absolute;left:0;top:0;width:{W}px;height:{lb}px;background:#000"></div>'
+                          f'<div style="position:absolute;left:0;bottom:0;width:{W}px;height:{lb}px;background:#000"></div>')
     captions = []
     if spec.get('captions', True) and words:
         captions = chunk_captions(words, cap_cfg['min_words'], cap_cfg['max_words'], max_chars=cap_cfg.get('max_chars', 26),
@@ -327,7 +367,9 @@ def build(project_dir, out_dir=None):
     caption_style = spec.get('caption_style', 'box')
     data = {'mode': mode, 'W': W, 'H': H, 'fps': M['fps'], 'duration': duration, 'card': CARD,
             'layouts': LAYOUTS, 'slide': CARD_SLIDE, 'cf': cfi, 'focus': focus, 'capStyle': caption_style,
-            'hlColor': kits.B['yellow'], 'scenes': scene_meta, 'captions': captions, 'cap': cap_cfg}
+            'hlColor': kits.B['yellow'], 'scenes': scene_meta, 'captions': captions, 'cap': cap_cfg,
+            'cut': has_cut, 'maskq': maskq, 'maskMin': spec.get('mask_min_quality', 0.62),
+            'film': bool(film and film.get('grain'))}
 
     g = M['grid']
     bg = f'''<svg id="bg" width="{W}" height="{H}" style="position:absolute;left:0;top:0">
@@ -345,10 +387,18 @@ def build(project_dir, out_dir=None):
                      'box-sizing:border-box;overflow:hidden;background:#333;box-shadow:12px 14px 0 rgba(34,34,34,.22)">'
                      '<img id="cardimg" style="position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;display:block" alt=""></div>')
 
+    cut_html = behind_html = ''
+    if mode == 'B' and has_cut:
+        behind_html = (f'<svg id="behind" width="{W}" height="{H}" style="position:absolute;left:0;top:0" '
+                       f'font-family="Cairo, sans-serif">{"".join(behind_svg)}</svg>')
+        cut_html = ('<div id="cut" style="position:absolute;overflow:hidden;box-sizing:border-box;border:0 solid transparent;'
+                    'pointer-events:none"><img id="cutimg" style="position:absolute;left:0;top:0;display:block" alt=""></div>')
+    card_html += behind_html + cut_html
     fg = (f'<svg id="fg" width="{W}" height="{H}" style="position:absolute;left:0;top:0" '
           f'font-family="Cairo, sans-serif"><defs>'
           '<pattern id="hatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">'
           '<rect width="12" height="12" fill="rgba(34,34,34,.10)"/><line x1="0" y1="0" x2="0" y2="12" stroke="#222" stroke-width="3"/></pattern>'
+          '<filter id="sepia"><feColorMatrix type="matrix" values=".39 .77 .19 0 0  .35 .69 .17 0 0  .27 .53 .13 0 0  0 0 0 1 0"/></filter>'
           f'</defs>{"".join(scene_svg)}</svg>')
 
     badge = ''
@@ -373,14 +423,14 @@ def build(project_dir, out_dir=None):
 <style>@font-face{{font-family:Cairo;src:url("{font}") format("truetype");font-weight:200 1000}}
 html,body{{margin:0;background:#000}} #stage{{position:relative;width:{W}px;height:{H}px;overflow:hidden}}
 .a{{transform-box:fill-box;transform-origin:center;opacity:0}} text{{font-family:Cairo}}</style></head>
-<body><div id="stage">{bg}{card_html}{fg}{badge}<div id="cap" style="{cap_style}"></div></div>
+<body><div id="stage">{bg}{card_html}{fg}{film_html}{badge}<div id="cap" style="{cap_style}"></div></div>
 <script>window.D={json.dumps(data, ensure_ascii=False)};</script><script>{runtime}</script></body></html>'''
 
     with open(os.path.join(out_dir, 'page.html'), 'w', encoding='utf-8') as f:
         f.write(page)
     meta = dict(data)
     meta.update({'scale': M['scale'], 'audio': audio if os.path.exists(audio_path) else None,
-                 'anchor_misses': anchors.misses, 'words': len(words)})
+                 'anchor_misses': anchors.misses, 'words': len(words), 'notes': notes})
     with open(os.path.join(out_dir, 'meta.json'), 'w', encoding='utf-8') as f:
         json.dump(meta, f, ensure_ascii=False, indent=1)
     return meta

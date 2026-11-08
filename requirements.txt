@@ -1,1 +1,4 @@
 Pillow>=10
+numpy>=1.24        # colour grading (grade.py) + segmentation
+scipy>=1.10        # mask cleanup (segment.py)
+onnxruntime>=1.16  # speaker segmentation for Styles 03/06/09 (optional: other styles work without it)

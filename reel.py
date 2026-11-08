@@ -603,6 +603,31 @@ def cmd_grade_preview(a):
                       'problems': {f'{r["t"]:.1f}s': r['problems'] for r in report if r['problems']}}, ensure_ascii=False))
 
 
+def cmd_segment(a):
+    """Person masks + cut-outs for V2 effects (text behind speaker, parallax, sticker collage). Optional dependency."""
+    import segment
+    d = pdir(a.slug)
+    cf = os.path.join(d, 'build', 'cf')
+    if not os.path.isdir(cf):
+        sys.exit('no card frames: run finalize-cut --full-frame first')
+    ok, why = segment.available()
+    if not ok and 'model missing' in why:
+        print('downloading segmentation model (≈176 MB, once)…', file=sys.stderr); segment.ensure_model()
+    elif not ok:
+        sys.exit(why)
+    rng = [int(x) for x in a.frames.split('-')] if a.frames else [1, None]
+    cuts = rj(os.path.join(d, 'cuts.json'), {}) or {}
+    if a.exclude:
+        cuts['mask_exclude'] = [[float(v) for v in z.split(',')] for z in a.exclude]
+        wj(os.path.join(d, 'cuts.json'), cuts)
+    res = segment.masks_for_frames(cf, os.path.join(d, 'build'), every=a.every, first=rng[0], last=rng[1],
+                                   exclude=cuts.get('mask_exclude'),
+                                   progress=lambda i, n: print(f'\r  {i}/{n}', end='', file=sys.stderr))
+    print(file=sys.stderr)
+    log_status(d, f'segment: frames {res["frames"]}, mask quality mean {res["quality_mean"]} min {res["quality_min"]}')
+    print(json.dumps(res))
+
+
 def cmd_library(a):
     tech = rj(os.path.join(LIB, 'techniques.json'), [])
     refs = rj(os.path.join(LIB, 'references.json'), [])
@@ -697,6 +722,10 @@ def main():
     s.set_defaults(f=cmd_finalize_cut)
     s = sp.add_parser('align', help='Mode B: time an approved clean script'); s.add_argument('slug')
     s.add_argument('--script', default='script_clean.txt'); s.add_argument('--words', default='words.json'); s.set_defaults(f=cmd_align)
+    s = sp.add_parser('segment', help='person masks + cut-outs (text behind speaker, parallax, sticker collage)')
+    s.add_argument('slug'); s.add_argument('--every', type=int, default=2); s.add_argument('--frames', help='e.g. 1-300')
+    s.add_argument('--exclude', action='append', help='zone to drop from the mask, normalised x0,y0,x1,y1 (repeatable; saved in cuts.json)')
+    s.set_defaults(f=cmd_segment)
     s = sp.add_parser('grade', help='set the colour grade (preset, intensity 0-100, per-reel or per-clip corrections)')
     s.add_argument('slug'); s.add_argument('--preset'); s.add_argument('--intensity', type=float)
     s.add_argument('--exposure', type=float, help='EV, e.g. 0.2'); s.add_argument('--temperature', type=float)
