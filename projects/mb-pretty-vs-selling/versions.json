@@ -71,5 +71,39 @@
       "audio": true,
       "problems": []
     }
+  },
+  {
+    "id": "sb001",
+    "kind": "storyboard",
+    "file": "storyboard/sb001.png",
+    "created": "2026-11-08T02:10:05+02:00",
+    "times": [
+      3.183,
+      7.733,
+      11.653,
+      18.59,
+      32.267,
+      38.897,
+      46.95
+    ],
+    "anchor_misses": [],
+    "note": ""
+  },
+  {
+    "id": "sb002",
+    "kind": "storyboard",
+    "file": "storyboard/sb002.png",
+    "created": "2026-11-08T02:10:20+02:00",
+    "times": [
+      3.183,
+      7.733,
+      11.653,
+      18.59,
+      32.267,
+      38.897,
+      46.95
+    ],
+    "anchor_misses": [],
+    "note": "ad2 text fits, three-cards spacing"
   }
 ]
