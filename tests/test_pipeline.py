@@ -88,6 +88,21 @@ class TimingProblemTests(Tmp):
         self.assertEqual(misses[0]['anchor'], 'مش موجودة')
 
 
+class CardSlideTests(Tmp):
+    def test_graphics_wait_for_card_slide(self):
+        import re
+        self.write('project.json', {'mode': 'B'})
+        self.write('words.json', W('واحد اتنين تلاتة اربعة خمسة ستة'))
+        self.write('scenes.json', {'mode': 'B', 'duration': 4.0, 'scenes': [
+            {'id': 'a', 'elements': [{'type': 'text', 'text': 'x', 'in': {'rel': 0.05}}]},
+            {'id': 'b', 'start': 'اربعة', 'elements': [{'type': 'text', 'text': 'y', 'in': {'rel': 0.05}},
+                                                       {'type': 'text', 'text': 'z', 'space': 'canvas', 'in': {'rel': 0.05}}]}]})
+        builder.build(self.d)
+        page = open(os.path.join(self.d, 'build', 'page.html'), encoding='utf-8').read()
+        ins = [float(x) for x in re.findall(r'data-in="([\d.]+)"', page)]
+        self.assertEqual(ins, [0.05, 1.5 + builder.CARD_SLIDE, 1.55])  # first scene and canvas elements unaffected
+
+
 class SnapTests(unittest.TestCase):
     def test_snap_to_frames(self):
         import footage

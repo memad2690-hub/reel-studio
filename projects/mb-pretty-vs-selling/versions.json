@@ -105,5 +105,41 @@
     ],
     "anchor_misses": [],
     "note": "ad2 text fits, three-cards spacing"
+  },
+  {
+    "id": "v001",
+    "kind": "render",
+    "file": "exports/v001.mp4",
+    "sheet": "exports/v001_sheet.png",
+    "created": "2026-11-08T02:25:14+02:00",
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 47.3,
+      "mbps": 4.48,
+      "audio": true,
+      "problems": []
+    },
+    "draft": false,
+    "note": ""
+  },
+  {
+    "id": "v002",
+    "kind": "render",
+    "file": "exports/v002.mp4",
+    "sheet": "exports/v002_sheet.png",
+    "created": "2026-11-08T02:36:37+02:00",
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 47.3,
+      "mbps": 4.49,
+      "audio": true,
+      "problems": []
+    },
+    "draft": false,
+    "note": ""
   }
 ]

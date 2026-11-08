@@ -1,0 +1,345 @@
+{
+ "mode": "B",
+ "words": "words.json",
+ "audio": "build/cut_audio.m4a",
+ "captions": true,
+ "scenes": [
+  {
+   "id": "hook",
+   "title": "Hook",
+   "card": "top",
+   "elements": [
+    {
+     "type": "svg",
+     "svg": "<rect x=\"-170\" y=\"-230\" width=\"340\" height=\"460\" rx=\"26\" fill=\"#1f2a44\" stroke=\"#222\" stroke-width=\"6\"/><circle cx=\"0\" cy=\"-60\" r=\"95\" fill=\"#f2cf4a\"/><circle cx=\"0\" cy=\"-60\" r=\"62\" fill=\"#e8b93a\"/><rect x=\"-34\" y=\"-120\" width=\"68\" height=\"120\" rx=\"14\" fill=\"#fff\" opacity=\".92\"/><text x=\"0\" y=\"95\" font-size=\"44\" font-weight=\"900\" fill=\"#f2cf4a\" text-anchor=\"middle\" font-family=\"Cairo\">PREMIUM</text><rect x=\"-110\" y=\"130\" width=\"220\" height=\"10\" rx=\"5\" fill=\"#ffffff\" opacity=\".45\"/><rect x=\"-80\" y=\"155\" width=\"160\" height=\"10\" rx=\"5\" fill=\"#ffffff\" opacity=\".3\"/><rect x=\"-70\" y=\"182\" width=\"140\" height=\"34\" rx=\"17\" fill=\"#f2cf4a\"/>",
+     "x": 780,
+     "y": 330,
+     "scale": 1.0,
+     "in": {
+      "rel": 0.05
+     }
+    },
+    {
+     "type": "svg",
+     "svg": "<rect x=\"-170\" y=\"-230\" width=\"340\" height=\"460\" rx=\"26\" fill=\"#ffffff\" stroke=\"#222\" stroke-width=\"6\"/><text x=\"0\" y=\"-120\" font-size=\"120\" font-weight=\"900\" fill=\"#d64541\" text-anchor=\"middle\" font-family=\"Cairo\">؟</text><text x=\"0\" y=\"5\" font-size=\"34\" font-weight=\"900\" fill=\"#222\" text-anchor=\"middle\" direction=\"rtl\" font-family=\"Cairo\">لسه بتدور على</text><text x=\"0\" y=\"55\" font-size=\"34\" font-weight=\"900\" fill=\"#222\" text-anchor=\"middle\" direction=\"rtl\" font-family=\"Cairo\">مقاس مظبوط؟</text><rect x=\"-80\" y=\"150\" width=\"160\" height=\"40\" rx=\"20\" fill=\"#2f5d8a\"/>",
+     "x": 300,
+     "y": 330,
+     "scale": 1.0,
+     "in": {
+      "rel": 0.2
+     }
+    },
+    {
+     "type": "pill",
+     "text": "إعلان 1",
+     "color": "ink",
+     "x": 780,
+     "y": 50,
+     "size": 34,
+     "in": {
+      "rel": 0.05
+     }
+    },
+    {
+     "type": "pill",
+     "text": "إعلان 2",
+     "color": "ink",
+     "x": 300,
+     "y": 50,
+     "size": 34,
+     "in": {
+      "rel": 0.2
+     }
+    },
+    {
+     "type": "headline",
+     "pre": "",
+     "hl": "شكله أغلى؟",
+     "post": "",
+     "x": 540,
+     "y": 650,
+     "size": 70,
+     "in": "أغلى",
+     "out": "ومين"
+    },
+    {
+     "type": "headline",
+     "pre": "",
+     "hl": "يبيع أكتر؟",
+     "post": "",
+     "x": 540,
+     "y": 650,
+     "size": 70,
+     "in": "يبيع",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "ad1",
+   "title": "Ad 1: polished",
+   "start": "الإعلان الأولاني",
+   "elements": [
+    {
+     "type": "svg",
+     "svg": "<rect x=\"-170\" y=\"-230\" width=\"340\" height=\"460\" rx=\"26\" fill=\"#1f2a44\" stroke=\"#222\" stroke-width=\"6\"/><circle cx=\"0\" cy=\"-60\" r=\"95\" fill=\"#f2cf4a\"/><circle cx=\"0\" cy=\"-60\" r=\"62\" fill=\"#e8b93a\"/><rect x=\"-34\" y=\"-120\" width=\"68\" height=\"120\" rx=\"14\" fill=\"#fff\" opacity=\".92\"/><text x=\"0\" y=\"95\" font-size=\"44\" font-weight=\"900\" fill=\"#f2cf4a\" text-anchor=\"middle\" font-family=\"Cairo\">PREMIUM</text><rect x=\"-110\" y=\"130\" width=\"220\" height=\"10\" rx=\"5\" fill=\"#ffffff\" opacity=\".45\"/><rect x=\"-80\" y=\"155\" width=\"160\" height=\"10\" rx=\"5\" fill=\"#ffffff\" opacity=\".3\"/><rect x=\"-70\" y=\"182\" width=\"140\" height=\"34\" rx=\"17\" fill=\"#f2cf4a\"/>",
+     "x": 300,
+     "y": 360,
+     "scale": 1.15,
+     "in": {
+      "rel": 0.05
+     }
+    },
+    {
+     "type": "pill",
+     "text": "Design ممتاز",
+     "color": "green",
+     "x": 780,
+     "y": 200,
+     "size": 44,
+     "in": "design"
+    },
+    {
+     "type": "pill",
+     "text": "الألوان",
+     "color": "green",
+     "x": 780,
+     "y": 340,
+     "size": 44,
+     "in": "الألوان"
+    },
+    {
+     "type": "pill",
+     "text": "Typography",
+     "color": "green",
+     "x": 780,
+     "y": 480,
+     "size": 44,
+     "in": "typography"
+    }
+   ]
+  },
+  {
+   "id": "ad2",
+   "title": "Ad 2: simple",
+   "start": "عندك إعلان",
+   "elements": [
+    {
+     "type": "svg",
+     "svg": "<rect x=\"-170\" y=\"-230\" width=\"340\" height=\"460\" rx=\"26\" fill=\"#ffffff\" stroke=\"#222\" stroke-width=\"6\"/><text x=\"0\" y=\"-120\" font-size=\"120\" font-weight=\"900\" fill=\"#d64541\" text-anchor=\"middle\" font-family=\"Cairo\">؟</text><text x=\"0\" y=\"5\" font-size=\"34\" font-weight=\"900\" fill=\"#222\" text-anchor=\"middle\" direction=\"rtl\" font-family=\"Cairo\">لسه بتدور على</text><text x=\"0\" y=\"55\" font-size=\"34\" font-weight=\"900\" fill=\"#222\" text-anchor=\"middle\" direction=\"rtl\" font-family=\"Cairo\">مقاس مظبوط؟</text><rect x=\"-80\" y=\"150\" width=\"160\" height=\"40\" rx=\"20\" fill=\"#2f5d8a\"/>",
+     "x": 780,
+     "y": 360,
+     "scale": 1.15,
+     "in": {
+      "rel": 0.05
+     }
+    },
+    {
+     "type": "pill",
+     "text": "أبسط",
+     "color": "blue",
+     "x": 300,
+     "y": 250,
+     "size": 48,
+     "in": "أبسط"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "بيبدأ بسؤال",
+      "العميل بيسأله فعلًا"
+     ],
+     "x": 300,
+     "y": 450,
+     "size": 40,
+     "in": "بسؤال"
+    }
+   ]
+  },
+  {
+   "id": "mistake",
+   "title": "The mistake",
+   "start": "الغلطة",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "الأجمل",
+     "hl": "مش دايمًا",
+     "post": "هيكسب",
+     "x": 540,
+     "y": 130,
+     "size": 84,
+     "in": "الأجمل",
+     "anim": "stamp"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "الجمال مش العامل الوحيد"
+     ],
+     "x": 540,
+     "y": 380,
+     "size": 50,
+     "in": "الوحيد"
+    },
+    {
+     "type": "pill",
+     "text": "Conversion",
+     "color": "blue",
+     "x": 540,
+     "y": 560,
+     "size": 48,
+     "in": "conversion"
+    }
+   ]
+  },
+  {
+   "id": "three",
+   "title": "3 things",
+   "start": "الإعلان محتاج",
+   "elements": [
+    {
+     "type": "number",
+     "text": "3",
+     "x": 540,
+     "y": 70,
+     "size": 120,
+     "color": "red",
+     "in": "تلات",
+     "anim": "stamp"
+    },
+    {
+     "type": "steps",
+     "x": 540,
+     "y": 225,
+     "gap": 190,
+     "size": 40,
+     "items": [
+      {
+       "type": "wcard",
+       "lines": [
+        "Attention",
+        "يوقف العميل"
+       ],
+       "in": "Attention"
+      },
+      {
+       "type": "wcard",
+       "lines": [
+        "Relevance",
+        "يحس إن الكلام عنه"
+       ],
+       "in": "Relevance"
+      },
+      {
+       "type": "wcard",
+       "lines": [
+        "Reason to buy",
+        "ليه المنتج يستحق"
+       ],
+       "in": "Reason"
+      }
+     ]
+    },
+    {
+     "type": "pill",
+     "text": "+ دليل حقيقي",
+     "color": "red",
+     "x": 540,
+     "y": 770,
+     "size": 42,
+     "in": "دليل"
+    }
+   ]
+  },
+  {
+   "id": "payoff",
+   "title": "Test, don't guess",
+   "start": "إعلان بسيط",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "البسيط",
+     "hl": "ممكن يكسب",
+     "post": "",
+     "x": 540,
+     "y": 130,
+     "size": 86,
+     "in": "يكسب"
+    },
+    {
+     "type": "icon",
+     "name": "check",
+     "x": 540,
+     "y": 360,
+     "color": "green",
+     "in": "باختبار"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "اختبار فعلي"
+     ],
+     "x": 540,
+     "y": 540,
+     "size": 52,
+     "in": "فعلي"
+    },
+    {
+     "type": "pill",
+     "text": "مش بالتخمين",
+     "color": "red",
+     "x": 540,
+     "y": 700,
+     "size": 44,
+     "in": "بالتخمين",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "cta",
+   "title": "Close",
+   "start": "لو عندك",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "متختارش…",
+     "hl": "اختبر",
+     "post": "",
+     "x": 540,
+     "y": 120,
+     "size": 92,
+     "in": "اختبار"
+    },
+    {
+     "type": "pill",
+     "text": "Attention",
+     "color": "blue",
+     "x": 830,
+     "y": 380,
+     "size": 42,
+     "in": "Attention"
+    },
+    {
+     "type": "pill",
+     "text": "Relevance",
+     "color": "blue",
+     "x": 540,
+     "y": 380,
+     "size": 42,
+     "in": "Relevance"
+    },
+    {
+     "type": "pill",
+     "text": "Reason to buy",
+     "color": "blue",
+     "x": 230,
+     "y": 380,
+     "size": 42,
+     "in": "Reason"
+    }
+   ]
+  }
+ ]
+}

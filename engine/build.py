@@ -16,6 +16,7 @@ MODES = {
 }
 CARD = {'x': 40, 'top': 130, 'bottom': 900, 'w': 1000, 'h': 920}
 REGION = {'top': 1080, 'bottom': 60}   # graphics-half origin when the card is at top / bottom
+CARD_SLIDE = 0.45                      # must match the slide duration in runtime.js cardY()
 
 
 def load_config():
@@ -48,10 +49,13 @@ def flag_late(anchors, spec, t, t_out, s_start, what):
                                'problem': f'comes in at {t:.2f}s, after it leaves ({t_out:.2f}s), so it never appears'})
 
 
-def expand(el, mode, anchors, s_start, s_end, idx, ins=None):
-    """Return SVG for one element (seats and steps expand to several animated groups)."""
+def expand(el, mode, anchors, s_start, s_end, idx, ins=None, floor=None):
+    """Return SVG for one element (seats and steps expand to several animated groups).
+    floor: earliest allowed in-time (Mode B: after the face card has finished sliding)."""
     ins = ins if ins is not None else []
     t_in = anchors.resolve(el.get('in'), s_start, default=s_start + 0.2 + 0.12 * idx)
+    if floor is not None:
+        t_in = max(t_in, floor)
     t_out = anchors.resolve(el.get('out'), s_start, default=s_end)
     t_out = min(t_out, s_end)
     what = el.get('text') or el.get('hl') or el.get('title') or el.get('name') or el['type']
@@ -87,6 +91,8 @@ def expand(el, mode, anchors, s_start, s_end, idx, ins=None):
         gap = el.get('gap', 130)
         for i, item in enumerate(el.get('items', [])):
             ti = anchors.resolve(item.get('in'), s_start, default=t_in + 0.6 * i)
+            if floor is not None:
+                ti = max(ti, floor)
             flag_late(anchors, item.get('in'), ti, t_out, s_start, item.get('text') or f'steps item {i + 1}')
             ins.append(ti)
             sub = dict(item); sub.setdefault('type', 'wcard' if mode == 'B' else 'label')
@@ -135,13 +141,17 @@ def build(project_dir, out_dir=None):
     card_pos = 'bottom'
     for i, s in enumerate(scenes):
         st, en = starts[i], ends[i]
+        prev_pos = card_pos
         if mode == 'B':
             card_pos = s.get('card') or ('top' if card_pos == 'bottom' else 'bottom')
+        # Mode B: the card slides for CARD_SLIDE s when it changes side; graphics wait until it has landed
+        floor = st + CARD_SLIDE if (mode == 'B' and i > 0 and card_pos != prev_pos) else None
         els = []
         latest_in = st
         for j, el in enumerate(s.get('elements', [])):
             ins = []
-            svg = expand(el, mode, anchors, st, en, j, ins)
+            svg = expand(el, mode, anchors, st, en, j, ins,
+                         floor=None if el.get('space') == 'canvas' else floor)
             if mode == 'B' and el.get('space') != 'canvas':
                 svg = f'<g transform="translate(0,{REGION[card_pos]})">{svg}</g>'
             els.append(svg)

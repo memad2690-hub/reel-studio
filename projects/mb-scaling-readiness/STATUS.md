@@ -11,3 +11,5 @@
 - 2026-11-08T01:22:03+02:00: storyboard sb001 (6 frames)
 - 2026-11-08T01:56:36+02:00: approved storyboard sb001
 - 2026-11-08T02:07:20+02:00: render v001 1080x1920 48.17s  QA ok
+- 2026-11-08T02:14:40+02:00: approved final v001
+- 2026-11-08T02:14:40+02:00: final approved (v001); build/cf cleared
