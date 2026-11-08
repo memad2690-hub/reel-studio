@@ -1,7 +1,344 @@
 {
-  "mode": "B",
-  "words": "words.json",
-  "audio": "build/cut_audio.m4a",
-  "captions": true,
-  "scenes": []
+ "mode": "B",
+ "words": "words.json",
+ "audio": "build/cut_audio.m4a",
+ "captions": true,
+ "scenes": [
+  {
+   "id": "hook",
+   "title": "Hook",
+   "card": "top",
+   "elements": [
+    {
+     "type": "number",
+     "text": "100,000 ج",
+     "count_to": 100000,
+     "suffix": " ج",
+     "count_dur": 0.9,
+     "x": 540,
+     "y": 130,
+     "size": 120,
+     "color": "green",
+     "in": "100"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "كل ما بيبيع أكتر"
+     ],
+     "x": 540,
+     "y": 360,
+     "size": 52,
+     "in": "بيبيع"
+    },
+    {
+     "type": "headline",
+     "pre": "",
+     "hl": "بيخسر أكتر",
+     "post": "",
+     "x": 540,
+     "y": 570,
+     "size": 100,
+     "in": "بيخسر",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "setup",
+   "title": "The example brand",
+   "start": "تخيل",
+   "elements": [
+    {
+     "type": "pill",
+     "text": "مثال",
+     "color": "blue",
+     "x": 540,
+     "y": 70,
+     "size": 40,
+     "in": "تخيل"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "Sales",
+      "100,000 ج"
+     ],
+     "x": 790,
+     "y": 330,
+     "size": 54,
+     "in": "sales"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "Ads",
+      "25,000 ج"
+     ],
+     "x": 290,
+     "y": 330,
+     "size": 54,
+     "text_color": "red",
+     "in": "25"
+    },
+    {
+     "type": "icon",
+     "name": "megaphone",
+     "x": 290,
+     "y": 580,
+     "in": "ads"
+    },
+    {
+     "type": "icon",
+     "name": "cart",
+     "x": 790,
+     "y": 580,
+     "in": "sales"
+    }
+   ]
+  },
+  {
+   "id": "math",
+   "title": "Money math",
+   "start": "لو تكلفة",
+   "elements": [
+    {
+     "type": "number",
+     "text": "100,000 ج",
+     "x": 540,
+     "y": 50,
+     "size": 76,
+     "color": "green",
+     "in": {
+      "rel": 0.1
+     }
+    },
+    {
+     "type": "pill",
+     "text": "تكاليف متغيرة 80,000",
+     "color": "red",
+     "x": 540,
+     "y": 170,
+     "size": 44,
+     "in": "80"
+    },
+    {
+     "type": "headline",
+     "pre": "فاضل",
+     "hl": "20,000",
+     "post": "بس",
+     "x": 540,
+     "y": 300,
+     "size": 84,
+     "in": "20"
+    },
+    {
+     "type": "pill",
+     "text": "إعلانات 25,000",
+     "color": "red",
+     "x": 540,
+     "y": 440,
+     "size": 44,
+     "in": "25"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "خسارة 5,000 ج"
+     ],
+     "x": 540,
+     "y": 600,
+     "size": 62,
+     "text_color": "red",
+     "in": "خسارة",
+     "anim": "stamp"
+    },
+    {
+     "type": "pill",
+     "text": "قبل المصاريف الثابتة",
+     "color": "ink",
+     "x": 540,
+     "y": 760,
+     "size": 38,
+     "in": "الثابتة"
+    }
+   ]
+  },
+  {
+   "id": "roas",
+   "title": "ROAS 4, congrats?",
+   "start": "رغم",
+   "elements": [
+    {
+     "type": "wcard",
+     "lines": [
+      "Ads Manager"
+     ],
+     "x": 540,
+     "y": 90,
+     "size": 48,
+     "in": "Ads"
+    },
+    {
+     "type": "headline",
+     "pre": "ROAS 4",
+     "hl": "مبروك؟",
+     "post": "",
+     "x": 540,
+     "y": 290,
+     "size": 96,
+     "in": "مبروك",
+     "anim": "stamp"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "كل 1 جنيه إعلانات",
+      "بيجيب 4 جنيه مبيعات"
+     ],
+     "x": 540,
+     "y": 520,
+     "size": 48,
+     "in": "تصرفه"
+    },
+    {
+     "type": "pill",
+     "text": "وبرضو خسران 5,000 ج",
+     "color": "red",
+     "x": 540,
+     "y": 720,
+     "size": 42,
+     "in": {
+      "at": "4",
+      "nth": 2,
+      "offset": 0.3
+     }
+    }
+   ]
+  },
+  {
+   "id": "margin",
+   "title": "Start from margin",
+   "start": "عشان كدا",
+   "elements": [
+    {
+     "type": "wcard",
+     "lines": [
+      "ROAS"
+     ],
+     "x": 540,
+     "y": 110,
+     "size": 64,
+     "in": "ROAS"
+    },
+    {
+     "type": "xmark",
+     "x": 540,
+     "y": 110,
+     "size": 70,
+     "in": "ببدأ",
+     "anim": "stamp"
+    },
+    {
+     "type": "headline",
+     "pre": "ابدأ من",
+     "hl": "Contribution Margin",
+     "post": "",
+     "x": 540,
+     "y": 340,
+     "size": 70,
+     "in": "Contribution"
+    },
+    {
+     "type": "pill",
+     "text": "Break-even ROAS",
+     "color": "blue",
+     "x": 540,
+     "y": 540,
+     "size": 54,
+     "in": "Break"
+    }
+   ]
+  },
+  {
+   "id": "breakeven",
+   "title": "Break-even ROAS",
+   "start": {
+    "at": "Break",
+    "after": 35.0
+   },
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "",
+     "hl": "Break-even ROAS",
+     "post": "",
+     "x": 540,
+     "y": 80,
+     "size": 80,
+     "in": {
+      "rel": 0.05
+     }
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "أقل ROAS",
+      "ما ينفعش تقل عنه"
+     ],
+     "x": 540,
+     "y": 290,
+     "size": 50,
+     "in": "ينفعش"
+    },
+    {
+     "type": "pill",
+     "text": "لو قليت عنه بتخسر",
+     "color": "red",
+     "x": 540,
+     "y": 470,
+     "size": 46,
+     "in": "بتخسر",
+     "anim": "stamp"
+    },
+    {
+     "type": "svg",
+     "svg": "<text x=\"0\" y=\"0\" font-size=\"58\" font-weight=\"900\" fill=\"#222\" text-anchor=\"middle\" dominant-baseline=\"central\" direction=\"ltr\" style=\"unicode-bidi:isolate\" font-family=\"Cairo\">100,000 ÷ 20,000 = 5</text>",
+     "x": 540,
+     "y": 620,
+     "in": {
+      "at": "تقل",
+      "offset": 0.3
+     }
+    },
+    {
+     "type": "pill",
+     "text": "مثال",
+     "color": "blue",
+     "x": 540,
+     "y": 730,
+     "size": 36,
+     "in": {
+      "at": "تقل",
+      "offset": 0.3
+     }
+    }
+   ]
+  },
+  {
+   "id": "cta",
+   "title": "CTA",
+   "start": "لو عايز",
+   "elements": [
+    {
+     "type": "cta",
+     "keyword": "PROFIT",
+     "magnet": "فيديو: احسب الـ Break-even ROAS",
+     "x": 540,
+     "y": 160,
+     "in": "اكتب"
+    }
+   ]
+  }
+ ]
 }

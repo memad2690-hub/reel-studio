@@ -59,5 +59,39 @@
       "audio": true,
       "problems": []
     }
+  },
+  {
+    "id": "sb001",
+    "kind": "storyboard",
+    "file": "storyboard/sb001.png",
+    "created": "2026-11-08T03:01:03+02:00",
+    "times": [
+      4.813,
+      9.47,
+      22.67,
+      30.93,
+      35.57,
+      42.283,
+      48.25
+    ],
+    "anchor_misses": [],
+    "note": ""
+  },
+  {
+    "id": "sb002",
+    "kind": "storyboard",
+    "file": "storyboard/sb002.png",
+    "created": "2026-11-08T03:01:21+02:00",
+    "times": [
+      4.813,
+      9.47,
+      22.67,
+      30.93,
+      35.57,
+      42.283,
+      48.25
+    ],
+    "anchor_misses": [],
+    "note": "calc earlier, breakeven start, مبروك؟"
   }
 ]
