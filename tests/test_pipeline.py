@@ -165,6 +165,54 @@ class EditorialV2Tests(Tmp):
         self.assertIn('25,000 ج', svg); self.assertNotIn('-25,000', svg)
 
 
+class ChartCheckTests(unittest.TestCase):
+    def check(self, el):
+        import charts
+        return charts.check(el)
+
+    def test_waterfall_total_and_wrong_result(self):
+        wf = {'type': 'waterfall', 'rows': [{'value': 100000}, {'value': 50000, 'op': '-'}, {'value': 25000, 'op': '-'},
+                                            {'value': 10000, 'op': '-'}], 'result': {'value': 15000}}
+        self.assertEqual(self.check(wf), (15000, []))
+        wf['result']['value'] = 25000
+        self.assertIn('add up', self.check(wf)[1][0])
+
+    def test_donut_total(self):
+        self.assertEqual(self.check({'type': 'donut', 'total': 100, 'segments': [{'value': 60}, {'value': 30}, {'value': 10}]})[1], [])
+        self.assertTrue(self.check({'type': 'donut', 'total': 100, 'segments': [{'value': 60}, {'value': 30}]})[1])
+
+    def test_funnel_rates_and_order(self):
+        rates, p = self.check({'type': 'funnel', 'stages': [{'value': 10000}, {'value': 2000, 'rate': 20}, {'value': 500}]})
+        self.assertEqual((rates, p), ([20.0, 25.0], []))
+        self.assertTrue(self.check({'type': 'funnel', 'stages': [{'value': 100}, {'value': 200}]})[1])
+        self.assertTrue(self.check({'type': 'funnel', 'stages': [{'value': 100}, {'value': 50, 'rate': 40}]})[1])
+
+    def test_breakeven(self):
+        r, p = self.check({'type': 'breakeven', 'margin_pct': 20, 'expect': 5})
+        self.assertEqual((round(r['be'], 6), p), (5.0, []))
+        r, p = self.check({'type': 'breakeven', 'revenue': 100000, 'variable_costs': 80000})
+        self.assertAlmostEqual(r['be'], 5.0)
+        self.assertTrue(self.check({'type': 'breakeven', 'margin_pct': 20, 'expect': 4})[1])
+        self.assertIn('no break-even', self.check({'type': 'breakeven', 'margin_pct': -5})[1][0])
+
+    def test_percent_is_isolated(self):
+        import charts
+        self.assertEqual(charts.pct(20), '\u206620%\u2069')
+
+    def test_wrong_chart_blocks_build(self):
+        d = tempfile.mkdtemp()
+        try:
+            for f, v in (('project.json', {'mode': 'B'}), ('words.json', W('واحد اتنين تلاتة')),
+                         ('scenes.json', {'mode': 'B', 'duration': 2, 'scenes': [{'id': 'a', 'elements': [
+                             {'type': 'donut', 'total': 100, 'segments': [{'value': 50}]}]}]})):
+                with open(os.path.join(d, f), 'w', encoding='utf-8') as fh:
+                    json.dump(v, fh, ensure_ascii=False)
+            misses = builder.build(d)['anchor_misses']
+            self.assertTrue(any(m['problem'].startswith('finance:') for m in misses))
+        finally:
+            shutil.rmtree(d, ignore_errors=True)
+
+
 class SnapTests(unittest.TestCase):
     def test_snap_to_frames(self):
         import footage

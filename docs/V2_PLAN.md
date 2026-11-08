@@ -155,3 +155,13 @@ Determinism: the same 5 frames rendered twice are byte-identical (md5).
 
 Not done yet in M1 terms: arrows/diagram components beyond the existing arrow, keyword highlight
 inside headlines beyond the existing highlighter, low-res preview renders, transitions.dev study.
+
+### Milestone 2 — Style 04 Data Storytelling (2026-11-08)
+Built: `engine/charts.py` with `bars` (+ dashed reference line), `waterfall`, `donut`, `line`, `funnel`,
+`breakeven`; per-item timing on spoken words; runtime animations (bars grow, lines draw, donut segments sweep,
+labels fade in). Finance checks block render: waterfall result, donut total, funnel order and rates, break-even
+math and verdict. Percentages isolated for RTL. Gallery project `scripts/make_gallery.py` (`_demo-data`).
+Tests: 35 passing (6 new chart checks).
+Measured: gallery (no talking-head frames) renders 40 s in 66 s (≈1.7 s per output second) vs ≈12 s/s for
+reels with full-frame card PNGs — card-frame loading dominates render time; a faster card-frame format is the
+main performance lever (to benchmark: JPEG q≈95 card frames, or lower PNG compression).

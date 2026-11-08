@@ -7,6 +7,7 @@ import sys
 sys.path.insert(0, os.path.dirname(__file__))
 from timing import Anchors, chunk_captions, load_words, norm  # noqa: E402
 import kits  # noqa: E402
+import charts  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -77,6 +78,8 @@ def expand(el, mode, anchors, s_start, s_end, idx, ins=None, floor=None):
     t = el['type']
     if t == 'equation':
         return expand_equation(el, mode, anchors, s_start, t_in, t_out, ins, floor, kind, ex)
+    if t in charts.TYPES:
+        return expand_chart(el, mode, anchors, s_start, t_in, t_out, ins, floor, kind, ex)
     if t == 'seats':
         n, cols = el.get('n', 20), el.get('cols', 10)
         size, gap = el.get('size', 36), el.get('gap', 10)
@@ -162,6 +165,31 @@ def expand_equation(el, mode, anchors, s_start, t_in, t_out, ins, floor, kind, e
     out += anim_group(kits.eq_result(res, total, size, w, mode), tr, t_out, res.get('anim', 'stamp'), x,
                       y + len(rows) * gap + 30, exit=ex)
     return out
+
+
+def expand_chart(el, mode, anchors, s_start, t_in, t_out, ins, floor, kind, ex):
+    """Charts: one time per bar/segment/stage/point (their own `in`, else staggered), checked numbers."""
+    _, problems = charts.check(el)
+    for p in problems:
+        anchors.misses.append({'anchor': None, 'element': el['type'], 'problem': 'finance: ' + p})
+    if problems and el['type'] in ('waterfall', 'donut', 'funnel', 'breakeven'):
+        return ''
+    times = []
+    for i, it in enumerate(charts.item_specs(el)):
+        ti = t_in if (i == 0 and not it.get('in')) else anchors.resolve(it.get('in'), s_start, default=t_in + 0.5 * i)
+        if floor is not None:
+            ti = max(ti, floor)
+        ti = max(ti, t_in)
+        flag_late(anchors, it.get('in'), ti, t_out, s_start, it.get('label') or f'{el["type"]} item {i + 1}')
+        times.append(ti); ins.append(ti)
+    ref = el.get('ref')
+    if ref:
+        rt = anchors.resolve(ref.get('in'), s_start, default=times[-1] + 0.5 if times else t_in)
+        ref['_t'] = max(rt, t_in)
+        flag_late(anchors, ref.get('in'), ref['_t'], t_out, s_start, 'reference line')
+        ins.append(ref['_t'])
+    x, y = el.get('x', 540), el.get('y', 0)
+    return anim_group(charts.build(el, times), t_in, t_out, kind if kind != 'pop' else 'fade', x, y, exit=ex)
 
 
 def apply_brand(name, cfg):

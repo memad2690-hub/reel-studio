@@ -5,7 +5,7 @@
   const easeOut = p => 1 - Math.pow(1 - p, 3);
   const easeInOut = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  let scenes, anims, counts, cap, card, cardImg;
+  let scenes, anims, counts, cap, card, cardImg, parts = [];
 
   function fitBoxes() {
     document.querySelectorAll('[data-fit]').forEach(g => {
@@ -59,6 +59,16 @@
       pre: t.dataset.prefix || '', suf: t.dataset.suffix || '', g: t.closest('.a') }));
     cap = document.getElementById('cap'); card = document.getElementById('card');
     cardImg = document.getElementById('cardimg');
+    // chart parts animate on their own clocks (absolute data-t0 + optional delay data-dl)
+    const T = el => +el.dataset.t0 + (+el.dataset.dl || 0);
+    parts = [...document.querySelectorAll('.grow,.draw,.arc,.tl')].map(el => {
+      const k = el.classList.contains('grow') ? 'grow' : el.classList.contains('draw') ? 'draw' : el.classList.contains('arc') ? 'arc' : 'tl';
+      const o = { el, k, t0: T(el), d: +el.dataset.d || 0.5 };
+      if (k === 'grow') { el.style.transformBox = 'fill-box'; el.style.transformOrigin = el.dataset.o || '50% 100%'; }
+      if (k === 'draw') { o.len = el.getTotalLength ? el.getTotalLength() : 1000; el.style.strokeDasharray = o.len; }
+      if (k === 'arc') { o.len = +el.dataset.len; o.circ = +el.dataset.circ; }
+      return o;
+    });
   }
 
   // deterministic damped spring (0 → 1), no state between frames
@@ -154,6 +164,13 @@
       const v = exitFx(a, t, entrance(a, t));
       st.opacity = v.op; st.transform = `translate(${v.tx}px, ${v.ty}px) rotate(${v.rot}deg) scale(${v.sc})`;
       st.clipPath = v.clip || '';
+    });
+    parts.forEach(o => {
+      const p = clamp((t - o.t0) / o.d, 0, 1), e = easeOut(p), st = o.el.style;
+      if (o.k === 'grow') { st.transform = `scaleY(${e})`; st.opacity = p > 0 ? 1 : 0; }
+      else if (o.k === 'draw') st.strokeDashoffset = o.len * (1 - p);   // linear: reaches each point on time
+      else if (o.k === 'arc') o.el.setAttribute('stroke-dasharray', `${(o.len * e).toFixed(2)} ${o.circ}`);
+      else st.opacity = clamp((t - o.t0) / 0.25, 0, 1);
     });
     counts.forEach(c => {
       const t0 = c.g ? +c.g.dataset.in : 0; const p = clamp((t - t0) / c.dur, 0, 1);

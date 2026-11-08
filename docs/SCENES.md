@@ -128,3 +128,22 @@ The card morphs between layouts over 0.45 s; graphics in that scene wait until i
 - `statcard`: `label`, `value` (number), `unit` (default `ج`, `""` for ratios), `tone` `positive` (green) / `negative` (red) / `neutral`, `count` (count-up, default true), `size`. Negative values are shown as their absolute amount; say "خسارة" in the label.
 - `equation`: `rows[]` of `{label, value, op ("+"|"-"), tone, in}` (first row has no op) and `result {label, label_negative, value, tone, in}`. `build` recomputes the total; a wrong `result.value` or a tone that contradicts the sign is a **finance problem** and `render` refuses to run. Operators are drawn as shapes (never a `-` character), the result shows the absolute value with `label_negative` when below zero.
 - Illustrative numbers still need a `مثال` pill. Never invent results.
+
+## V2 — Style 04 Data Storytelling (Mode B)
+
+All charts are drawn around their `x`,`y` in the graphics region, read right-to-left (first item on the right),
+and animate item by item: give each bar/segment/stage/point its own `in` anchor (else they stagger 0.5 s).
+Numbers are checked by `build`; a **finance problem blocks render**. Illustrative numbers need a `مثال` pill.
+Gallery of every chart: `python3 scripts/make_gallery.py` → `projects/_demo-data`.
+
+| type | keys | checked |
+|---|---|---|
+| `bars` | `items[] {label, value, tone, in}`, `unit`, `w`, `h`, optional `ref {value, label, tone, in}` (dashed target line, e.g. break-even) | every value numeric |
+| `waterfall` | `rows[] {label, value, op "+"/"-", in}` (first row = start), `result {label, label_negative, value, in}`, `unit`, `w`, `h` | result = start ± rows; negative total shown as `label_negative` + absolute value |
+| `donut` | `segments[] {label, value, tone, in}`, optional `total`, `center`, `r`, `thickness` | segments ≥ 0 and sum to `total` |
+| `line` | `points[] {label, value, in}`, `unit`, `tone`, `w`, `h` | values numeric; the line reaches each point as it is said |
+| `funnel` | `stages[] {label, value, rate?, in}`, `w` | stages never increase; conversion % computed (a given `rate` must match within 0.5 pt) |
+| `breakeven` | `margin_pct` **or** `revenue` + `variable_costs`; `expect`, `actual`; `in` (margin), `in_be`, `in_actual` | break-even ROAS = 1 ÷ margin; `expect` must match; verdict (above/below) is computed, never typed |
+
+Tones: `positive` (green), `negative` (red), `neutral` (ink), `blue`, `yellow`, `grey`. Percentages are wrapped in a
+left-to-right isolate so `20%` never displays as `%20` inside Arabic text.
