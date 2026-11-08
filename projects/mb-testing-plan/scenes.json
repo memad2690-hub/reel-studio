@@ -1,7 +1,338 @@
 {
-  "mode": "B",
-  "words": "words.json",
-  "audio": "build/cut_audio.m4a",
-  "captions": true,
-  "scenes": []
+ "mode": "B",
+ "words": "words.json",
+ "audio": "build/cut_audio.m4a",
+ "captions": true,
+ "scenes": [
+  {
+   "id": "hook",
+   "title": "Hook",
+   "card": "top",
+   "elements": [
+    {
+     "type": "number",
+     "text": "50,000 ج",
+     "count_to": 50000,
+     "suffix": " ج",
+     "count_dur": 0.8,
+     "x": 540,
+     "y": 120,
+     "size": 130,
+     "color": "blue",
+     "in": "50"
+    },
+    {
+     "type": "text",
+     "text": "ads budget",
+     "x": 540,
+     "y": 250,
+     "size": 54,
+     "in": "ads"
+    },
+    {
+     "type": "headline",
+     "pre": "ما تحرقهمش على",
+     "hl": "إعلان واحد",
+     "post": "",
+     "x": 540,
+     "y": 460,
+     "size": 68,
+     "in": "تحرقهمش",
+     "anim": "stamp"
+    },
+    {
+     "type": "icon",
+     "name": "warning",
+     "x": 540,
+     "y": 660,
+     "color": "red",
+     "in": "واحد",
+     "anim": "shake"
+    }
+   ]
+  },
+  {
+   "id": "mistake",
+   "title": "The mistake",
+   "start": "أكتر خطأ",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "أكتر",
+     "hl": "خطأ",
+     "post": "بشوفه",
+     "x": 540,
+     "y": 90,
+     "size": 90,
+     "in": "خطأ"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "معظم الميزانية",
+      "على creative واحد"
+     ],
+     "x": 540,
+     "y": 320,
+     "size": 52,
+     "in": "معظم"
+    },
+    {
+     "type": "pill",
+     "text": "لأنه عاجبه",
+     "color": "red",
+     "x": 770,
+     "y": 560,
+     "size": 42,
+     "in": "عاجبه"
+    },
+    {
+     "type": "pill",
+     "text": "ما عندوش غيره",
+     "color": "red",
+     "x": 300,
+     "y": 560,
+     "size": 42,
+     "in": "غيره"
+    }
+   ]
+  },
+  {
+   "id": "fail",
+   "title": "If it fails",
+   "start": "فلو",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "لو فشل…",
+     "hl": "المشكلة فين؟",
+     "post": "",
+     "x": 540,
+     "y": 80,
+     "size": 74,
+     "in": "فشل"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "Audience؟"
+     ],
+     "x": 830,
+     "y": 260,
+     "size": 40,
+     "in": "audience"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "Offer؟"
+     ],
+     "x": 540,
+     "y": 260,
+     "size": 40,
+     "in": "offer"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "Creative angle؟"
+     ],
+     "x": 240,
+     "y": 260,
+     "size": 40,
+     "in": "angle"
+    },
+    {
+     "type": "pill",
+     "text": "مفيش اختبار بيفصل بينهم",
+     "color": "red",
+     "x": 540,
+     "y": 450,
+     "size": 44,
+     "in": "بيفصل",
+     "anim": "stamp"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "هتحدد بناءً على إيه؟"
+     ],
+     "x": 540,
+     "y": 640,
+     "size": 48,
+     "in": "بناء"
+    }
+   ]
+  },
+  {
+   "id": "plan",
+   "title": "Testing plan",
+   "start": "قبل ما تصرف",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "اعمل",
+     "hl": "testing plan",
+     "post": "",
+     "x": 540,
+     "y": 90,
+     "size": 88,
+     "in": "testing",
+     "anim": "stamp"
+    },
+    {
+     "type": "pill",
+     "text": "حملة مستقرة بالفعل",
+     "color": "green",
+     "x": 540,
+     "y": 250,
+     "size": 42,
+     "in": "مستقرة"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "جزء محدود من الميزانية"
+     ],
+     "x": 540,
+     "y": 410,
+     "size": 48,
+     "in": "محدود"
+    },
+    {
+     "type": "pill",
+     "text": "Angle 1",
+     "color": "blue",
+     "x": 820,
+     "y": 600,
+     "size": 42,
+     "in": "three"
+    },
+    {
+     "type": "pill",
+     "text": "Angle 2",
+     "color": "blue",
+     "x": 540,
+     "y": 600,
+     "size": 42,
+     "in": {
+      "at": "three",
+      "offset": 0.25
+     }
+    },
+    {
+     "type": "pill",
+     "text": "Angle 3",
+     "color": "blue",
+     "x": 260,
+     "y": 600,
+     "size": 42,
+     "in": {
+      "at": "three",
+      "offset": 0.5
+     }
+    }
+   ]
+  },
+  {
+   "id": "rules",
+   "title": "Set the rules",
+   "start": "ثبت",
+   "elements": [
+    {
+     "type": "steps",
+     "x": 540,
+     "y": 110,
+     "gap": 190,
+     "size": 50,
+     "items": [
+      {
+       "type": "wcard",
+       "text": "ثبت المتغيرات",
+       "in": "ثبت"
+      },
+      {
+       "type": "wcard",
+       "text": "حدد KPIs",
+       "in": "KPIs"
+      },
+      {
+       "type": "wcard",
+       "text": "Stop rules قبل التشغيل",
+       "text_color": "red",
+       "in": "stop"
+      }
+     ]
+    },
+    {
+     "type": "icon",
+     "name": "check",
+     "x": 540,
+     "y": 700,
+     "color": "green",
+     "in": "التشغيل"
+    }
+   ]
+  },
+  {
+   "id": "payoff",
+   "title": "Budget buys information",
+   "start": "كده الميزانية",
+   "elements": [
+    {
+     "type": "wcard",
+     "lines": [
+      "مش بس بتجيب مبيعات"
+     ],
+     "x": 540,
+     "y": 110,
+     "size": 50,
+     "in": "مبيعات"
+    },
+    {
+     "type": "headline",
+     "pre": "بتشتريلك",
+     "hl": "معلومات",
+     "post": "",
+     "x": 540,
+     "y": 330,
+     "size": 96,
+     "in": "بتشتريلك",
+     "anim": "stamp"
+    },
+    {
+     "type": "icon",
+     "name": "chart",
+     "x": 540,
+     "y": 560,
+     "in": "القرار"
+    },
+    {
+     "type": "pill",
+     "text": "للقرار اللي بعده",
+     "color": "blue",
+     "x": 540,
+     "y": 720,
+     "size": 42,
+     "in": "بعده"
+    }
+   ]
+  },
+  {
+   "id": "cta",
+   "title": "CTA",
+   "start": "لو عايز",
+   "elements": [
+    {
+     "type": "cta",
+     "prompt": "اكتبلي في الكومنتات",
+     "keyword": "BUDGET",
+     "magnet": "مثال testing plan عملي",
+     "x": 540,
+     "y": 160,
+     "in": "اكتبلي"
+    }
+   ]
+  }
+ ]
 }

@@ -51,5 +51,39 @@
       "audio": true,
       "problems": []
     }
+  },
+  {
+    "id": "sb001",
+    "kind": "storyboard",
+    "file": "storyboard/sb001.png",
+    "created": "2026-11-08T02:39:13+02:00",
+    "times": [
+      3.53,
+      10.75,
+      22.61,
+      31.587,
+      36.61,
+      42.5,
+      48.227
+    ],
+    "anchor_misses": [],
+    "note": ""
+  },
+  {
+    "id": "sb002",
+    "kind": "storyboard",
+    "file": "storyboard/sb002.png",
+    "created": "2026-11-08T02:39:24+02:00",
+    "times": [
+      3.53,
+      10.75,
+      22.61,
+      31.587,
+      36.61,
+      42.5,
+      48.227
+    ],
+    "anchor_misses": [],
+    "note": "hook headline smaller"
   }
 ]
