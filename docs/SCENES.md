@@ -147,3 +147,33 @@ Gallery of every chart: `python3 scripts/make_gallery.py` → `projects/_demo-da
 
 Tones: `positive` (green), `negative` (red), `neutral` (ink), `blue`, `yellow`, `grey`. Percentages are wrapped in a
 left-to-right isolate so `20%` never displays as `%20` inside Arabic text.
+
+## V2 — Styles 02 Kinetic Typography · 07 Split-Screen Battles · 08 Hand-Drawn Whiteboard
+
+Gallery: `python3 scripts/make_gallery.py styles` → `projects/_demo-styles`.
+
+### 02 Kinetic typography
+`{"type": "kinetic", "from": "<anchor>", "to": "<anchor>" | "count": N, "emphasis": [...], "intensity": "low|medium|high", "size", "w", "color"}`
+Shows the **exact spoken words** in that range (never retyped), each appearing at its own spoken time, wrapped right-to-left
+inside `w` and centred. `emphasis` words are 1.35× with a highlighter sweep. Intensity: low = gentle rise, medium = rise + spring,
+high = punch-in with a small rotation. Trailing punctuation is hidden. Text *behind* the speaker needs segmentation (milestone 5).
+
+### 07 Split-screen battles
+- Layouts `half-top` / `half-bottom`: the video fills one half edge-to-edge, graphics the other (region heights 880).
+- `versus`: `a` (shown on the right, read first) and `b`, each `{title, color, in, items[] {text, good, in}, winner_label}`;
+  `ratio` (0.5 or e.g. 0.6), `winner` `a|b` + `in_winner` → winner gets a green frame + label, the other side dims.
+- `scorecard`: `heads {a, b}`, `rows[] {label, a, b, unit, in}`, `lower_is_better`, `in_winner`. Totals and the winner are
+  **computed**; a stated `winner` that disagrees blocks render.
+- `beforeafter`: `before`/`after {label, value, in}`, `unit`, `better` `higher|lower`, `in_change`, optional `change_pct`
+  (checked). The change is green when it moves in the better direction.
+
+### 08 Hand-drawn whiteboard
+Brand `whiteboard` (white board, marker colours). Strokes draw on with deterministic hand-drawn jitter.
+- `circle_mark {rx, ry, color, width}` · `underline {w, color}` · `hand_arrow {dx, dy, bend, color}`
+- `flow {nodes[] {label, color, in}, direction "down"|"rtl", box_w, box_h, gap}`: boxes draw, then their label, then the arrow to the next.
+- `numbered {steps[] {text, in}, gap, color}`: hand-drawn numbered circles.
+
+### Caption presets (`caption_style`)
+`box` (default) · `highlight` (keywords on the highlighter) · `clean` (documentary: no box, shadowed) · `kinetic` (big, current
+word highlighted) · `editorial` (black-and-white, square) · `energy` (highlighter box, current word on red) · `minimal` (small,
+cinematic). Light presets switch to dark text when the caption sits on the page instead of the video.

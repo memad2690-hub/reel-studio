@@ -165,3 +165,12 @@ Tests: 35 passing (6 new chart checks).
 Measured: gallery (no talking-head frames) renders 40 s in 66 s (≈1.7 s per output second) vs ≈12 s/s for
 reels with full-frame card PNGs — card-frame loading dominates render time; a faster card-frame format is the
 main performance lever (to benchmark: JPEG q≈95 card frames, or lower PNG compression).
+
+### Milestone 3 — Styles 02 / 07 / 08 + caption presets (2026-11-08)
+Built `engine/fx.py`: `kinetic` (exact spoken words, per-word timing, RTL wrap, emphasis, 3 intensities), `versus`
+(winner reveal, loser dims, drawn divider + VS), `scorecard` (computed totals/winner, checked), `beforeafter` (computed
+% change, direction-aware colour, checked), whiteboard `circle_mark` / `underline` / `hand_arrow` / `flow` / `numbered`
+(deterministic hand-drawn strokes). Layouts `half-top` / `half-bottom`; brand `whiteboard`; caption presets now 7
+(box, highlight, clean, kinetic, editorial, energy, minimal) with an active-word highlight driven by word times.
+Gallery `_demo-styles` (draft render 1368 frames in 79 s). Tests: 40 passing.
+Deferred to milestone 5 (needs segmentation): text behind the speaker.

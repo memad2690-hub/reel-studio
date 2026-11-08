@@ -8,6 +8,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from timing import Anchors, chunk_captions, load_words, norm  # noqa: E402
 import kits  # noqa: E402
 import charts  # noqa: E402
+import fx  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -26,6 +27,8 @@ LAYOUTS = {
     'full':      {'x': 0,   'y': 0,   'w': 1080, 'h': 1920, 'r': 0,  'b': 0, 'y0': 1080, 'rh': 780},
     'pip-right': {'x': 690, 'y': 150, 'w': 350,  'h': 430,  'r': 36, 'b': 6, 'y0': 620,  'rh': 1200},
     'pip-left':  {'x': 40,  'y': 150, 'w': 350,  'h': 430,  'r': 36, 'b': 6, 'y0': 620,  'rh': 1200},
+    'half-top':    {'x': 0, 'y': 0,   'w': 1080, 'h': 960, 'r': 0, 'b': 0, 'y0': 1000, 'rh': 880},   # split screen
+    'half-bottom': {'x': 0, 'y': 960, 'w': 1080, 'h': 960, 'r': 0, 'b': 0, 'y0': 40,   'rh': 880},
 }
 REGION = {k: v['y0'] for k, v in LAYOUTS.items()}
 
@@ -78,7 +81,7 @@ def expand(el, mode, anchors, s_start, s_end, idx, ins=None, floor=None):
     t = el['type']
     if t == 'equation':
         return expand_equation(el, mode, anchors, s_start, t_in, t_out, ins, floor, kind, ex)
-    if t in charts.TYPES:
+    if t in charts.TYPES or t in fx.TYPES:
         return expand_chart(el, mode, anchors, s_start, t_in, t_out, ins, floor, kind, ex)
     if t == 'seats':
         n, cols = el.get('n', 20), el.get('cols', 10)
@@ -168,14 +171,19 @@ def expand_equation(el, mode, anchors, s_start, t_in, t_out, ins, floor, kind, e
 
 
 def expand_chart(el, mode, anchors, s_start, t_in, t_out, ins, floor, kind, ex):
-    """Charts: one time per bar/segment/stage/point (their own `in`, else staggered), checked numbers."""
-    _, problems = charts.check(el)
+    """Charts/fx: one time per bar/segment/stage/point/node (their own `in`, else staggered), checked numbers."""
+    mod = charts if el['type'] in charts.TYPES else fx
+    if el['type'] == 'kinetic':
+        el['_words'] = fx.kinetic_words(el, anchors, s_start)
+        if el['_words']:
+            t_in = max(t_in if el.get('in') else el['_words'][0]['start'], floor or 0)
+    _, problems = mod.check(el)
     for p in problems:
         anchors.misses.append({'anchor': None, 'element': el['type'], 'problem': 'finance: ' + p})
-    if problems and el['type'] in ('waterfall', 'donut', 'funnel', 'breakeven'):
+    if problems and el['type'] in ('waterfall', 'donut', 'funnel', 'breakeven', 'scorecard', 'beforeafter', 'kinetic'):
         return ''
     times = []
-    for i, it in enumerate(charts.item_specs(el)):
+    for i, it in enumerate(mod.item_specs(el)):
         ti = t_in if (i == 0 and not it.get('in')) else anchors.resolve(it.get('in'), s_start, default=t_in + 0.5 * i)
         if floor is not None:
             ti = max(ti, floor)
@@ -189,7 +197,9 @@ def expand_chart(el, mode, anchors, s_start, t_in, t_out, ins, floor, kind, ex):
         flag_late(anchors, ref.get('in'), ref['_t'], t_out, s_start, 'reference line')
         ins.append(ref['_t'])
     x, y = el.get('x', 540), el.get('y', 0)
-    return anim_group(charts.build(el, times), t_in, t_out, kind if kind != 'pop' else 'fade', x, y, exit=ex)
+    if el['type'] == 'kinetic':
+        ins.append(el['_words'][-1]['start'])
+    return anim_group(mod.build(el, times), t_in, t_out, kind if kind != 'pop' else 'none', x, y, exit=ex)
 
 
 def apply_brand(name, cfg):
@@ -240,6 +250,7 @@ def build(project_dir, out_dir=None):
     W, H = M['W'], M['H']
     words_path = os.path.join(pdir, spec.get('words', 'words.json'))
     words = load_words(words_path) if os.path.exists(words_path) else []
+    fx.WORDS = words
     anchors = Anchors(words)
 
     audio = spec.get('audio') or ('audio/vo.mp3' if mode == 'A' else 'build/cut_audio.m4a')

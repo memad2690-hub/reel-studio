@@ -5,7 +5,7 @@
   const easeOut = p => 1 - Math.pow(1 - p, 3);
   const easeInOut = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  let scenes, anims, counts, cap, card, cardImg, parts = [];
+  let scenes, anims, counts, cap, card, cardImg, parts = [], kws = [], dims = [];
 
   function fitBoxes() {
     document.querySelectorAll('[data-fit]').forEach(g => {
@@ -61,6 +61,29 @@
     cardImg = document.getElementById('cardimg');
     // chart parts animate on their own clocks (absolute data-t0 + optional delay data-dl)
     const T = el => +el.dataset.t0 + (+el.dataset.dl || 0);
+    // kinetic phrases: measure each word, wrap into right-to-left lines inside data-w, centre each line
+    kws = [];
+    document.querySelectorAll('.kin').forEach(k => {
+      const W = +k.dataset.w, size = +k.dataset.size, lh = +k.dataset.lh, gap = size * 0.28;
+      const ws = [...k.querySelectorAll('.kw')].map(g => { const t = g.querySelector('text'); return { g, t, w: t.getComputedTextLength() }; });
+      const lines = []; let cur = [], cw = 0;
+      ws.forEach(o => { const add = (cur.length ? gap : 0) + o.w; if (cur.length && cw + add > W) { lines.push([cur, cw]); cur = []; cw = 0; }
+        cw += (cur.length ? gap : 0) + o.w; cur.push(o); });
+      if (cur.length) lines.push([cur, cw]);
+      const y0 = -(lines.length - 1) * size * lh / 2;
+      lines.forEach(([ln, lw], li) => {
+        let x = lw / 2;                                           // start at the right edge (RTL)
+        ln.forEach(o => {
+          const cx = x - o.w / 2; x -= o.w + gap;
+          o.g.setAttribute('transform', `translate(${cx.toFixed(1)},${(y0 + li * size * lh).toFixed(1)})`);
+          const bg = o.g.querySelector('.kwbg');
+          if (bg) { const fs = +o.t.getAttribute('font-size'); bg.setAttribute('x', -o.w / 2 - 14); bg.setAttribute('y', -fs * 0.42);
+            bg.setAttribute('width', o.w + 28); bg.setAttribute('height', fs * 0.8); }
+          kws.push({ g: o.g, inner: o.t, bg, t0: +o.g.dataset.t0, int: o.g.dataset.int, emph: o.g.dataset.emph === '1' });
+        });
+      });
+    });
+    dims = [...document.querySelectorAll('.dim')].map(el => ({ el, t0: +el.dataset.t0 }));
     parts = [...document.querySelectorAll('.grow,.draw,.arc,.tl')].map(el => {
       const k = el.classList.contains('grow') ? 'grow' : el.classList.contains('draw') ? 'draw' : el.classList.contains('arc') ? 'arc' : 'tl';
       const o = { el, k, t0: T(el), d: +el.dataset.d || 0.5 };
@@ -139,13 +162,28 @@
     return v;
   }
 
-  function showCaption(c, rc) {
+  const CAPS = {   // caption presets: container style, active-word style (null = no active word)
+    box: null, highlight: null, clean: null,
+    kinetic:   { box: 'background:none;color:#fff;font-size:74px;text-shadow:0 4px 0 #000,0 0 18px rgba(0,0,0,.8)', act: 'color:HL' },
+    editorial: { box: 'background:#fff;color:#111;border:5px solid #111;border-radius:0;box-shadow:8px 8px 0 #111', act: null },
+    energy:    { box: 'background:HL;color:#111;border-radius:16px;font-size:64px', act: 'background:#d64541;color:#fff;padding:0 10px;border-radius:10px' },
+    minimal:   { box: 'background:none;color:#fff;font-size:42px;font-weight:700;text-shadow:0 2px 6px rgba(0,0,0,.85)', act: null },
+  };
+  let capBase = null;
+  function showCaption(c, rc, t) {
     const style = D.capStyle || 'box';
+    const P = CAPS[style];
+    if (capBase === null) capBase = cap.getAttribute('style') || '';
+    if (P) cap.setAttribute('style', capBase + ';' + P.box.replace(/HL/g, D.hlColor));
+    const esc = s => s.replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+    const tg0 = (rc && (rc.target || rc)) || {}, onPage = card && !(tg0.h >= 600);
+    let act = -1;
+    if (P && P.act && c.wt) c.wt.forEach((s0, j) => { if (t >= s0) act = j; });
     if (style === 'box' && !(c.hl && c.hl.length)) cap.textContent = c.text;
     else {
-      const esc = s => s.replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
-      cap.innerHTML = c.text.split(' ').map((w, j) => (c.hl || []).includes(j)
-        ? `<span style="background:${D.hlColor};color:#111;padding:0 10px;border-radius:8px">${esc(w)}</span>` : esc(w)).join(' ');
+      cap.innerHTML = c.text.split(' ').map((w, j) => (c.hl || []).includes(j) && !(P && P.act)
+        ? `<span style="background:${D.hlColor};color:#111;padding:0 10px;border-radius:8px">${esc(w)}</span>`
+        : j === act ? `<span style="${(onPage && style === 'kinetic' ? 'background:HL;color:#111;padding:0 8px;border-radius:8px;text-shadow:none' : P.act).replace(/HL/g, D.hlColor)}">${esc(w)}</span>` : esc(w)).join(' ');
     }
     cap.style.display = 'block';
     if (!card) return;
@@ -154,6 +192,8 @@
     cap.style.left = (big ? rc.x + rc.w / 2 : 540) + 'px';
     cap.style.top = (big ? rc.y + rc.h - 110 : 1560) + 'px';
     if (style === 'clean') { cap.style.background = 'none'; cap.style.textShadow = '0 3px 0 #000, 0 0 14px rgba(0,0,0,.7)'; }
+    // light-on-dark presets sitting on the page (not on the video card) switch to dark text for contrast
+    if (!big && (style === 'kinetic' || style === 'minimal' || style === 'clean')) { cap.style.color = '#111'; cap.style.textShadow = 'none'; }
   }
 
   window.setTime = function (t) {
@@ -172,6 +212,19 @@
       else if (o.k === 'arc') o.el.setAttribute('stroke-dasharray', `${(o.len * e).toFixed(2)} ${o.circ}`);
       else st.opacity = clamp((t - o.t0) / 0.25, 0, 1);
     });
+    kws.forEach(o => {
+      const q = clamp((t - o.t0) / (o.int === 'high' ? 0.35 : 0.45), 0, 1);
+      let op = q > 0 ? Math.min(1, 3 * q) : 0, ty = 0, sc = 1, rot = 0;
+      if (o.int === 'low') { ty = 18 * (1 - easeOut(q)); }
+      else if (o.int === 'high') { sc = 1 + 0.9 * (1 - spring(q)); rot = -10 * (1 - easeOut(q)); }
+      else { ty = 46 * (1 - easeOut(q)); sc = 0.82 + 0.18 * spring(q); }
+      if (o.emph && q > 0) sc *= 1 + 0.06 * Math.exp(-6 * Math.max(0, t - o.t0 - 0.3)) ;
+      o.inner.style.opacity = op; o.inner.style.transformBox = 'fill-box'; o.inner.style.transformOrigin = '50% 50%';
+      o.inner.style.transform = `translateY(${ty}px) rotate(${rot}deg) scale(${sc})`;
+      if (o.bg) { o.bg.style.transformBox = 'fill-box'; o.bg.style.transformOrigin = '100% 50%';
+        o.bg.style.transform = `scaleX(${easeOut(clamp((t - o.t0 - 0.1) / 0.35, 0, 1))})`; }
+    });
+    dims.forEach(o => { o.el.style.opacity = 1 - 0.6 * clamp((t - o.t0) / 0.4, 0, 1); });
     counts.forEach(c => {
       const t0 = c.g ? +c.g.dataset.in : 0; const p = clamp((t - t0) / c.dur, 0, 1);
       c.t.textContent = c.pre + fmt(c.from + (c.to - c.from) * easeOut(p)) + c.suf;
@@ -179,7 +232,7 @@
     let rc = null;
     if (card) { rc = cardRect(t); placeCard(rc); }
     const c = D.captions.find(c => t >= c.start && t < c.end);
-    if (c) showCaption(c, rc || {}); else cap.style.display = 'none';
+    if (c) showCaption(c, rc || {}, t); else cap.style.display = 'none';
   };
 
   window.cardFrame = t => Math.floor(t * D.fps + 1e-6) + 1;

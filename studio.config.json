@@ -96,6 +96,19 @@
         "red": "#d64541",
         "paper": "#f6f6f2"
       }
+    },
+    "whiteboard": {
+      "note": "Style 08: white board, marker colors",
+      "bg": "#fbfbf7",
+      "grid_color": "#f1f1ea",
+      "palette": {
+        "ink": "#1b1b1b",
+        "red": "#e0413a",
+        "blue": "#2563b8",
+        "green": "#2f8a4c",
+        "yellow": "#ffe066",
+        "paper": "#fbfbf7"
+      }
     }
   }
 }

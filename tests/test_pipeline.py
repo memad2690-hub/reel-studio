@@ -213,6 +213,46 @@ class ChartCheckTests(unittest.TestCase):
             shutil.rmtree(d, ignore_errors=True)
 
 
+class FxCheckTests(unittest.TestCase):
+    def test_scorecard_winner_computed(self):
+        import fx
+        sc = {'type': 'scorecard', 'rows': [{'a': 6, 'b': 9}, {'a': 7, 'b': 8}, {'a': 5, 'b': 9}]}
+        self.assertEqual(fx.check(sc), ({'a': 18, 'b': 26, 'winner': 'b'}, []))
+        sc['winner'] = 'a'
+        self.assertIn('winner says', fx.check(sc)[1][0])
+        sc.pop('winner'); sc['lower_is_better'] = True
+        self.assertEqual(fx.check(sc)[0]['winner'], 'a')
+
+    def test_beforeafter_change_and_direction(self):
+        import fx
+        ba = {'type': 'beforeafter', 'before': {'value': 150}, 'after': {'value': 90}, 'better': 'lower', 'change_pct': -40}
+        r, p = fx.check(ba)
+        self.assertEqual((round(r['change']), r['good'], p), (-40, True, []))
+        ba['change_pct'] = -30
+        self.assertTrue(fx.check(ba)[1])
+        ba.pop('change_pct'); ba['better'] = 'higher'
+        self.assertFalse(fx.check(ba)[0]['good'])
+
+    def test_versus_winner_value(self):
+        import fx
+        self.assertTrue(fx.check({'type': 'versus', 'winner': 'left'})[1])
+
+    def test_kinetic_uses_exact_spoken_words(self):
+        import fx
+        from timing import Anchors
+        words = W('الإعلان الحلو مش دايمًا هو اللي بيبيع وبعدين')
+        fx.WORDS = words
+        a = Anchors(words)
+        got = fx.kinetic_words({'type': 'kinetic', 'from': 'الحلو', 'to': 'بيبيع'}, a, 0.0)
+        self.assertEqual(' '.join(w['text'] for w in got), 'الحلو مش دايمًا هو اللي بيبيع')
+        self.assertEqual(len(fx.kinetic_words({'type': 'kinetic', 'from': 'الحلو', 'count': 2}, a, 0.0)), 2)
+
+    def test_caption_word_times(self):
+        from timing import chunk_captions
+        caps = chunk_captions(W('واحد اتنين تلاتة اربعة خمسة'), 2, 3)
+        self.assertTrue(all(len(c['wt']) == len(c['text'].split()) for c in caps))
+
+
 class SnapTests(unittest.TestCase):
     def test_snap_to_frames(self):
         import footage

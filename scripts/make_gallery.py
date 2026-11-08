@@ -1,7 +1,9 @@
-"""Data-storytelling gallery (Style 04): one scene per chart, synthetic words + test-pattern footage.
+"""Style galleries, synthetic words (no footage, no credits):
 
-    python3 scripts/make_gallery.py            # builds projects/_demo-data and its storyboard
-    python3 reel.py render _demo-data --draft  # optional full render
+    python3 scripts/make_gallery.py            # both galleries
+    python3 scripts/make_gallery.py data       # Style 04 charts           → projects/_demo-data
+    python3 scripts/make_gallery.py styles     # Styles 02 / 07 / 08       → projects/_demo-styles
+    python3 reel.py render <slug> --draft      # optional full render
 
 Every number here is an illustrative example (each scene carries a مثال pill); the builder checks the arithmetic.
 """
@@ -76,25 +78,82 @@ SCENES = {
     ]}
 
 
+STYLES_SCRIPT = ('الإعلان الحلو مش دايمًا هو اللي بيبيع. '
+                 'الفلوس بتيجي من الرسالة مش من الشكل. '
+                 'إعلان غالي ولا إعلان بسيط؟ الغالي شكله حلو بس رسالته مش واضحة والبسيط بيرد على سؤال العميل والكسبان هو البسيط. '
+                 'قيم الإعلانين من عشرة الـ hook ستة وتسعة والـ offer سبعة وتمانية والـ proof خمسة وتسعة والمجموع بيقول التاني. '
+                 'الـ CPA كان مية وخمسين جنيه وبقى تسعين بس. '
+                 'رحلة العميل بتبدأ بإعلان وبعدين صفحة المنتج وبعدين الـ checkout وبعدين الشراء. '
+                 'تلات خطوات أول حاجة الـ hook تاني حاجة الـ offer تالت حاجة الـ CTA. '
+                 'وأهم كلمة هنا هي الـ offer.')
+
+STYLES = {
+    'mode': 'B', 'brand': 'whiteboard', 'words': 'words.json', 'audio': 'build/cut_audio.m4a', 'captions': True,
+    'caption_style': 'kinetic',
+    'scenes': [
+        {'id': 'kinetic-high', 'title': 'Kinetic typography (high)', 'layout': 'pip-right', 'elements': [
+            {'type': 'kinetic', 'from': 'الإعلان', 'to': 'بيبيع', 'emphasis': ['بيبيع'], 'intensity': 'high',
+             'x': 540, 'y': 330, 'size': 104, 'w': 940}]},
+        {'id': 'kinetic-medium', 'title': 'Kinetic typography (medium)', 'start': 'الفلوس', 'layout': 'bottom', 'elements': [
+            {'type': 'kinetic', 'from': 'الفلوس', 'to': 'الشكل', 'emphasis': ['الرسالة'], 'intensity': 'medium',
+             'x': 540, 'y': 380, 'size': 96, 'w': 900}]},
+        {'id': 'versus', 'title': 'Split-screen battle', 'start': 'إعلان غالي', 'layout': 'half-top', 'elements': [
+            {'type': 'versus', 'x': 540, 'y': 420, 'w': 1000, 'h': 640, 'winner': 'b', 'in_winner': 'والكسبان',
+             'a': {'title': 'إعلان غالي', 'color': 'blue', 'in': 'غالي', 'items': [
+                 {'text': 'شكله حلو', 'good': True, 'in': 'شكله'}, {'text': 'الرسالة مش واضحة', 'good': False, 'in': 'رسالته'}]},
+             'b': {'title': 'إعلان بسيط', 'color': 'red', 'in': 'والبسيط', 'winner_label': 'الكسبان', 'items': [
+                 {'text': 'بيرد على سؤال', 'good': True, 'in': 'بيرد'}]}}]},
+        {'id': 'scorecard', 'title': 'Scorecard', 'start': 'قيم', 'layout': 'pip-left', 'elements': [
+            {'type': 'pill', 'text': 'مثال', 'color': 'blue', 'x': 800, 'y': -380, 'size': 34, 'in': {'rel': 0.05}},
+            {'type': 'scorecard', 'x': 540, 'y': 200, 'heads': {'a': 'إعلان 1', 'b': 'إعلان 2'}, 'winner': 'b', 'in_winner': 'والمجموع', 'rows': [
+                {'label': 'Hook', 'a': 6, 'b': 9, 'in': 'hook'}, {'label': 'Offer', 'a': 7, 'b': 8, 'in': 'offer'},
+                {'label': 'Proof', 'a': 5, 'b': 9, 'in': 'proof'}]}]},
+        {'id': 'beforeafter', 'title': 'Before / after', 'start': 'الـ CPA كان', 'layout': 'top', 'elements': [
+            {'type': 'beforeafter', 'x': 540, 'y': 300, 'unit': 'ج', 'better': 'lower', 'change_pct': -40, 'in_change': 'بس',
+             'before': {'label': 'CPA قبل', 'value': 150, 'in': 'كان'}, 'after': {'label': 'CPA بعد', 'value': 90, 'in': 'وبقى'}},
+            {'type': 'pill', 'text': 'مثال', 'color': 'blue', 'x': 540, 'y': 40, 'size': 34, 'in': {'rel': 0.05}}]},
+        {'id': 'flow', 'title': 'Whiteboard flow', 'start': 'رحلة', 'layout': 'pip-right', 'elements': [
+            {'type': 'flow', 'x': 540, 'y': 120, 'direction': 'down', 'nodes': [
+                {'label': 'إعلان', 'in': 'بإعلان'}, {'label': 'صفحة المنتج', 'in': 'صفحة'},
+                {'label': 'Checkout', 'in': 'checkout', 'color': 'blue'}, {'label': 'شراء', 'in': 'الشراء', 'color': 'green'}]}]},
+        {'id': 'numbered', 'title': 'Numbered steps', 'start': 'تلات خطوات', 'layout': 'top', 'elements': [
+            {'type': 'numbered', 'x': 540, 'y': 150, 'gap': 170, 'steps': [
+                {'text': 'الـ Hook', 'in': 'hook'}, {'text': 'الـ Offer', 'in': 'offer'}, {'text': 'الـ CTA', 'in': 'CTA'}]}]},
+        {'id': 'annotate', 'title': 'Circle + underline + arrow', 'start': 'وأهم', 'layout': 'bottom', 'elements': [
+            {'type': 'headline', 'pre': 'أهم كلمة:', 'hl': 'Offer', 'post': '', 'x': 540, 'y': 300, 'size': 100, 'in': 'كلمة', 'anim': 'wipe'},
+            {'type': 'circle_mark', 'x': 345, 'y': 300, 'rx': 210, 'ry': 95, 'in': 'offer'},
+            {'type': 'underline', 'x': 790, 'y': 380, 'w': 300, 'in': 'هي'},
+            {'type': 'hand_arrow', 'x': 880, 'y': 560, 'dx': -380, 'dy': -170, 'in': 'offer'}]},
+    ]}
+
+
 def run(cmd):
     print('$', ' '.join(cmd)); subprocess.run(cmd, cwd=ROOT, check=True)
 
 
-def main():
-    d = os.path.join(ROOT, 'projects', SLUG)
+def make(slug, title, script, scenes):
+    d = os.path.join(ROOT, 'projects', slug)
     shutil.rmtree(d, ignore_errors=True)
-    run([sys.executable, 'reel.py', 'new', SLUG, '--mode', 'B', '--title', 'Data storytelling gallery'])
-    words = synth_words(SCRIPT)
+    run([sys.executable, 'reel.py', 'new', slug, '--mode', 'B', '--title', title])
+    words = synth_words(script)
     dur = words[-1]['end'] + 1.0
     with open(os.path.join(d, 'words.json'), 'w', encoding='utf-8') as f:
         json.dump(words, f, ensure_ascii=False)
     os.makedirs(os.path.join(d, 'build'), exist_ok=True)
     subprocess.run(['ffmpeg', '-y', '-v', 'error', '-f', 'lavfi', '-i', f'sine=frequency=220:duration={dur:.2f},volume=0.05',
                     '-c:a', 'aac', '-b:a', '128k', os.path.join(d, 'build', 'cut_audio.m4a')], check=True)
-    sc = dict(SCENES); sc['duration'] = round(dur, 2)
+    sc = dict(scenes); sc['duration'] = round(dur, 2)
     with open(os.path.join(d, 'scenes.json'), 'w', encoding='utf-8') as f:
         json.dump(sc, f, ensure_ascii=False, indent=1)
-    run([sys.executable, 'reel.py', 'storyboard', SLUG])
+    run([sys.executable, 'reel.py', 'storyboard', slug])
+
+
+def main():
+    which = sys.argv[1:] or ['data', 'styles']
+    if 'data' in which:
+        make(SLUG, 'Data storytelling gallery', SCRIPT, SCENES)
+    if 'styles' in which:
+        make('_demo-styles', 'Kinetic / split-screen / whiteboard gallery', STYLES_SCRIPT, STYLES)
 
 
 if __name__ == '__main__':

@@ -173,5 +173,6 @@ def chunk_captions(words, min_words=2, max_words=4, max_gap=0.6, max_chars=26, o
         if i + 1 < len(chunks):
             end = min(end, chunks[i + 1][0]['start'])
         text = ' '.join(w['text'] for w in c).rstrip('.،,؛')
-        caps.append({'start': round(c[0]['start'], 3), 'end': round(end, 3), 'text': text})
+        caps.append({'start': round(c[0]['start'], 3), 'end': round(end, 3), 'text': text,
+                     'wt': [round(w['start'], 3) for w in c]})
     return caps
