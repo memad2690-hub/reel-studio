@@ -1,6 +1,13 @@
 # Reel Studio V2 — architecture audit and implementation plan
 
-Status: **proposal, waiting for decisions** (see "Decisions needed"). Nothing below has been built yet.
+Status: **decisions taken 2026-11-08; milestone 1 in progress.**
+
+Decisions (Mohamed, 2026-11-08):
+- D1 Renderer: **extend the current engine** (HTML/SVG + Playwright). No Remotion. Section 3 is superseded by "3b".
+- D3 Director: **Claude in the session** (rule-based planner proposes, Claude refines; no per-reel API cost).
+- D4 Collage images: **uploads + templates only** (no paid image generation).
+- Media Buying brand preset: **current reel look** (cream grid, ink, yellow highlighter, green/red numbers, Cairo).
+- Still open: reference screenshot, REEL_STUDIO_HANDOFF.md, "RC Warm Cinematic" grade definition, CEOS font.
 Source brief: "Claude Code — AI Reel Studio V2" (9 styles, AI editing director, style mixing, editing UX).
 
 ## 1. What exists today (audited 2026-11-08, commit eda082c)
@@ -74,6 +81,16 @@ current engine (Modes A/B untouched), so nothing approved is touched or re-rende
 Risks to measure before committing (not yet benchmarked): Remotion render speed on 2 vCPU vs the
 current 14 s/s; OffthreadVideo decode of 1440×2560 HEVC (may need a one-time CFR H.264 proxy);
 segmentation quality in a car interior.
+
+## 3b. Architecture as decided (extend the current engine)
+
+- Talking head: card frames extracted full-frame (1080×1920) once per reel; the runtime crops/zooms
+  them into any layout (full, hero, top, bottom, picture-in-picture) using a face focus point, and
+  morphs the card between layouts with deterministic easing/springs.
+- Scenes gain `layout`; elements gain directional entrances, springs, wipes and exits.
+- New components are added to `engine/kits.py` + `runtime.js`; a finance validator checks every
+  equation/stat in `build`, and `render` refuses to run on a failed check (like missing anchors).
+- Old Mode A/B projects render exactly as before (new keys are optional).
 
 ## 4. Milestones (each ends with a real render you approve)
 
