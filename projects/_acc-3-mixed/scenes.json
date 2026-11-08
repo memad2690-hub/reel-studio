@@ -1,4 +1,5 @@
 {
+ "look": 2,
  "mode": "B",
  "brand": "whiteboard",
  "words": "words.json",
@@ -226,7 +227,7 @@
      "type": "numbered",
      "x": 540,
      "y": 260,
-     "gap": 150,
+     "gap": 170,
      "steps": [
       {
        "text": "ثبت المتغيرات",
@@ -240,7 +241,8 @@
        "text": "stop rules",
        "in": "وstop"
       }
-     ]
+     ],
+     "size": 60
     }
    ]
   },
@@ -248,13 +250,13 @@
    "id": "payoff",
    "start": "كده",
    "style": "whiteboard",
-   "layout": "bottom",
+   "layout": "split",
    "transition": "blur",
    "elements": [
     {
      "type": "flow",
      "x": 540,
-     "y": 300,
+     "y": 320,
      "direction": "rtl",
      "box_w": 280,
      "box_h": 120,
@@ -275,7 +277,8 @@
        "color": "blue",
        "in": "معلومات"
       }
-     ]
+     ],
+     "size": 56
     }
    ]
   },

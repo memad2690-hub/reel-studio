@@ -1,7 +1,7 @@
 {
  "project": "_acc-5-comparison",
- "video": "exports/v001.mp4",
- "verdict": "pass",
+ "video": "exports/v002.mp4",
+ "verdict": "warn",
  "checks": [
   {
    "id": "finance",
@@ -60,10 +60,27 @@
    "evidence": []
   },
   {
+   "id": "readable",
+   "name": "Text readable on a phone (≥ 44 px)",
+   "status": "pass",
+   "detail": "every text ≥ 44 px (captions included)",
+   "evidence": []
+  },
+  {
+   "id": "art",
+   "name": "Art direction (focus, density, speaker, empty page)",
+   "status": "warn",
+   "detail": "2 note(s) to review",
+   "evidence": [
+    "mistake: page mostly empty at 2 sampled moments",
+    "three: 18 new words within 2 s (more than a 2-second read)"
+   ]
+  },
+  {
    "id": "shaping",
    "name": "Correct Arabic shaping",
    "status": "pass",
-   "detail": "68 distinct texts; Cairo loaded; letters join (each word drawn shaped differs from its letters drawn apart)",
+   "detail": "66 distinct texts; Cairo loaded; letters join (each word drawn shaped differs from its letters drawn apart)",
    "evidence": []
   },
   {
@@ -84,14 +101,14 @@
    "id": "export",
    "name": "Export format (1080×1920 · 9:16 · 30 fps · H.264 · MP4)",
    "status": "pass",
-   "detail": "1080×1920, 30/1, h264 High yuv420p, faststart yes, 47.30s, 4480 kb/s, 26.5 MB",
+   "detail": "1080×1920, 30/1, h264 High yuv420p, faststart yes, 47.30s, 4617 kb/s, 27.3 MB",
    "evidence": []
   },
   {
    "id": "audio",
    "name": "Consistent audio",
    "status": "pass",
-   "detail": "aac 48000 Hz 2ch 194 kb/s; integrated -21.3 LUFS, LRA 4.0 LU, true peak -4.4 dBTP; audio length = video length ±0.1 s",
+   "detail": "aac 48000 Hz 2ch 193 kb/s; integrated -21.3 LUFS, LRA 4.0 LU, true peak -4.4 dBTP; audio length = video length ±0.1 s",
    "evidence": []
   },
   {
@@ -155,5 +172,61 @@
    "tr": "zoom"
   }
  ],
- "duration": 47.3
+ "duration": 47.3,
+ "art": [
+  {
+   "scene": "hook",
+   "look_first": "أغلى؟",
+   "focal_px": 230,
+   "max_elements": 1,
+   "max_words": 1,
+   "speaker_share": 0.9,
+   "empty_moments": 0
+  },
+  {
+   "scene": "ads",
+   "look_first": "الإعلان الأول design ممتاز الأ",
+   "focal_px": 58,
+   "max_elements": 1,
+   "max_words": 12,
+   "speaker_share": 0.5,
+   "empty_moments": 0
+  },
+  {
+   "scene": "mistake",
+   "look_first": "الأجمل مش دايمًا بيكسب",
+   "focal_px": 84,
+   "max_elements": 2,
+   "max_words": 5,
+   "speaker_share": 0.44,
+   "empty_moments": 2
+  },
+  {
+   "scene": "three",
+   "look_first": "3 حاجات",
+   "focal_px": 112,
+   "max_elements": 3,
+   "max_words": 18,
+   "speaker_share": 0.14,
+   "empty_moments": 0
+  },
+  {
+   "scene": "test",
+   "look_first": "تخمين تختار إعلان اختبار فعلي ",
+   "focal_px": 58,
+   "max_elements": 1,
+   "max_words": 10,
+   "speaker_share": 0.5,
+   "empty_moments": 0
+  },
+  {
+   "scene": "recap",
+   "look_first": "Attention Relevance وReason to",
+   "focal_px": 149,
+   "max_elements": 1,
+   "max_words": 5,
+   "speaker_share": 0.44,
+   "empty_moments": 0
+  }
+ ]
 }

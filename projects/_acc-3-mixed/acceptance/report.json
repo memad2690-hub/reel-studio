@@ -1,7 +1,7 @@
 {
  "project": "_acc-3-mixed",
- "video": "exports/v001.mp4",
- "verdict": "pass",
+ "video": "exports/v002.mp4",
+ "verdict": "warn",
  "checks": [
   {
    "id": "finance",
@@ -60,10 +60,28 @@
    "evidence": []
   },
   {
+   "id": "readable",
+   "name": "Text readable on a phone (≥ 44 px)",
+   "status": "pass",
+   "detail": "every text ≥ 44 px (captions included)",
+   "evidence": []
+  },
+  {
+   "id": "art",
+   "name": "Art direction (focus, density, speaker, empty page)",
+   "status": "warn",
+   "detail": "3 note(s) to review",
+   "evidence": [
+    "hook: page mostly empty at 2 sampled moments",
+    "angles: page mostly empty at 3 sampled moments",
+    "payoff: no dominant element (largest text 58 px)"
+   ]
+  },
+  {
    "id": "shaping",
    "name": "Correct Arabic shaping",
    "status": "pass",
-   "detail": "73 distinct texts; Cairo loaded; letters join (each word drawn shaped differs from its letters drawn apart)",
+   "detail": "69 distinct texts; Cairo loaded; letters join (each word drawn shaped differs from its letters drawn apart)",
    "evidence": []
   },
   {
@@ -84,14 +102,14 @@
    "id": "export",
    "name": "Export format (1080×1920 · 9:16 · 30 fps · H.264 · MP4)",
    "status": "pass",
-   "detail": "1080×1920, 30/1, h264 High yuv420p, faststart yes, 50.77s, 4860 kb/s, 30.8 MB",
+   "detail": "1080×1920, 30/1, h264 High yuv420p, faststart yes, 50.77s, 5070 kb/s, 32.2 MB",
    "evidence": []
   },
   {
    "id": "audio",
    "name": "Consistent audio",
    "status": "pass",
-   "detail": "aac 48000 Hz 2ch 192 kb/s; integrated -17.4 LUFS, LRA 4.2 LU, true peak -0.5 dBTP; audio length = video length ±0.1 s",
+   "detail": "aac 48000 Hz 2ch 192 kb/s; integrated -17.5 LUFS, LRA 4.2 LU, true peak -1.5 dBTP; audio length = video length ±0.1 s",
    "evidence": []
   },
   {
@@ -127,7 +145,7 @@
   {
    "id": "mistake",
    "style": "whiteboard",
-   "layout": "top",
+   "layout": "split",
    "tr": null
   },
   {
@@ -151,13 +169,13 @@
   {
    "id": "rules",
    "style": "whiteboard",
-   "layout": "top",
+   "layout": "split",
    "tr": "blur"
   },
   {
    "id": "payoff",
    "style": "whiteboard",
-   "layout": "bottom",
+   "layout": "split",
    "tr": "blur"
   },
   {
@@ -167,5 +185,79 @@
    "tr": null
   }
  ],
- "duration": 50.767
+ "duration": 50.767,
+ "art": [
+  {
+   "scene": "hook",
+   "look_first": "ما تحرقهمش على إعلان واحد",
+   "focal_px": 116,
+   "max_elements": 2,
+   "max_words": 5,
+   "speaker_share": 0.44,
+   "empty_moments": 2
+  },
+  {
+   "scene": "mistake",
+   "look_first": "creative واحد",
+   "focal_px": 78,
+   "max_elements": 2,
+   "max_words": 2,
+   "speaker_share": 0.37,
+   "empty_moments": 0
+  },
+  {
+   "scene": "fail",
+   "look_first": "الإعلان فشل… المشكلة فين؟",
+   "focal_px": 60,
+   "max_elements": 3,
+   "max_words": 8,
+   "speaker_share": 0.14,
+   "empty_moments": 0
+  },
+  {
+   "scene": "plan",
+   "look_first": "اعمل testing plan",
+   "focal_px": 281,
+   "max_elements": 1,
+   "max_words": 3,
+   "speaker_share": 0.14,
+   "empty_moments": 1
+  },
+  {
+   "scene": "angles",
+   "look_first": "three angles مختلفين",
+   "focal_px": 135,
+   "max_elements": 2,
+   "max_words": 4,
+   "speaker_share": 0.14,
+   "empty_moments": 3
+  },
+  {
+   "scene": "rules",
+   "look_first": "قبل التشغيل",
+   "focal_px": 66,
+   "max_elements": 2,
+   "max_words": 9,
+   "speaker_share": 0.37,
+   "empty_moments": 0
+  },
+  {
+   "scene": "payoff",
+   "look_first": "الميزانية مبيعات + معلومات",
+   "focal_px": 58,
+   "max_elements": 1,
+   "max_words": 4,
+   "speaker_share": 0.37,
+   "empty_moments": 0
+  },
+  {
+   "scene": "cta",
+   "look_first": "اكتب في الكومنتات BUDGET مثال ",
+   "focal_px": 120,
+   "max_elements": 1,
+   "max_words": 9,
+   "speaker_share": 0.44,
+   "empty_moments": 0
+  }
+ ]
 }

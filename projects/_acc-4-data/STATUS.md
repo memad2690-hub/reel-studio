@@ -2,3 +2,7 @@
 - 2026-11-08T19:03:50+02:00: storyboard sb002 (2 frames)
 - 2026-11-08T19:04:03+02:00: storyboard sb003 (2 frames)
 - 2026-11-08T19:51:16+02:00: render v001 1080x1920 48.6s  QA ok
+- 2026-11-08T22:28:07+02:00: storyboard sb004 (6 frames)
+- 2026-11-08T22:35:52+02:00: storyboard sb005 (6 frames)
+- 2026-11-08T23:06:59+02:00: render v002 1080x1920 48.6s  QA ok
+- 2026-11-09T00:17:51+02:00: render v003 1080x1920 48.6s  QA ok

@@ -1,6 +1,6 @@
 # Acceptance — _acc-4-data
 
-Verdict: **PASS** · video: `exports/v001.mp4` · 48.6s
+Verdict: **WARN** · video: `exports/v003.mp4` · 48.6s
 
 | | Check | Result |
 |---|---|---|
@@ -12,11 +12,29 @@ Verdict: **PASS** · video: `exports/v001.mp4` · 48.6s
 | ✅ | Graphics clear of captions | no text graphic covers more than 20% of a caption |
 | ✅ | Graphics clear of the face | face found at 56/56 moments; no front graphic covers more than 30% of it |
 | ✅ | Text clear of platform UI (heuristic) | no text in the bottom 220 px or the lower right 100 px column |
-| ✅ | Correct Arabic shaping | 63 distinct texts; Cairo loaded; letters join (each word drawn shaped differs from its letters drawn apart) |
+| ✅ | Text readable on a phone (≥ 44 px) | every text ≥ 44 px (captions included) |
+| ⚠️ | Art direction (focus, density, speaker, empty page) | 3 note(s) to review |
+| ✅ | Correct Arabic shaping | 62 distinct texts; Cairo loaded; letters join (each word drawn shaped differs from its letters drawn apart) |
 | ✅ | No broken RTL | every line with Arabic runs right→left (also when it starts with a Latin word); numbers read left→right |
 | ✅ | Page runs without errors | no page or console errors |
-| ✅ | Export format (1080×1920 · 9:16 · 30 fps · H.264 · MP4) | 1080×1920, 30/1, h264 High yuv420p, faststart yes, 48.60s, 4921 kb/s, 29.9 MB |
+| ✅ | Export format (1080×1920 · 9:16 · 30 fps · H.264 · MP4) | 1080×1920, 30/1, h264 High yuv420p, faststart yes, 48.60s, 5680 kb/s, 34.5 MB |
 | ✅ | Consistent audio | aac 48000 Hz 2ch 193 kb/s; integrated -20.2 LUFS, LRA 5.9 LU, true peak -2.0 dBTP; audio length = video length ±0.1 s |
 | ✅ | Stable rendering (decodes cleanly, no black frames) | whole file decodes without errors; no black frames ≥ 0.1 s |
 | ✅ | Smooth transitions | 3 designed transition(s) (setup:blur, roas:zoom, breakeven:blur); no frozen picture ≥ 1.5 s |
 | ✅ | Deterministic rerenders | 4 frames rendered twice: byte-identical PNGs |
+
+**Art direction (focus, density, speaker, empty page)**
+- waterfall: 13 new words within 2 s (more than a 2-second read)
+- breakeven: 17 new words within 2 s (more than a 2-second read)
+- breakeven: page mostly empty at 2 sampled moments
+
+**Art direction per scene** (measured)
+
+| scene | look first | focal px | max texts | max words | speaker share | empty moments |
+|---|---|---|---|---|---|---|
+| hook | بيخسر أكتر | 112 | 2 | 3 | 100% | 0 |
+| setup | 100K ج مبيعات 25K ج إعلانات | 53 | 2 | 7 | 37% | 0 |
+| waterfall | ودا قبل المصاريف الثابتة | 58 | 2 | 13 | 37% | 0 |
+| roas | ROAS 4 مبروك؟ | 88 | 2 | 11 | 63% | 0 |
+| breakeven | هامش المساهمة ⁦20%⁩ 100,000 ÷  | 140 | 1 | 17 | 37% | 2 |
+| cta | اكتب في الكومنتات PROFIT فيديو | 120 | 1 | 9 | 44% | 0 |

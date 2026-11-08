@@ -41,8 +41,29 @@ def col(c, pal):
     return pal.get(c, c) if c else None
 
 
-def text(s, size=40, color=INK, weight=800, anchor='middle', y=0, x=0, extra=''):
-    return (f'<text x="{x}" y="{y}" font-size="{size}" font-weight="{weight}" fill="{color}" '
+# Look 2 (visual-quality pass): phone-readable text. 1080 px ≈ 68 mm on a 6.1" phone, so text under ~46 px is
+# under 3 mm tall. Body text below 50 px is scaled up 1.2× with a 46 px floor; larger text is unchanged.
+LOOK = [1]
+TEXT_FLOOR, TEXT_BOOST, BOOST_CAP = 46, 1.2, 58
+
+
+def readable(size):
+    """Look 2 size for a requested size: ×1.2 up to 58 px, never below 46 px; 58 px and above unchanged
+    (monotonic, so a smaller request never ends up bigger than a larger one)."""
+    size = float(size)
+    if LOOK[0] >= 2 and size < BOOST_CAP:
+        return round(min(BOOST_CAP, max(TEXT_FLOOR, size * TEXT_BOOST)), 1)
+    return size
+
+
+def est_width(s, size):
+    """Rough rendered width of a line in Cairo (≈0.52 em per character)."""
+    return len(str(s)) * 0.52 * size
+
+
+def text(s, size=40, color=INK, weight=800, anchor='middle', y=0, x=0, extra='', exact=False):
+    size = float(size) if exact else readable(size)
+    return (f'<text x="{x}" y="{y}" font-size="{size:g}" font-weight="{weight}" fill="{color}" '
             f'text-anchor="{anchor}" dominant-baseline="central" direction="rtl" {extra}>{esc(s)}</text>')
 
 
@@ -356,8 +377,15 @@ def eq_row(r, i, size, w, mode):
     pal = B if mode == 'B' else A
     tone = r.get('tone', 'positive' if i == 0 else 'negative')
     c = col(TONES.get(tone, 'ink'), pal)
-    out = text(r.get('label', ''), size * 0.82, col('ink', pal), 800, anchor='start', x=w / 2 - 10)
-    out += text(fmt_num(r['value']) + ' ' + r.get('unit', 'ج'), size, c, 900, anchor='end', x=-w / 2 + 110)
+    val = fmt_num(r['value']) + ' ' + r.get('unit', 'ج')
+    lsize, exact = size * 0.82, False
+    if LOOK[0] >= 2:                                   # keep label and value apart: shrink the label (not below 46 px)
+        lsize = readable(lsize); exact = True
+        avail = w - 160 - est_width(val, readable(size))
+        if est_width(r.get('label', ''), lsize) > avail:
+            lsize = max(TEXT_FLOOR, avail / max(1, len(r.get('label', '')) * 0.52))
+    out = text(r.get('label', ''), lsize, col('ink', pal), 800, anchor='start', x=w / 2 - 10, exact=exact)
+    out += text(val, size, c, 900, anchor='end', x=-w / 2 + 110)
     if i:
         op = r.get('op', '+')
         cx = -w / 2 + 40

@@ -293,3 +293,25 @@ Per-reel tweaks go in that reel's scenes.json, never in the preset:
 - `reel.py finalize-cut --frames-only` remakes card frames + cut audio and leaves `words.json` alone; a normal
   `finalize-cut` now backs up `words.json` (`words.prev-<time>.json`) before mapping raw words onto the cut.
 - `reel.py accept <slug> [--video exports/vNNN.mp4]` — acceptance checks (see docs/ACCEPTANCE.md).
+
+## Look 2 — visual-quality pass (`"look": 2` in scenes.json)
+Projects without `look` keep look 1 (exactly as approved). New planner drafts and the acceptance reels use look 2.
+- **Readable text:** every text below 58 px is scaled ×1.2 up to 58 px, never below 46 px (1080 px ≈ 68 mm on a 6.1"
+  phone, so 46 px ≈ 2.9 mm). Equation labels shrink to fit their row but not below 46 px; flow boxes widen to fit their
+  labels; versus items are 52 px and wrap onto two lines in narrow columns.
+- **Bigger speaker:** `pip-left`/`pip-right` are 480×600 (were 350×430); new `split` layout: speaker 1000×760 on top,
+  760 px of graphics below (default for the data and whiteboard styles); the collage sticker is 860×1300.
+- **Speaker first:** when a scene's first graphic arrives ≥ 2 s after the scene starts, the speaker stays big (`hero`)
+  and the card moves to the scene's layout as the graphic arrives; a scene without graphics stays big.
+  `"speaker_first": false` on a scene turns this off.
+- **Captions:** the minimal preset is 56 px with a stronger shadow; on a PiP card the caption stays on the card's bottom
+  edge and is shifted sideways to stay on screen; while kinetic typography shows the spoken words, the caption steps
+  aside (`"mute_caption": false` on the kinetic element keeps it).
+- **Versus:** boxes fit their items (no large empty cards before items arrive); bigger winner badge.
+- **Counters** count up in round steps (no odd intermediate values like 99,103).
+- **Break-even:** the break-even value is the focal element (140 px).
+- **Segmentation:** motion-adaptive smoothing (pixels that change a lot take the new mask), so moving hands leave no
+  translucent trail on the cut-out.
+- Art direction: `reel.py plan` adds an art-direction table to plan.md (look first, speaker prominence, element count,
+  reading time; ≥ 3 amounts become one bar chart, ≤ 3 elements per scene). `reel.py accept` measures the same on
+  screen (`readable` and `art` checks; see docs/ACCEPTANCE.md).

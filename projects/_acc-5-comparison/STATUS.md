@@ -2,3 +2,8 @@
 - 2026-11-08T19:08:31+02:00: segment: frames 1-110, mask quality mean 0.773 min 0.638
 - 2026-11-08T19:08:40+02:00: storyboard sb001 (6 frames)
 - 2026-11-08T20:17:09+02:00: render v001 1080x1920 47.3s  QA ok
+- 2026-11-08T22:29:21+02:00: storyboard sb002 (6 frames)
+- 2026-11-08T22:35:56+02:00: storyboard sb003 (6 frames)
+- 2026-11-08T22:36:31+02:00: storyboard sb004 (1 frames)
+- 2026-11-08T22:44:08+02:00: segment: frames 1-110, mask quality mean 0.773 min 0.638
+- 2026-11-08T23:35:49+02:00: render v002 1080x1920 47.3s  QA ok

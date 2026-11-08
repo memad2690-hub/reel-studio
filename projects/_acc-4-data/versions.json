@@ -56,5 +56,73 @@
     },
     "draft": false,
     "note": "acceptance render"
+  },
+  {
+    "id": "sb004",
+    "kind": "storyboard",
+    "file": "storyboard/sb004.png",
+    "created": "2026-11-08T22:28:07+02:00",
+    "times": [
+      4.813,
+      8.707,
+      22.67,
+      28.7,
+      42.283,
+      48.25
+    ],
+    "anchor_misses": [],
+    "note": ""
+  },
+  {
+    "id": "sb005",
+    "kind": "storyboard",
+    "file": "storyboard/sb005.png",
+    "created": "2026-11-08T22:35:52+02:00",
+    "times": [
+      4.813,
+      8.707,
+      22.67,
+      28.7,
+      42.283,
+      48.25
+    ],
+    "anchor_misses": [],
+    "note": ""
+  },
+  {
+    "id": "v002",
+    "kind": "render",
+    "file": "exports/v002.mp4",
+    "sheet": "exports/v002_sheet.png",
+    "created": "2026-11-08T23:06:59+02:00",
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 48.6,
+      "mbps": 5.68,
+      "audio": true,
+      "problems": []
+    },
+    "draft": false,
+    "note": "look 2: visual-quality pass"
+  },
+  {
+    "id": "v003",
+    "kind": "render",
+    "file": "exports/v003.mp4",
+    "sheet": "exports/v003_sheet.png",
+    "created": "2026-11-09T00:17:51+02:00",
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 48.6,
+      "mbps": 5.68,
+      "audio": true,
+      "problems": []
+    },
+    "draft": false,
+    "note": "look 2: hook headline clear of caption, roas pill out of the button band"
   }
 ]

@@ -5,3 +5,11 @@
 - 2026-11-08T19:37:09+02:00: storyboard sb001 (8 frames)
 - 2026-11-08T20:33:42+02:00: render v001 1080x1920 71.77s  QA ok
 - 2026-11-08T20:54:54+02:00: render v002 1080x1920 71.77s  QA ok
+- 2026-11-08T22:29:30+02:00: storyboard sb002 (8 frames)
+- 2026-11-08T22:37:17+02:00: segment: frames 175-567, mask quality mean 0.689 min 0.564
+- 2026-11-08T22:42:44+02:00: segment: frames 1591-1942, mask quality mean 0.696 min 0.571
+- 2026-11-08T22:46:03+02:00: storyboard sb003 (7 frames)
+- 2026-11-08T22:51:30+02:00: segment: frames 175-567, mask quality mean 0.683 min 0.559
+- 2026-11-08T22:55:58+02:00: segment: frames 1591-1942, mask quality mean 0.694 min 0.562
+- 2026-11-08T22:57:25+02:00: storyboard sb004 (1 frames)
+- 2026-11-08T23:55:26+02:00: render v003 1080x1920 71.77s  QA ok

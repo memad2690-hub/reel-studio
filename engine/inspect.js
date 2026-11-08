@@ -48,12 +48,19 @@ const times = String(args.times).split(',').map(Number);
         const txt = tx.map(x => x.textContent.trim()).join(' ').slice(0, 80);
         let tb = null;                                           // the text's own box (decorative backdrops excluded)
         tx.forEach(x => { const q = R(x); tb = tb ? [Math.min(tb[0], q[0]), Math.min(tb[1], q[1]), Math.max(tb[2], q[2]), Math.max(tb[3], q[3])] : q; });
-        els.push({ box: r, tbox: tb, behind: !!g.closest('#behind'), text: txt, k: g.dataset.k || '', id: g.id || '' });
+        // rendered font size in canvas px (font-size × the element's on-screen scale), smallest text in the element
+        let fpx = null, fmax = null;
+        tx.forEach(x => { const m = x.getScreenCTM(); const f = parseFloat(getComputedStyle(x).fontSize) * (m ? Math.hypot(m.a, m.b) : 1);
+          if (x.getBoundingClientRect().width > 2) { fpx = fpx == null ? f : Math.min(fpx, f); fmax = fmax == null ? f : Math.max(fmax, f); } });
+        els.push({ box: r, tbox: tb, behind: !!g.closest('#behind'), text: txt, k: g.dataset.k || '', id: g.id || '',
+                   fpx: fpx == null ? null : Math.round(fpx), fmax: fmax == null ? null : Math.round(fmax),
+                   tin: +g.dataset.in || 0, type: g.dataset.type || '' });
       });
       const cap = document.getElementById('cap');
       const capBox = cap && getComputedStyle(cap).display !== 'none' ? R(cap) : null;
       const card = document.getElementById('card'), img = document.getElementById('cardimg');
-      return { els, cap: capBox, capText: capBox ? cap.textContent : '', card: card ? R(card) : null,
+      const capPx = capBox ? Math.round(parseFloat(getComputedStyle(cap).fontSize)) : null;
+      return { els, cap: capBox, capPx, capText: capBox ? cap.textContent : '', card: card ? R(card) : null,
                img: img && img.getAttribute('src') ? R(img) : null };
     });
     s.t = t; s.frame = n; samples.push(s);

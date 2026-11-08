@@ -21,7 +21,13 @@ otherwise; nothing here is estimated or taken from vendor claims.
 | Tests and validation | `tests/test_pipeline.py`, `reel.py accept`, `docs/ACCEPTANCE.md` | done |
 | Technical documentation | `docs/SCENES.md`, `docs/STUDIO.md`, `docs/ACCEPTANCE.md`, `docs/V2_PLAN.md`, `AGENTS.md` | done |
 
-## Acceptance results
+## Visual-quality pass (look 2)
+
+See docs/VISUAL_REVIEW.md for the review, the changes, measured before/after numbers and the judgement by eye.
+Current acceptance exports: case 1 v005 · case 3 v002 · case 4 v003 · case 5 v002 · case 6 v003 (all hard checks pass;
+art-direction notes only).
+
+## Acceptance results (milestone 9, before the visual pass)
 
 | # | Case | Project / export | Styles | Length · render time | Verdict | Notes |
 |---|---|---|---|---|---|---|

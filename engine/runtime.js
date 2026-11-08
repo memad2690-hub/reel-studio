@@ -111,9 +111,15 @@
   function cardRect(t) {
     const sc = D.scenes; if (!sc.length) return L('top');
     let idx = sc.findIndex(s => t >= s.start && t < s.end); if (idx < 0) idx = t < sc[0].start ? 0 : sc.length - 1;
-    const target = L(sc[idx].card || 'top');
-    const prev = idx > 0 ? L(sc[idx - 1].card || 'top') : target;
-    const p = easeInOut(clamp((t - sc[idx].start) / SLIDE, 0, 1));
+    const cur = sc[idx], before = idx > 0 ? sc[idx - 1] : null;
+    let target = L(cur.card || 'top');
+    let prev = before ? L(before.pre && before.pre[1] >= before.end - 1e-3 ? before.pre[0] : (before.card || 'top')) : target;
+    let t0 = cur.start;
+    if (cur.pre) {                                  // speaker-first: big until the scene's graphics arrive
+      if (t < cur.pre[1]) { target = L(cur.pre[0]); if (!before) prev = target; }
+      else { prev = L(cur.pre[0]); t0 = cur.pre[1]; }
+    }
+    const p = easeInOut(clamp((t - t0) / SLIDE, 0, 1));
     const out = { target, scene: sc[idx] };
     ['x', 'y', 'w', 'h', 'r', 'b'].forEach(k => { out[k] = prev[k] + (target[k] - prev[k]) * p; });
     out.rot = (prev.rot || 0) + ((target.rot || 0) - (prev.rot || 0)) * p;
@@ -208,7 +214,8 @@
     kinetic:   { box: 'background:none;color:#fff;font-size:74px;text-shadow:0 4px 0 #000,0 0 18px rgba(0,0,0,.8)', act: 'color:HL' },
     editorial: { box: 'background:#fff;color:#111;border:5px solid #111;border-radius:0;box-shadow:8px 8px 0 #111', act: null },
     energy:    { box: 'background:HL;color:#111;border-radius:16px;font-size:64px', act: 'background:#d64541;color:#fff;padding:0 10px;border-radius:10px' },
-    minimal:   { box: 'background:none;color:#fff;font-size:42px;font-weight:700;text-shadow:0 2px 6px rgba(0,0,0,.85)', act: null },
+    minimal:   { box: (D.look >= 2 ? 'background:none;color:#fff;font-size:56px;font-weight:800;text-shadow:0 2px 3px rgba(0,0,0,.9),0 0 14px rgba(0,0,0,.75)'
+                                     : 'background:none;color:#fff;font-size:42px;font-weight:700;text-shadow:0 2px 6px rgba(0,0,0,.85)'), act: null },
   };
   let capBase = null;
   const sceneAt = t => D.scenes.find(s => t >= s.start && t < s.end);
@@ -233,8 +240,15 @@
     cap.style.display = 'block';
     if (!card) return;
     // placement follows the scene's target layout, so the caption never rides a shrinking card
-    const tg = rc.target || rc, big = tg.h >= 600;
-    cap.style.left = (big ? rc.x + rc.w / 2 : 540) + 'px';
+    const tg = rc.target || rc;
+    let big = tg.h >= 600, cx = rc.x + rc.w / 2;
+    if (D.look >= 2 && big && tg.w < 700) {
+      // look 2 PiP (480×600): the caption stays on the card's bottom edge (not on the graphics area); if it is wider
+      // than the card it is shifted sideways so it stays on screen
+      const half = cap.offsetWidth / 2 + 24;
+      cx = Math.max(half, Math.min(1080 - half, cx));
+    } else if (tg.w < 700) big = false;
+    cap.style.left = (big ? cx : 540) + 'px';
     const mb = (D.cap && D.cap.max_bottom) || 0;                // keep captions above platform buttons/captions
     let top = big ? rc.y + rc.h - 110 : 1560;
     if (mb && big) top = Math.min(top, mb - 120);
@@ -297,14 +311,20 @@
     dims.forEach(o => { o.el.style.opacity = 1 - 0.6 * clamp((t - o.t0) / 0.4, 0, 1); });
     counts.forEach(c => {
       const t0 = c.g ? +c.g.dataset.in : 0; const p = clamp((t - t0) / c.dur, 0, 1);
-      c.t.textContent = c.pre + fmt(c.from + (c.to - c.from) * easeOut(p)) + c.suf;
+      let v = c.from + (c.to - c.from) * easeOut(p);
+      if (D.look >= 2 && p < 1) {                     // count in round steps (no odd values like 99,103 mid-count)
+        const step = Math.pow(10, Math.max(0, Math.floor(Math.log10(Math.max(1, Math.abs(c.to)))) - 2));
+        v = Math.round(v / step) * step;
+      }
+      c.t.textContent = c.pre + fmt(v) + c.suf;
     });
     let rc = null;
     if (card) { rc = cardRect(t); placeCard(rc, t); }
     kbs.forEach(o => { o.el.style.transform = `scale(${1 + (o.z - 1) * clamp((t - o.t0) / o.d, 0, 1)})`; });
     if (grainT) grainT.setAttribute('seed', String(Math.floor(t * D.fps) % 997 + 1));
     const c = D.captions.find(c => t >= c.start && t < c.end);
-    if (c) showCaption(c, rc || {}, t); else cap.style.display = 'none';
+    const muted = (D.capMute || []).some(w => t >= w[0] && t < w[1]);   // kinetic text shows these words already
+    if (c && !muted) showCaption(c, rc || {}, t); else cap.style.display = 'none';
     transition(t);
   };
 

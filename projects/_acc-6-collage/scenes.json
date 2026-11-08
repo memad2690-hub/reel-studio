@@ -1,4 +1,5 @@
 {
+ "look": 2,
  "mode": "B",
  "brand": "media-buying",
  "words": "words.json",
@@ -116,8 +117,8 @@
      "text": "≠ three creative angles",
      "color": "red",
      "x": 600,
-     "y": 560,
-     "size": 46,
+     "y": 600,
+     "size": 64,
      "in": "three",
      "anim": "stamp"
     }
@@ -155,7 +156,7 @@
     {
      "type": "flow",
      "x": 540,
-     "y": 120,
+     "y": 140,
      "direction": "down",
      "box_w": 560,
      "box_h": 110,
@@ -181,15 +182,16 @@
        "color": "green",
        "in": "تدور"
       }
-     ]
+     ],
+     "size": 50
     },
     {
      "type": "pill",
      "text": "لو متاحة عندك ضيفها",
      "color": "green",
-     "x": 540,
-     "y": 860,
-     "size": 44,
+     "x": 290,
+     "y": -480,
+     "size": 46,
      "in": "ضيفها",
      "anim": "rise"
     }
@@ -237,45 +239,34 @@
       "إن الإعلان هيبيع أكتر"
      ],
      "x": 540,
-     "y": 330,
-     "size": 50,
+     "y": 340,
+     "size": 62,
      "in": "هيبيع",
      "anim": "blur-in"
-    },
-    {
-     "type": "pill",
-     "text": "معناها angles كتير متنوعة",
-     "color": "blue",
-     "x": 540,
-     "y": 580,
-     "size": 44,
-     "in": "angles",
-     "anim": "rise"
     }
    ]
   },
   {
    "id": "angles",
    "start": "فالتنوع",
-   "style": "collage",
    "transition": "zoom",
    "elements": [
     {
      "type": "text",
      "text": "التنوع = تغير الـ angle",
-     "size": 60,
+     "size": 72,
      "weight": 900,
      "x": 540,
-     "y": 40,
+     "y": 45,
      "in": "angle",
      "anim": "fade"
     },
     {
      "type": "paper",
      "text": "إعلان بيحل مشكلة",
-     "x": 330,
-     "y": 170,
-     "rot": -4,
+     "x": 370,
+     "y": 180,
+     "rot": -3,
      "paper": "note",
      "size": 46,
      "in": "مشكلة",
@@ -284,8 +275,8 @@
     {
      "type": "paper",
      "text": "إعلان بيشرح ميزة",
-     "x": 770,
-     "y": 300,
+     "x": 710,
+     "y": 305,
      "rot": 3,
      "paper": "kraft",
      "size": 46,
@@ -295,26 +286,27 @@
     {
      "type": "paper",
      "text": "إعلان بيرد على اعتراض",
-     "x": 330,
+     "x": 370,
      "y": 440,
      "rot": 2,
      "paper": "blue",
-     "size": 44,
+     "size": 46,
      "in": "اعتراض",
      "anim": "rise"
     },
     {
      "type": "paper",
      "text": "إعلان بيرد على تساؤل",
-     "x": 760,
-     "y": 590,
+     "x": 710,
+     "y": 570,
      "rot": -3,
      "paper": "pink",
-     "size": 44,
+     "size": 46,
      "in": "تساؤل",
      "anim": "rise"
     }
-   ]
+   ],
+   "layout": "split"
   },
   {
    "id": "cta",

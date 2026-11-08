@@ -1,7 +1,7 @@
 {
  "project": "_acc-6-collage",
- "video": "exports/v002.mp4",
- "verdict": "pass",
+ "video": "exports/v003.mp4",
+ "verdict": "warn",
  "checks": [
   {
    "id": "finance",
@@ -60,10 +60,32 @@
    "evidence": []
   },
   {
+   "id": "readable",
+   "name": "Text readable on a phone (≥ 44 px)",
+   "status": "pass",
+   "detail": "every text ≥ 44 px (captions included)",
+   "evidence": []
+  },
+  {
+   "id": "art",
+   "name": "Art direction (focus, density, speaker, empty page)",
+   "status": "warn",
+   "detail": "7 note(s) to review",
+   "evidence": [
+    "same: no dominant element (largest text 58 px)",
+    "why: 4 text elements at once (competing)",
+    "levels: 4 text elements at once (competing)",
+    "levels: no dominant element (largest text 62 px)",
+    "levels: page mostly empty at 2 sampled moments",
+    "angles: 5 text elements at once (competing)",
+    "cta: page mostly empty at 3 sampled moments"
+   ]
+  },
+  {
    "id": "shaping",
    "name": "Correct Arabic shaping",
    "status": "pass",
-   "detail": "89 distinct texts; Cairo loaded; letters join (shaped width ≠ isolated-letter width)",
+   "detail": "87 distinct texts; Cairo loaded; letters join (each word drawn shaped differs from its letters drawn apart)",
    "evidence": []
   },
   {
@@ -84,7 +106,7 @@
    "id": "export",
    "name": "Export format (1080×1920 · 9:16 · 30 fps · H.264 · MP4)",
    "status": "pass",
-   "detail": "1080×1920, 30/1, h264 High yuv420p, faststart yes, 71.77s, 7689 kb/s, 69.0 MB",
+   "detail": "1080×1920, 30/1, h264 High yuv420p, faststart yes, 71.77s, 8243 kb/s, 74.0 MB",
    "evidence": []
   },
   {
@@ -156,8 +178,8 @@
   },
   {
    "id": "angles",
-   "style": "collage",
-   "layout": "sticker",
+   "style": null,
+   "layout": "split",
    "tr": "zoom"
   },
   {
@@ -167,5 +189,79 @@
    "tr": "blur"
   }
  ],
- "duration": 71.767
+ "duration": 71.767,
+ "art": [
+  {
+   "scene": "hook",
+   "look_first": "01 نفس النوع ولا مختلف؟",
+   "focal_px": 84,
+   "max_elements": 1,
+   "max_words": 5,
+   "speaker_share": 1.0,
+   "empty_moments": 0
+  },
+  {
+   "scene": "same",
+   "look_first": "عشر إعلانات على Meta",
+   "focal_px": 58,
+   "max_elements": 2,
+   "max_words": 5,
+   "speaker_share": 0.58,
+   "empty_moments": 0
+  },
+  {
+   "scene": "why",
+   "look_first": "≠ three creative angles",
+   "focal_px": 67,
+   "max_elements": 4,
+   "max_words": 4,
+   "speaker_share": 0.58,
+   "empty_moments": 0
+  },
+  {
+   "scene": "metric",
+   "look_first": "02 Creative Diversity metric ج",
+   "focal_px": 88,
+   "max_elements": 1,
+   "max_words": 7,
+   "speaker_share": 1.0,
+   "empty_moments": 0
+  },
+  {
+   "scene": "path",
+   "look_first": "Ads Manager Columns Customize ",
+   "focal_px": 58,
+   "max_elements": 2,
+   "max_words": 7,
+   "speaker_share": 0.14,
+   "empty_moments": 1
+  },
+  {
+   "scene": "levels",
+   "look_first": "Low",
+   "focal_px": 62,
+   "max_elements": 4,
+   "max_words": 7,
+   "speaker_share": 0.44,
+   "empty_moments": 2
+  },
+  {
+   "scene": "angles",
+   "look_first": "التنوع = تغير الـ angle",
+   "focal_px": 72,
+   "max_elements": 5,
+   "max_words": 8,
+   "speaker_share": 0.37,
+   "empty_moments": 0
+  },
+  {
+   "scene": "cta",
+   "look_first": "اكتب في الكومنتات ANGLES أمثلة",
+   "focal_px": 120,
+   "max_elements": 2,
+   "max_words": 8,
+   "speaker_share": 0.43,
+   "empty_moments": 3
+  }
+ ]
 }

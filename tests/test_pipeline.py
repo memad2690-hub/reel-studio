@@ -473,6 +473,102 @@ class AcceptanceTests(Tmp):
         self.assertIn('words.prev-', src[src.index('def cmd_finalize_cut'):src.index('def cmd_crop_preview')])
 
 
+class LookTwoTests(Tmp):
+    """Visual-quality pass (look 2): readable text, layouts, speaker-first, captions, art direction."""
+    scenes = EditorialV2Tests.scenes
+
+    def tearDown(self):
+        builder.set_look(1)
+        super().tearDown()
+
+    def test_readable_sizes_monotonic_and_look1_untouched(self):
+        import kits
+        kits.LOOK[0] = 1
+        self.assertEqual(kits.readable(30), 30)
+        self.assertIn('font-size="40"', kits.text('x', 40))
+        kits.LOOK[0] = 2
+        sizes = [kits.readable(v) for v in range(20, 80)]
+        self.assertEqual(sizes, sorted(sizes))                        # never smaller for a larger request
+        self.assertEqual((kits.readable(30), kits.readable(40), kits.readable(70)), (46, 48, 70))
+        kits.LOOK[0] = 1
+
+    def test_look_switches_layouts_and_back(self):
+        m = self.scenes([{'id': 'a', 'layout': 'pip-right', 'elements': []}], look=2)
+        self.assertEqual(json.loads(json.dumps(m))['scenes'][0]['card'], 'pip-right')
+        self.assertEqual(builder.LAYOUTS['pip-right']['w'], 480)
+        self.assertIn('split', builder.LAYOUTS)
+        self.scenes([{'id': 'a', 'layout': 'pip-right', 'elements': []}])
+        self.assertEqual(builder.LAYOUTS['pip-right']['w'], 350)
+        self.assertNotIn('split', builder.LAYOUTS)
+
+    def test_speaker_first_until_graphics_arrive(self):
+        m = self.scenes([{'id': 'a', 'layout': 'top', 'elements': [{'type': 'text', 'text': 'x', 'in': 'خسارة'}]}], look=2)
+        pre = m['scenes'][0]['pre']
+        self.assertEqual(pre[0], 'hero')
+        self.assertAlmostEqual(pre[1], 4.5 - builder.CARD_SLIDE, places=2)   # 'خسارة' is spoken at 4.5 s
+        m = self.scenes([{'id': 'a', 'layout': 'top', 'elements': [{'type': 'text', 'text': 'x', 'in': 'مية'}]}], look=2)
+        self.assertNotIn('pre', m['scenes'][0])                     # graphics come soon enough
+        m = self.scenes([{'id': 'a', 'layout': 'top', 'elements': [{'type': 'text', 'text': 'x', 'in': 'خسارة'}]}])
+        self.assertNotIn('pre', m['scenes'][0])                     # look 1 unchanged
+
+    def test_caption_steps_aside_for_kinetic_words(self):
+        page = lambda: open(os.path.join(self.d, 'build', 'page.html'), encoding='utf-8').read()
+        self.scenes([{'id': 'a', 'elements': [{'type': 'kinetic', 'from': 'والتكاليف', 'count': 2}]}], look=2)
+        self.assertIn('"capMute": [[1.45, 2.65]]', page())
+        self.scenes([{'id': 'a', 'elements': [{'type': 'kinetic', 'from': 'والتكاليف', 'count': 2}]}])
+        self.assertIn('"capMute": []', page())
+
+    def test_versus_fits_content_and_flow_fits_labels(self):
+        import kits, fx, re
+        kits.LOOK[0] = 2
+        el = {'a': {'title': 'A', 'items': [{'text': 'x'}]}, 'b': {'title': 'B', 'items': [{'text': 'y'}]}}
+        svg = fx.versus(el, [0.0] * 6)
+        hs = [float(h) for h in re.findall(r'<rect x="[^"]+" y="[^"]+" width="[^"]+" height="([\d.]+)" rx="28" fill="#fff"', svg)]
+        self.assertTrue(hs and max(hs) < 400, hs)                    # one item: a short box, not 640 px
+        f = fx.flow({'nodes': [{'label': 'Customize Columns طويلة جدا'}], 'box_w': 200}, [0.0])
+        w = float(re.search(r'M ?(-?[\d.]+)', f).group(1))
+        self.assertLess(w, -200)                                     # box widened beyond the requested 200 px
+        kits.LOOK[0] = 1
+
+    def test_planner_art_direction(self):
+        import planner
+        sc = {'id': 'd', 'layout': 'pip-right', 'elements': [
+            {'type': 'statcard', 'label': 'مبيعات', 'value': 100000}, {'type': 'statcard', 'label': 'تكاليف', 'value': 80000},
+            {'type': 'statcard', 'label': 'إعلانات', 'value': 25000}, {'type': 'pill', 'text': 'مثال'}]}
+        planner.art_direct(sc, {'role': 'data'}, [])
+        types = [e['type'] for e in sc['elements']]
+        self.assertEqual(types, ['bars', 'pill'])
+        self.assertTrue(sc['elements'][0].get('focus'))
+        self.assertEqual(sc['layout'], 'split')
+        self.assertEqual(sc['_art']['look_first'], 'bars')
+        hook = {'id': 'h', 'layout': 'top', 'elements': [{'type': 'kinetic', 'count': 4}]}
+        planner.art_direct(hook, {'role': 'hook'}, [])
+        self.assertEqual(hook['layout'], 'hero')
+
+    def test_accept_readable_and_art_checks(self):
+        import accept
+        el = lambda t, px, box=(100, 100, 500, 200): {'text': t, 'fpx': px, 'tin': -5, 'box': list(box), 'tbox': list(box), 'behind': False, 'k': '', 'type': 'pill'}
+        samples = [{'t': 1.0, 'els': [el('كلام صغير', 38)], 'cap': None, 'capPx': 54, 'card': [40, 110, 1040, 870]},
+                   {'t': 2.0, 'els': [el('a b', 70), el('c d', 70), el('e', 50), el('f', 50)], 'cap': None, 'capPx': 54,
+                    'card': [690, 150, 1040, 580]}]
+        r = accept.Report(); accept.check_readable(r, samples)
+        self.assertEqual(r.checks[0]['status'], 'warn')
+        meta = {'mode': 'B', 'scenes': [{'id': 's', 'start': 0, 'end': 3, 'card': 'pip-right'}]}
+        r = accept.Report(); accept.check_art(r, meta, samples)
+        ev = ' '.join(r.checks[0]['evidence'])
+        self.assertIn('4 text elements', ev); self.assertIn('equal weight', ev); self.assertIn('speaker frame only', ev)
+
+    def test_segmentation_smoothing_leaves_no_trail(self):
+        import numpy as np
+        prev = np.zeros((10, 10)); prev[2:5, 2:5] = 1.0          # hand was here
+        new = np.zeros((10, 10)); new[5:8, 5:8] = 1.0            # hand moved
+        w = np.where(np.abs(new - prev) > 0.25, 1.0, 0.6)
+        m = w * new + (1 - w) * prev
+        self.assertEqual(float(m[3, 3]), 0.0)                     # old position fully gone (no translucent ghost)
+        src = open(os.path.join(ROOT, 'engine', 'segment.py'), encoding='utf-8').read()
+        self.assertIn('np.abs(m - prev) > 0.25', src)
+
+
 class ChartCheckTests(unittest.TestCase):
     def check(self, el):
         import charts

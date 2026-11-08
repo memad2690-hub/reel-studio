@@ -23,6 +23,8 @@ The studio's job runner can start it too (`accept`). Each check is ✅ pass · �
 | Consistent audio | ffprobe + ffmpeg `ebur128` + `silencedetect` | not AAC ≥ 44.1 kHz ≥ 128 kb/s, or audio ≠ video length ±0.1 s (❌); true peak > −0.5 dBTP or silent gaps > 1.2 s inside the reel (⚠️). Integrated loudness is reported, not judged. |
 | Stable rendering | full decode + `blackdetect` | decode errors or black frames ≥ 0.1 s (❌) |
 | Smooth transitions | lists the designed transitions + `freezedetect` | a frozen picture ≥ 1.5 s (⚠️) |
+| Text readable on a phone | rendered font size (font-size × on-screen scale) of every visible text and the caption | text below 44 px (⚠️), below 34 px (❌) |
+| Art direction (heuristic) | per scene, from the sampled moments: texts visible at once, words that appeared within the last 2 s, the largest text (or a chart covering ≥ 12% of the frame) as the focal element, speaker frame share, empty-page moments | > 3 texts at once, > 12 new words per 2 s, no element ≥ 64 px and no large chart, two equally big texts, speaker < 10% of the frame, page mostly empty at ≥ 2 moments (⚠️) — a per-scene table is added to report.md |
 | Deterministic rerenders | the storyboard frames rendered twice, SHA-256 of the PNGs | any byte differs (❌) |
 
 Platform compatibility is checked as format conformance (the row "Export format"): 1080×1920 9:16, 30 fps, H.264

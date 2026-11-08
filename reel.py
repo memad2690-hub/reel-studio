@@ -522,9 +522,9 @@ def cmd_plan(a):
     proj = project(a.slug)
     pl = planner.plan(words, a.intensity)
     wj(os.path.join(d, 'plan.json'), pl)
-    with open(os.path.join(d, 'plan.md'), 'w', encoding='utf-8') as f:
-        f.write(planner.plan_markdown(pl, f'— {proj.get("title", a.slug)}'))
     draft = planner.draft_scenes(pl, words, brand=a.brand, cta_keyword=proj.get('cta_keyword'))
+    with open(os.path.join(d, 'plan.md'), 'w', encoding='utf-8') as f:
+        f.write(planner.plan_markdown(pl, f'— {proj.get("title", a.slug)}') + planner.art_markdown(draft))
     wj(os.path.join(d, 'scenes.draft.json'), draft)
     out = {'segments': len(pl['segments']), 'graphic_scenes': sum(1 for x in pl['segments'] if x['style'] != 'talking-head'),
            'plan': 'plan.md', 'draft': 'scenes.draft.json'}
@@ -535,7 +535,7 @@ def cmd_plan(a):
             shutil.copy(cur, bak); out['backup'] = os.path.basename(bak)
         clean = json.loads(json.dumps(draft))
         for sc in clean['scenes']:
-            sc.pop('_plan', None)
+            sc.pop('_plan', None); sc.pop('_art', None)
         old = rj(cur, None)
         if old and any(sc.get('locked') for sc in old.get('scenes', [])):
             import editor

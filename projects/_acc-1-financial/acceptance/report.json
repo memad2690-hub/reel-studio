@@ -1,6 +1,6 @@
 {
  "project": "_acc-1-financial",
- "video": "exports/v003.mp4",
+ "video": "exports/v005.mp4",
  "verdict": "warn",
  "checks": [
   {
@@ -41,15 +41,9 @@
   {
    "id": "overlap-caption",
    "name": "Graphics clear of captions",
-   "status": "warn",
-   "detail": "1 overlap(s) to review",
-   "evidence": [
-    {
-     "t": 5,
-     "text": "بيخسر أكتر",
-     "caption": "أكتر"
-    }
-   ]
+   "status": "pass",
+   "detail": "no text graphic covers more than 20% of a caption",
+   "evidence": []
   },
   {
    "id": "overlap-face",
@@ -61,20 +55,35 @@
   {
    "id": "safe-zone",
    "name": "Text clear of platform UI (heuristic)",
+   "status": "pass",
+   "detail": "no text in the bottom 220 px or the lower right 100 px column",
+   "evidence": []
+  },
+  {
+   "id": "readable",
+   "name": "Text readable on a phone (≥ 44 px)",
+   "status": "pass",
+   "detail": "every text ≥ 44 px (captions included)",
+   "evidence": []
+  },
+  {
+   "id": "art",
+   "name": "Art direction (focus, density, speaker, empty page)",
    "status": "warn",
-   "detail": "1 text box(es) where app buttons/captions may cover them",
+   "detail": "5 note(s) to review",
    "evidence": [
-    {
-     "t": 30.98,
-     "text": "وبرضو خسران 5,000 ج"
-    }
+    "setup: two elements of equal weight compete for first look",
+    "math: 5 text elements at once (competing)",
+    "math: two elements of equal weight compete for first look",
+    "margin: page mostly empty at 2 sampled moments",
+    "breakeven: 5 text elements at once (competing)"
    ]
   },
   {
    "id": "shaping",
    "name": "Correct Arabic shaping",
    "status": "pass",
-   "detail": "74 distinct texts; Cairo loaded; letters join (each word drawn shaped differs from its letters drawn apart)",
+   "detail": "71 distinct texts; Cairo loaded; letters join (each word drawn shaped differs from its letters drawn apart)",
    "evidence": []
   },
   {
@@ -95,7 +104,7 @@
    "id": "export",
    "name": "Export format (1080×1920 · 9:16 · 30 fps · H.264 · MP4)",
    "status": "pass",
-   "detail": "1080×1920, 30/1, h264 High yuv420p, faststart yes, 48.60s, 4689 kb/s, 28.5 MB",
+   "detail": "1080×1920, 30/1, h264 High yuv420p, faststart yes, 48.60s, 5934 kb/s, 36.1 MB",
    "evidence": []
   },
   {
@@ -127,7 +136,7 @@
    "evidence": []
   }
  ],
- "flagged_sheet": "acceptance/flagged.png",
+ "flagged_sheet": null,
  "scenes": [
   {
    "id": "hook",
@@ -138,13 +147,13 @@
   {
    "id": "setup",
    "style": null,
-   "layout": "top",
+   "layout": "split",
    "tr": null
   },
   {
    "id": "math",
    "style": null,
-   "layout": "pip-right",
+   "layout": "split",
    "tr": null
   },
   {
@@ -162,7 +171,7 @@
   {
    "id": "breakeven",
    "style": null,
-   "layout": "pip-left",
+   "layout": "split",
    "tr": null
   },
   {
@@ -172,5 +181,70 @@
    "tr": null
   }
  ],
- "duration": 48.6
+ "duration": 48.6,
+ "art": [
+  {
+   "scene": "hook",
+   "look_first": "بيخسر أكتر",
+   "focal_px": 112,
+   "max_elements": 2,
+   "max_words": 3,
+   "speaker_share": 1.0,
+   "empty_moments": 0
+  },
+  {
+   "scene": "setup",
+   "look_first": "Sales 56,000 ج",
+   "focal_px": 103,
+   "max_elements": 3,
+   "max_words": 4,
+   "speaker_share": 0.37,
+   "empty_moments": 0
+  },
+  {
+   "scene": "math",
+   "look_first": "خسارة 5,000 ج",
+   "focal_px": 74,
+   "max_elements": 5,
+   "max_words": 7,
+   "speaker_share": 0.37,
+   "empty_moments": 0
+  },
+  {
+   "scene": "roas",
+   "look_first": "ROAS 4 مبروك؟",
+   "focal_px": 92,
+   "max_elements": 2,
+   "max_words": 4,
+   "speaker_share": 0.63,
+   "empty_moments": 0
+  },
+  {
+   "scene": "margin",
+   "look_first": "ابدأ من Contribution Margin",
+   "focal_px": 84,
+   "max_elements": 3,
+   "max_words": 6,
+   "speaker_share": 0.44,
+   "empty_moments": 2
+  },
+  {
+   "scene": "breakeven",
+   "look_first": "Break-even 5",
+   "focal_px": 155,
+   "max_elements": 5,
+   "max_words": 9,
+   "speaker_share": 0.37,
+   "empty_moments": 0
+  },
+  {
+   "scene": "cta",
+   "look_first": "اكتب في الكومنتات PROFIT فيديو",
+   "focal_px": 120,
+   "max_elements": 1,
+   "max_words": 9,
+   "speaker_share": 0.44,
+   "empty_moments": 0
+  }
+ ]
 }

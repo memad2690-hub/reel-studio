@@ -151,7 +151,11 @@ def masks_for_frames(frame_dir, build_dir, every=2, ema=0.6, first=1, last=None,
             raw = mask(Image.open(os.path.join(frame_dir, f)))
             m = refine(raw, exclude=exclude)
             q = quality(raw, m)[0]
-            m = m if prev is None else ema * m + (1 - ema) * prev
+            if prev is not None:
+                # motion-adaptive smoothing: steady pixels are averaged (no flicker), pixels that changed a lot
+                # (a moving hand) take the new mask, so fast motion leaves no translucent trail
+                w = np.where(np.abs(m - prev) > 0.25, 1.0, ema)
+                m = w * m + (1 - w) * prev
         else:
             m = prev
         prev = m

@@ -453,10 +453,90 @@ def draft_scenes(pl, words, brand='media-buying', cta_keyword=None):
         scenes.append(sc)
     if scenes:
         scenes[0].setdefault('layout', 'full' if pl['intensity'] == 'high' else 'top')
-    return {'mode': 'B', 'brand': brand, 'words': 'words.json', 'audio': 'build/cut_audio.m4a', 'captions': True,
+    for sc, seg in zip(scenes, pl['segments']):
+        art_direct(sc, seg, words[seg['w0']:seg['w1'] + 1])
+    return {'look': 2, 'mode': 'B', 'brand': brand, 'words': 'words.json', 'audio': 'build/cut_audio.m4a', 'captions': True,
             'caption_style': P['captions'],
             'caption_keywords': sorted({k for s in pl['segments'] for k in s['keywords'] if len(k) > 2})[:8],
             'scenes': scenes}
+
+
+# ---- art direction (visual-quality pass) -------------------------------------------------------------------------
+# Rules a human art director would apply to each drafted scene. Reading speed while also listening is taken as about
+# 5 words per second, so a scene's on-screen text should stay under ~10 words to be understood in two seconds
+# (a working assumption, not a measured norm).
+SPEAKER_FIRST_ROLES = ('hook', 'emphasis', 'conclusion', 'cta', 'setup')
+WORDS_2S = 10
+MAX_ELEMENTS = 3
+
+
+def el_words(e):
+    parts = [e.get(k, '') for k in ('text', 'label', 'pre', 'hl', 'post', 'title', 'keyword', 'magnet')]
+    parts += e.get('lines', [])
+    parts += [x.get('text', '') or x.get('label', '') for k in ('steps', 'nodes', 'items', 'rows') for x in e.get(k, [])]
+    if e.get('type') == 'kinetic':
+        parts.append(' '.join(['w'] * e.get('count', 4)))
+    if e.get('type') in ('statcard',):
+        parts.append('0')
+    return sum(len(str(p).split()) for p in parts if p)
+
+
+def art_direct(sc, seg, ws):
+    """Decide where the eye goes first, keep the speaker prominent when the moment is personal, and prefer fewer,
+    bigger elements. Writes the reasoning to sc['_art']."""
+    els = sc['elements']
+    role = seg['role']
+    notes = []
+    # 1) fewer elements: several numbers become one comparable chart instead of a grid of cards
+    cards = [e for e in els if e['type'] == 'statcard']
+    if len(cards) >= 3:
+        items = [{'label': c['label'], 'value': abs(c['value']), 'tone': c.get('tone', 'neutral'), 'in': c.get('in')}
+                 for c in cards]
+        els[:] = [e for e in els if e['type'] != 'statcard']
+        els.insert(0, {'type': 'bars', 'x': 540, 'y': 380, 'w': 860, 'h': 520, 'unit': cards[0].get('unit', 'ج'),
+                       'items': items, 'in': cards[0].get('in')})
+        notes.append(f'{len(cards)} amounts → one bar chart (comparable at a glance)')
+    if len(els) > MAX_ELEMENTS:
+        notes.append(f'{len(els)} elements → kept {MAX_ELEMENTS} (the rest compete for attention)')
+        del els[MAX_ELEMENTS:]
+    # 2) one focal element, clearly bigger than the rest
+    rank = {'bars': 5, 'waterfall': 5, 'breakeven': 5, 'versus': 5, 'equation': 5, 'numbered': 4, 'cta': 5,
+            'statcard': 4, 'kinetic': 4, 'headline': 3, 'wcard': 2, 'pill': 1}
+    focus = max(els, key=lambda e: rank.get(e['type'], 2), default=None)
+    for e in els:
+        if e is focus:
+            e['focus'] = True
+            if e['type'] == 'statcard':
+                e['size'] = max(e.get('size', 76), 100)
+            if e['type'] == 'kinetic':
+                e['size'] = max(e.get('size', 92), 96)
+        elif e['type'] == 'statcard':
+            e['size'] = min(e.get('size', 76), 64)
+    # 3) speaker prominence and room for the graphic
+    if role in SPEAKER_FIRST_ROLES and len(els) <= 1 and sc.get('layout') in ('top', 'bottom', 'pip-right', 'pip-left', None):
+        sc['layout'] = 'hero' if els else 'full'
+        notes.append('personal moment: speaker big, one element at most')
+    elif sc.get('layout') in ('pip-right', 'pip-left') or (focus and focus['type'] in ('bars', 'numbered', 'waterfall')
+                                                           and sc.get('layout') in ('top', 'bottom')):
+        sc['layout'] = 'split'
+        notes.append('graphic needs room: split layout (speaker stays large above it)')
+    words = sum(el_words(e) for e in els)
+    read_s = round(words / 5.0, 1)
+    if words > WORDS_2S:
+        notes.append(f'{words} words on screen: more than a 2-second read — trim')
+    name = (focus.get('label') or focus.get('text') or focus.get('hl') or '') if focus else ''
+    look_first = 'the speaker' if not els else focus['type'] + (f' "{name}"' if name else '')
+    sc['_art'] = {'look_first': look_first, 'speaker': 'prominent' if sc.get('layout') in ('full', 'hero', 'split', None) else 'secondary',
+                  'elements': len(els), 'words': words, 'read_s': read_s, 'notes': notes}
+
+
+def art_markdown(draft):
+    rows = ['| scene | look first | speaker | elements | words (≈s to read) | notes |', '|---|---|---|---|---|---|']
+    for sc in draft['scenes']:
+        a = sc.get('_art', {})
+        rows.append(f'| {sc["id"]} | {a.get("look_first", "")} | {a.get("speaker", "")} | {a.get("elements", 0)} | '
+                    f'{a.get("words", 0)} ({a.get("read_s", 0)} s) | {"; ".join(a.get("notes", []))} |')
+    return '\n## Art direction (draft)\n\n' + '\n'.join(rows) + '\n'
 
 
 def plan_markdown(pl, title=''):

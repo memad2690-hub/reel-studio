@@ -1,4 +1,5 @@
 {
+ "look": 2,
  "mode": "B",
  "brand": "media-buying",
  "style": "data",
@@ -27,8 +28,8 @@
      "value": 100000,
      "tone": "positive",
      "x": 540,
-     "y": 150,
-     "size": 92,
+     "y": 110,
+     "size": 76,
      "in": "100",
      "anim": "rise"
     },
@@ -38,8 +39,8 @@
      "hl": "بيخسر أكتر",
      "post": "",
      "x": 540,
-     "y": 400,
-     "size": 92,
+     "y": 320,
+     "size": 112,
      "in": "بيخسر",
      "anim": "stamp"
     }
@@ -55,7 +56,7 @@
      "text": "مثال",
      "color": "blue",
      "x": 540,
-     "y": 40,
+     "y": 30,
      "size": 40,
      "in": "تخيل",
      "anim": "fade"
@@ -63,9 +64,9 @@
     {
      "type": "bars",
      "x": 540,
-     "y": 470,
+     "y": 380,
      "w": 760,
-     "h": 520,
+     "h": 500,
      "unit": "ج",
      "items": [
       {
@@ -89,24 +90,11 @@
    "start": "لو تكلفة",
    "elements": [
     {
-     "type": "headline",
-     "pre": "",
-     "hl": "الحسبة",
-     "post": "",
-     "x": 300,
-     "y": -330,
-     "size": 80,
-     "in": {
-      "rel": 0.1
-     },
-     "anim": "wipe"
-    },
-    {
      "type": "waterfall",
      "x": 540,
-     "y": 520,
-     "w": 940,
-     "h": 600,
+     "y": 330,
+     "w": 960,
+     "h": 460,
      "unit": "ج",
      "rows": [
       {
@@ -141,13 +129,13 @@
      "text": "ودا قبل المصاريف الثابتة",
      "color": "red",
      "x": 540,
-     "y": 80,
-     "size": 40,
+     "y": 40,
+     "size": 50,
      "in": "الثابتة",
      "anim": "rise"
     }
    ],
-   "layout": "pip-right"
+   "layout": "split"
   },
   {
    "id": "roas",
@@ -181,13 +169,13 @@
   {
    "id": "breakeven",
    "start": "عشان كدا",
-   "layout": "top",
+   "layout": "split",
    "transition": "blur",
    "elements": [
     {
      "type": "breakeven",
      "x": 540,
-     "y": 330,
+     "y": 230,
      "revenue": 100000,
      "variable_costs": 80000,
      "expect": 5,

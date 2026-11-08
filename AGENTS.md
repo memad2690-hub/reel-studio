@@ -134,3 +134,9 @@ After `finalize-cut` (use `--full-frame` for V2 layouts) and `align`:
 8. Before delivering a final render, run `python3 reel.py accept <slug>` and review every ⚠️/❌ (stills in
    `acceptance/flagged.png`). To remake card frames of an aligned project use `finalize-cut --full-frame --frames-only`
    (a plain `finalize-cut` re-maps raw words; it backs up `words.json` first).
+9. Art direction (look 2, docs/VISUAL_REVIEW.md): decide per scene what the viewer looks at first and make it the
+   biggest thing on screen; ≤ 3 elements at once; on-screen text a 2-second read (≈ 10 words); keep the speaker big
+   (`split`, `hero`, 480 px PiP — never a tiny frame) when the moment is personal or the graphic doesn't need the room;
+   don't repeat the caption in a pill or kinetic line (captions step aside for kinetic text automatically); prefer one
+   chart over several stat cards. Use the cut-out only where it is clean in the stills (attached seat/pillar shapes →
+   use `split` instead). Check `acceptance/report.md` → "Art direction per scene" and `readable`.

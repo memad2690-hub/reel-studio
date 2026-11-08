@@ -1,0 +1,249 @@
+{
+ "look": 2,
+ "mode": "B",
+ "brand": "media-buying",
+ "words": "words.json",
+ "audio": "build/cut_audio.m4a",
+ "captions": true,
+ "caption_style": "highlight",
+ "caption_keywords": [
+  "Attention",
+  "Relevance",
+  "Reason",
+  "اختبار"
+ ],
+ "scenes": [
+  {
+   "id": "hook",
+   "style": "parallax",
+   "elements": [
+    {
+     "type": "text",
+     "text": "أغلى؟",
+     "behind": true,
+     "color": "red",
+     "size": 230,
+     "weight": 900,
+     "x": 540,
+     "y": -560,
+     "in": "أغلى",
+     "anim": "stamp"
+    },
+    {
+     "type": "pill",
+     "text": "ولا بيبيع أكتر؟",
+     "color": "blue",
+     "x": 540,
+     "y": 330,
+     "size": 52,
+     "in": "يبيع",
+     "anim": "rise"
+    }
+   ]
+  },
+  {
+   "id": "ads",
+   "start": "الإعلان الأولاني",
+   "style": "battle",
+   "elements": [
+    {
+     "type": "versus",
+     "x": 540,
+     "y": 420,
+     "ratio": 0.5,
+     "a": {
+      "title": "الإعلان الأول",
+      "color": "blue",
+      "in": "الأولاني",
+      "items": [
+       {
+        "text": "design ممتاز",
+        "good": true,
+        "in": "design"
+       },
+       {
+        "text": "الألوان",
+        "good": true,
+        "in": "الألوان"
+       },
+       {
+        "text": "typography",
+        "good": true,
+        "in": "typography"
+       }
+      ]
+     },
+     "b": {
+      "title": "الإعلان التاني",
+      "color": "yellow",
+      "in": "تاني",
+      "items": [
+       {
+        "text": "أبسط",
+        "good": true,
+        "in": "أبسط"
+       },
+       {
+        "text": "بيبدأ بسؤال العميل",
+        "good": true,
+        "in": "بسؤال"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "mistake",
+   "start": "الغلطة",
+   "layout": "top",
+   "transition": "blur",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "الأجمل",
+     "hl": "مش دايمًا",
+     "post": "بيكسب",
+     "x": 540,
+     "y": 150,
+     "size": 84,
+     "in": "الأجمل",
+     "anim": "blur-in"
+    },
+    {
+     "type": "pill",
+     "text": "الجمال مش هو العامل الوحيد",
+     "color": "red",
+     "x": 540,
+     "y": 360,
+     "size": 46,
+     "in": "الجمال",
+     "anim": "rise"
+    },
+    {
+     "type": "pill",
+     "text": "conversion",
+     "color": "blue",
+     "x": 540,
+     "y": 500,
+     "size": 46,
+     "in": "conversion",
+     "anim": "spring"
+    }
+   ]
+  },
+  {
+   "id": "three",
+   "start": "الإعلان محتاج",
+   "layout": "pip-left",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "",
+     "hl": "3 حاجات",
+     "post": "",
+     "x": 760,
+     "y": -340,
+     "size": 84,
+     "in": "تلات",
+     "anim": "stamp"
+    },
+    {
+     "type": "numbered",
+     "x": 540,
+     "y": 120,
+     "gap": 190,
+     "steps": [
+      {
+       "text": "Attention · يوقف العميل",
+       "in": "Attention"
+      },
+      {
+       "text": "Relevance · الكلام عنه",
+       "in": "Relevance"
+      },
+      {
+       "text": "Reason to buy · يستحق",
+       "in": "Reason"
+      }
+     ]
+    },
+    {
+     "type": "pill",
+     "text": "+ دليل حقيقي",
+     "color": "green",
+     "x": 540,
+     "y": 720,
+     "size": 48,
+     "in": "دليل",
+     "anim": "rise"
+    }
+   ]
+  },
+  {
+   "id": "test",
+   "start": "إعلان بسيط",
+   "style": "battle",
+   "layout": "half-bottom",
+   "transition": "whip",
+   "elements": [
+    {
+     "type": "versus",
+     "x": 540,
+     "y": 420,
+     "ratio": 0.5,
+     "a": {
+      "title": "تخمين",
+      "color": "red",
+      "in": "بالتخمين",
+      "items": [
+       {
+        "text": "تختار إعلان",
+        "good": false,
+        "in": "بتختار"
+       }
+      ]
+     },
+     "b": {
+      "title": "اختبار فعلي",
+      "color": "green",
+      "in": "باختبار",
+      "items": [
+       {
+        "text": "على أساس النقط",
+        "good": true,
+        "in": "أساس"
+       }
+      ],
+      "winner_label": "الصح"
+     },
+     "winner": "b",
+     "in_winner": "بتعمل"
+    }
+   ]
+  },
+  {
+   "id": "recap",
+   "start": "Attention،",
+   "layout": "top",
+   "transition": "zoom",
+   "elements": [
+    {
+     "type": "kinetic",
+     "from": "Attention،",
+     "count": 5,
+     "emphasis": [
+      "Attention،",
+      "Relevance",
+      "buy."
+     ],
+     "intensity": "medium",
+     "size": 92,
+     "w": 900,
+     "x": 540,
+     "y": 300
+    }
+   ]
+  }
+ ]
+}

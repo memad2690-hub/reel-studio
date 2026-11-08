@@ -38,6 +38,7 @@ def inter(a, b):
 class Report:
     def __init__(self):
         self.checks = []
+        self.art = []
 
     def add(self, cid, name, status, detail='', evidence=None):
         self.checks.append({'id': cid, 'name': name, 'status': status, 'detail': detail, 'evidence': evidence or []})
@@ -216,6 +217,8 @@ def check_layout(r, d, meta, build_dir, adir):
           'no text in the bottom 220 px or the lower right 100 px column' if not safe_hits
           else f'{len(safe_hits)} text box(es) where app buttons/captions may cover them', safe_hits[:10])
 
+    check_readable(r, samples)
+    check_art(r, meta, samples)
     ck = rep['checks']
     r.add('shaping', 'Correct Arabic shaping', 'fail' if (ck['shaping'] or not ck['font']) else 'pass',
           f'{rep["texts"]} distinct texts; Cairo loaded; letters join (each word drawn shaped differs from its letters drawn apart)'
@@ -227,6 +230,81 @@ def check_layout(r, d, meta, build_dir, adir):
     r.add('stable', 'Page runs without errors', 'fail' if rep['errors'] else 'pass',
           'no page or console errors' if not rep['errors'] else 'page errors', rep['errors'][:10])
     return [x['t'] for x in clipped + cap_hits + face_hits + safe_hits]
+
+
+# ---------------------------------------------------------------------------------------------------- art direction
+MIN_PX_FAIL, MIN_PX_WARN = 34, 44        # 1080 px ≈ 68 mm on a 6.1" phone: 44 px ≈ 2.8 mm tall text
+FOCAL_PX = 64                             # a focal element is at least this big
+MAX_ELS, MAX_WORDS = 3, 12                # competing elements / words on screen at once (≈ a 2-second read)
+GRAPHIC_TYPES = ('bars', 'waterfall', 'donut', 'line', 'funnel', 'breakeven', 'versus', 'scorecard', 'beforeafter',
+                 'flow', 'equation')
+
+
+def check_readable(r, samples):
+    small = {}
+    for s in samples:
+        for e in s['els']:
+            f = e.get('fpx')
+            if s['t'] - e.get('tin', 0) < 0.7:                  # still animating in (springs start small)
+                continue
+            if f and f < MIN_PX_WARN and e['text']:
+                k = e['text'][:40]
+                small[k] = min(small.get(k, (99, 0))[0], f), s['t']
+        if s.get('capPx') and s['capPx'] < MIN_PX_WARN:
+            small['caption'] = s['capPx'], s['t']
+    fail = {k: v for k, v in small.items() if v[0] < MIN_PX_FAIL}
+    ev = [f'{v[0]} px at {v[1]:.1f}s: {k}' for k, v in sorted(small.items(), key=lambda kv: kv[1][0])]
+    r.add('readable', 'Text readable on a phone (≥ 44 px)', 'fail' if fail else ('warn' if small else 'pass'),
+          f'every text ≥ {MIN_PX_WARN} px (captions included)' if not small else f'{len(small)} text(s) below {MIN_PX_WARN} px',
+          ev[:12])
+
+
+def check_art(r, meta, samples):
+    """Art-direction review per scene, measured from what is on screen (heuristics, reported as warnings)."""
+    rows, warns = [], []
+    for sc in meta['scenes']:
+        ss = [s for s in samples if sc['start'] <= s['t'] < sc['end']]
+        if not ss:
+            continue
+        n_max = w_max = 0; focal = None; tie = False; share = 1.0; empty = 0; big_graphic = False
+        for s in ss:
+            els = [e for e in s['els'] if e['text'] or e.get('type') not in ('', None)]
+            # a chart/diagram leads the eye by its shapes, not its text size
+            big_graphic = big_graphic or any(e.get('type') in GRAPHIC_TYPES and area(e['box']) >= 0.12 * W * H for e in els)
+            txt = [e for e in els if e['text']]
+            n_max = max(n_max, len(txt))
+            # reading load: words that arrived within the last 2 s (a list that builds up row by row is read row by row)
+            w_max = max(w_max, sum(len(e['text'].split()) for e in txt if s['t'] - e.get('tin', 0) < 2.0))
+            sizes = sorted([e.get('fmax') or e.get('fpx') or 0 for e in txt], reverse=True)
+            if sizes:
+                big = max(txt, key=lambda e: e.get('fmax') or e.get('fpx') or 0)
+                if focal is None or (big.get('fmax') or big.get('fpx') or 0) > (focal.get('fmax') or focal.get('fpx') or 0):
+                    focal = big
+                if len(sizes) > 1 and sizes[0] >= FOCAL_PX and sizes[1] >= FOCAL_PX and sizes[0] / max(1, sizes[1]) < 1.15:
+                    tie = True
+            c = s.get('card')
+            if c:
+                vis = [max(0, c[0]), max(0, c[1]), min(W, c[2]), min(H, c[3])]
+                a = area(vis) / (W * H)
+                share = min(share, a)
+                if not txt and a < 0.5:
+                    empty += 1
+        name = (focal['text'][:30] if focal else 'the speaker')
+        fpx = (focal.get('fmax') or focal.get('fpx') if focal else None)
+        row = {'scene': sc['id'], 'look_first': name, 'focal_px': fpx, 'max_elements': n_max, 'max_words': w_max,
+               'speaker_share': round(share, 2), 'empty_moments': empty}
+        rows.append(row)
+        if n_max > MAX_ELS: warns.append(f'{sc["id"]}: {n_max} text elements at once (competing)')
+        if w_max > MAX_WORDS: warns.append(f'{sc["id"]}: {w_max} new words within 2 s (more than a 2-second read)')
+        if focal and (fpx or 0) < FOCAL_PX and not big_graphic:
+            warns.append(f'{sc["id"]}: no dominant element (largest text {fpx} px)')
+        if tie: warns.append(f'{sc["id"]}: two elements of equal weight compete for first look')
+        if meta['mode'] == 'B' and share < 0.10 and sc.get('card') not in (None,): warns.append(f'{sc["id"]}: speaker frame only {share:.0%} of the screen')
+        if empty >= 2: warns.append(f'{sc["id"]}: page mostly empty at {empty} sampled moments')
+    r.add('art', 'Art direction (focus, density, speaker, empty page)', 'warn' if warns else 'pass',
+          f'{len(rows)} scenes: one dominant element each, ≤ {MAX_ELS} texts at once, ≤ {MAX_WORDS} new words per 2 s, speaker ≥ 10% of the frame'
+          if not warns else f'{len(warns)} note(s) to review', warns[:16])
+    r.art = rows
 
 
 # ---------------------------------------------------------------------------------------------------- media
@@ -404,7 +482,7 @@ def run(d, video=None, determinism=True):
     out = {'project': os.path.basename(d), 'video': os.path.relpath(video, d) if video else None,
            'verdict': r.verdict, 'checks': r.checks, 'flagged_sheet': os.path.relpath(sheet, d) if sheet else None,
            'scenes': [{'id': s['id'], 'style': s.get('style'), 'layout': s.get('card'), 'tr': (s.get('tr') or [None])[0]}
-                      for s in meta['scenes']], 'duration': meta['duration']}
+                      for s in meta['scenes']], 'duration': meta['duration'], 'art': r.art}
     with open(os.path.join(adir, 'report.json'), 'w', encoding='utf-8') as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
     with open(os.path.join(adir, 'report.md'), 'w', encoding='utf-8') as f:
@@ -423,6 +501,11 @@ def markdown(out):
     for c in out['checks']:
         if c['evidence'] and c['status'] != 'pass':
             L += ['', f'**{c["name"]}**'] + [f'- {json.dumps(e, ensure_ascii=False) if not isinstance(e, str) else e}' for e in c['evidence']]
+    if out.get('art'):
+        L += ['', '**Art direction per scene** (measured)', '',
+              '| scene | look first | focal px | max texts | max words | speaker share | empty moments |', '|---|---|---|---|---|---|---|']
+        L += [f'| {a["scene"]} | {a["look_first"]} | {a["focal_px"] or "—"} | {a["max_elements"]} | {a["max_words"]} | '
+              f'{a["speaker_share"]:.0%} | {a["empty_moments"]} |' for a in out['art']]
     if out['flagged_sheet']:
         L += ['', f'Flagged moments: `{out["flagged_sheet"]}`']
     return '\n'.join(L) + '\n'

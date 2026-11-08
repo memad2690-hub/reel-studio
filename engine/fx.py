@@ -186,21 +186,30 @@ def panel(side, x, w, h, times, k0, color, winner_side, t_win):
     out = (f'<g {t0(times, k0, 0.45, "grow", chr(32) + "data-o=" + chr(39) + "50% 0%" + chr(39))}>'
            f'<rect x="{x - w / 2}" y="{-h / 2}" width="{w}" height="{h}" rx="28" fill="#fff" stroke="{kits.B["ink"]}" stroke-width="6"/>'
            f'<rect x="{x - w / 2}" y="{-h / 2}" width="{w}" height="110" rx="28" fill="{color}" stroke="{kits.B["ink"]}" stroke-width="6"/></g>')
-    out += f'<g {t0(times, k0, 0.3)}>' + text(title, 50, '#fff', 900, x=x, y=-h / 2 + 55) + '</g>'
+    v2 = kits.LOOK[0] >= 2
+    isz, igap = (52, 112) if v2 else (38, 92)
+    out += f'<g {t0(times, k0, 0.3)}>' + text(title, 56 if v2 else 50, '#fff', 900, x=x, y=-h / 2 + 55) + '</g>'
     for j, it in enumerate(items):
-        y = -h / 2 + 175 + j * 92
+        y = -h / 2 + (190 if v2 else 175) + j * igap
         good = it.get('good', True)
         mark = (f'<circle cx="{x + w / 2 - 50}" cy="{y}" r="22" fill="{kits.B["green" if good else "red"]}"/>'
                 + (f'<path d="M {x + w / 2 - 61} {y} l 8 9 l 15 -18" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round"/>'
                    if good else
                    f'<path d="M {x + w / 2 - 59} {y - 9} l 18 18 M {x + w / 2 - 41} {y - 9} l -18 18" stroke="#fff" stroke-width="6" stroke-linecap="round"/>'))
-        out += (f'<g {t0(times, k0 + 1 + j, 0.3)}>' + mark +
-                text(it.get('text', ''), 38, kits.B['ink'], 800, anchor='start', x=x + w / 2 - 90, y=y) + '</g>')
+        label = it.get('text', '')
+        avail = w - 120
+        if v2 and len(label) * isz * 0.5 > avail and ' ' in label:      # too wide for the column: two lines
+            ws = label.split(); mid = (len(ws) + 1) // 2
+            body = (text(' '.join(ws[:mid]), isz * 0.9, kits.B['ink'], 800, anchor='start', x=x + w / 2 - 90, y=y - isz * 0.58)
+                    + text(' '.join(ws[mid:]), isz * 0.9, kits.B['ink'], 800, anchor='start', x=x + w / 2 - 90, y=y + isz * 0.58))
+        else:
+            body = text(label, isz, kits.B['ink'], 800, anchor='start', x=x + w / 2 - 90, y=y)
+        out += f'<g {t0(times, k0 + 1 + j, 0.3)}>' + mark + body + '</g>'
     if winner_side is not None:
         if winner_side:
             out += (f'<g class="tl" data-t0="{t_win:.3f}" data-d="0.3"><rect x="{x - w / 2 - 10}" y="{-h / 2 - 10}" width="{w + 20}" '
                     f'height="{h + 20}" rx="34" fill="none" stroke="{kits.B["green"]}" stroke-width="12"/>'
-                    + kits.b_pill({'text': side.get('winner_label', 'الأفضل'), 'color': 'green', 'size': 40})
+                    + kits.b_pill({'text': side.get('winner_label', 'الأفضل'), 'color': 'green', 'size': 52 if kits.LOOK[0] >= 2 else 40})
                     .replace('<g', f'<g transform="translate({x},{h / 2 + 10})"', 1) + '</g>')
     return out
 
@@ -208,6 +217,9 @@ def panel(side, x, w, h, times, k0, color, winner_side, t_win):
 def versus(el, times):
     a, b = el.get('a', {}), el.get('b', {})
     W, h = el.get('w', 980), el.get('h', 640)
+    if kits.LOOK[0] >= 2 and 'h' not in el:                         # boxes fit their content (no big empty cards)
+        n = max(len(a.get('items', [])), len(b.get('items', [])), 1)
+        h = 110 + 80 + n * 112 + 30
     ratio = el.get('ratio', 0.5)
     gap = 36
     wa, wb = (W - gap) * ratio, (W - gap) * (1 - ratio)
@@ -303,6 +315,12 @@ def flow(el, times):
     nodes = el.get('nodes', [])
     direction = el.get('direction', 'down')
     bw, bh, gap = el.get('box_w', 520), el.get('box_h', 110), el.get('gap', 80)
+    if kits.LOOK[0] >= 2:                                  # boxes fit their labels
+        fs = kits.readable(el.get('size', 44))
+        bw = max(bw, max([kits.est_width(n.get('label', ''), fs) for n in nodes] or [0]) + 60)
+        bh = max(bh, fs * 1.9)
+        if direction != 'down':
+            gap = min(gap, max(30, (1000 - len(nodes) * bw) / max(1, len(nodes) - 1)))
     out = ''
     pos = []
     for i in range(len(nodes)):

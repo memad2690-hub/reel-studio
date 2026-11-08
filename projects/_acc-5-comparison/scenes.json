@@ -1,4 +1,5 @@
 {
+ "look": 2,
  "mode": "B",
  "brand": "media-buying",
  "words": "words.json",
@@ -27,16 +28,6 @@
      "y": -560,
      "in": "أغلى",
      "anim": "stamp"
-    },
-    {
-     "type": "pill",
-     "text": "ولا بيبيع أكتر؟",
-     "color": "blue",
-     "x": 540,
-     "y": 330,
-     "size": 52,
-     "in": "يبيع",
-     "anim": "rise"
     }
    ]
   },
@@ -118,16 +109,6 @@
      "size": 46,
      "in": "الجمال",
      "anim": "rise"
-    },
-    {
-     "type": "pill",
-     "text": "conversion",
-     "color": "blue",
-     "x": 540,
-     "y": 500,
-     "size": 46,
-     "in": "conversion",
-     "anim": "spring"
     }
    ]
   },
@@ -142,7 +123,7 @@
      "hl": "3 حاجات",
      "post": "",
      "x": 760,
-     "y": -340,
+     "y": -380,
      "size": 84,
      "in": "تلات",
      "anim": "stamp"
@@ -150,8 +131,8 @@
     {
      "type": "numbered",
      "x": 540,
-     "y": 120,
-     "gap": 190,
+     "y": 150,
+     "gap": 200,
      "steps": [
       {
        "text": "Attention · يوقف العميل",
@@ -165,15 +146,16 @@
        "text": "Reason to buy · يستحق",
        "in": "Reason"
       }
-     ]
+     ],
+     "size": 60
     },
     {
      "type": "pill",
      "text": "+ دليل حقيقي",
      "color": "green",
      "x": 540,
-     "y": 720,
-     "size": 48,
+     "y": 800,
+     "size": 56,
      "in": "دليل",
      "anim": "rise"
     }
@@ -237,7 +219,7 @@
       "buy."
      ],
      "intensity": "medium",
-     "size": 92,
+     "size": 104,
      "w": 900,
      "x": 540,
      "y": 300

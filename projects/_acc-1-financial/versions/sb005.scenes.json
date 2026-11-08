@@ -1,0 +1,336 @@
+{
+ "look": 2,
+ "mode": "B",
+ "brand": "media-buying",
+ "words": "words.json",
+ "audio": "build/cut_audio.m4a",
+ "captions": true,
+ "caption_style": "highlight",
+ "caption_keywords": [
+  "ROAS",
+  "خسارة",
+  "بيخسر",
+  "Break-even",
+  "Contribution",
+  "Margin",
+  "PROFIT"
+ ],
+ "scenes": [
+  {
+   "id": "hook",
+   "title": "Hook: full frame + revenue",
+   "layout": "full",
+   "elements": [
+    {
+     "type": "statcard",
+     "label": "مبيعات",
+     "value": 100000,
+     "tone": "positive",
+     "x": 540,
+     "y": 170,
+     "size": 92,
+     "in": "100",
+     "anim": "spring"
+    },
+    {
+     "type": "headline",
+     "pre": "",
+     "hl": "بيخسر أكتر",
+     "post": "",
+     "x": 540,
+     "y": 420,
+     "size": 92,
+     "in": "بيخسر",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "setup",
+   "title": "Example brand",
+   "start": "تخيل",
+   "layout": "split",
+   "elements": [
+    {
+     "type": "pill",
+     "text": "مثال",
+     "color": "blue",
+     "x": 540,
+     "y": 60,
+     "size": 40,
+     "in": "تخيل",
+     "anim": "fade"
+    },
+    {
+     "type": "statcard",
+     "label": "Sales",
+     "value": 100000,
+     "tone": "positive",
+     "x": 790,
+     "y": 280,
+     "size": 96,
+     "in": "sales",
+     "anim": "spring"
+    },
+    {
+     "type": "statcard",
+     "label": "Ads",
+     "value": 25000,
+     "tone": "negative",
+     "x": 290,
+     "y": 280,
+     "size": 96,
+     "in": "25",
+     "anim": "spring"
+    }
+   ]
+  },
+  {
+   "id": "math",
+   "title": "Money math (checked equation)",
+   "start": "لو تكلفة",
+   "layout": "pip-right",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "",
+     "hl": "الحسبة",
+     "post": "",
+     "x": 300,
+     "y": -330,
+     "size": 80,
+     "in": {
+      "rel": 0.1
+     },
+     "anim": "wipe"
+    },
+    {
+     "type": "equation",
+     "x": 540,
+     "y": 150,
+     "gap": 135,
+     "size": 60,
+     "w": 940,
+     "rows": [
+      {
+       "label": "المبيعات",
+       "value": 100000,
+       "tone": "positive",
+       "in": {
+        "rel": 0.3
+       }
+      },
+      {
+       "label": "بضاعة + شحن + مرتجعات",
+       "value": 80000,
+       "op": "-",
+       "in": "80"
+      },
+      {
+       "label": "إعلانات",
+       "value": 25000,
+       "op": "-",
+       "in": "25"
+      }
+     ],
+     "result": {
+      "label": "ربح",
+      "label_negative": "خسارة",
+      "value": -5000,
+      "tone": "negative",
+      "in": "خسارة"
+     }
+    },
+    {
+     "type": "pill",
+     "text": "فاضل 20,000 قبل الإعلانات",
+     "color": "green",
+     "x": 540,
+     "y": 720,
+     "size": 40,
+     "in": "20",
+     "out": "25",
+     "exit": "shrink"
+    },
+    {
+     "type": "pill",
+     "text": "وده قبل المصاريف الثابتة",
+     "color": "red",
+     "x": 540,
+     "y": 860,
+     "size": 40,
+     "in": "الثابتة",
+     "anim": "slide-up"
+    }
+   ]
+  },
+  {
+   "id": "roas",
+   "title": "ROAS 4, congrats?",
+   "start": "رغم",
+   "layout": "hero",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "ROAS 4",
+     "hl": "مبروك؟",
+     "post": "",
+     "x": 540,
+     "y": 110,
+     "size": 92,
+     "in": "مبروك",
+     "anim": "stamp",
+     "exit": "shrink"
+    },
+    {
+     "type": "pill",
+     "text": "وبرضو خسران 5,000 ج",
+     "color": "red",
+     "x": 540,
+     "y": 290,
+     "size": 46,
+     "in": {
+      "at": "4",
+      "nth": 2,
+      "offset": 0.3
+     },
+     "anim": "slide-up"
+    }
+   ]
+  },
+  {
+   "id": "margin",
+   "title": "Start from margin",
+   "start": "عشان كدا",
+   "layout": "bottom",
+   "elements": [
+    {
+     "type": "wcard",
+     "lines": [
+      "ROAS"
+     ],
+     "x": 540,
+     "y": 110,
+     "size": 64,
+     "in": "ROAS",
+     "anim": "fade"
+    },
+    {
+     "type": "xmark",
+     "x": 540,
+     "y": 110,
+     "size": 70,
+     "in": "ببدأ",
+     "anim": "stamp"
+    },
+    {
+     "type": "headline",
+     "pre": "ابدأ من",
+     "hl": "Contribution Margin",
+     "post": "",
+     "x": 540,
+     "y": 340,
+     "size": 70,
+     "in": "Contribution",
+     "anim": "wipe"
+    },
+    {
+     "type": "pill",
+     "text": "Break-even ROAS",
+     "color": "blue",
+     "x": 540,
+     "y": 540,
+     "size": 54,
+     "in": "Break",
+     "anim": "spring"
+    }
+   ]
+  },
+  {
+   "id": "breakeven",
+   "title": "Break-even vs actual",
+   "start": {
+    "at": "Break",
+    "after": 35.0
+   },
+   "layout": "split",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "",
+     "hl": "Break-even ROAS",
+     "post": "",
+     "x": 540,
+     "y": 50,
+     "size": 76,
+     "in": {
+      "rel": 0.05
+     },
+     "anim": "wipe"
+    },
+    {
+     "type": "statcard",
+     "label": "Break-even",
+     "value": 5,
+     "unit": "",
+     "count": false,
+     "tone": "neutral",
+     "x": 780,
+     "y": 300,
+     "size": 130,
+     "in": "تقل",
+     "anim": "spring",
+     "focus": true
+    },
+    {
+     "type": "statcard",
+     "label": "ROAS بتاعك",
+     "value": 4,
+     "unit": "",
+     "count": false,
+     "tone": "negative",
+     "x": 300,
+     "y": 300,
+     "size": 130,
+     "in": "بتخسر",
+     "anim": "spring"
+    },
+    {
+     "type": "svg",
+     "svg": "<text x=\"0\" y=\"0\" font-size=\"54\" font-weight=\"900\" fill=\"#222\" text-anchor=\"middle\" dominant-baseline=\"central\" direction=\"ltr\" style=\"unicode-bidi:isolate\" font-family=\"Cairo\">100,000 ÷ 20,000 = 5</text>",
+     "x": 540,
+     "y": 560,
+     "in": "بتخسر",
+     "anim": "fade"
+    },
+    {
+     "type": "pill",
+     "text": "مثال",
+     "color": "blue",
+     "x": 540,
+     "y": 650,
+     "size": 40,
+     "in": "بتخسر",
+     "anim": "fade"
+    }
+   ]
+  },
+  {
+   "id": "cta",
+   "title": "CTA",
+   "start": "لو عايز",
+   "layout": "top",
+   "elements": [
+    {
+     "type": "cta",
+     "keyword": "PROFIT",
+     "magnet": "فيديو: احسب الـ Break-even ROAS",
+     "x": 540,
+     "y": 160,
+     "in": "اكتب",
+     "anim": "spring"
+    }
+   ]
+  }
+ ]
+}

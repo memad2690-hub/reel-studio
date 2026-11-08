@@ -45,7 +45,7 @@ def label_lines(s, size, y, color=None, maxc=11, x=0):
         return text(s, size, c, 800, x=x, y=y)
     mid = max(1, len(words) // 2)
     return (text(' '.join(words[:mid]), size, c, 800, x=x, y=y) +
-            text(' '.join(words[mid:]), size, c, 800, x=x, y=y + size * 1.15))
+            text(' '.join(words[mid:]), size, c, 800, x=x, y=y + kits.readable(size) * 1.15))
 
 
 def item_count(el):
@@ -312,14 +312,15 @@ def breakeven(el, times):
            f'<g {t0(times, 1, 0.3)}><text x="0" y="-60" font-size="52" font-weight="900" fill="{kits.B["ink"]}" '
            f'text-anchor="middle" dominant-baseline="central" direction="ltr" style="unicode-bidi:isolate">{esc(formula)}</text></g>'
            f'<g {t0(times, 1, 0.4)} data-dl="0.3">' + kits.b_statcard({'label': 'Break-even ROAS', 'value': float(be_s), 'unit': '',
-                                                                     'count': False, 'size': 84}).replace('<g', '<g transform="translate(0,90)"', 1)
+                                                                     'count': False, 'size': 140 if kits.LOOK[0] >= 2 else 84})
+           .replace('<g', f'<g transform="translate(0,{140 if kits.LOOK[0] >= 2 else 90})"', 1)
            + '</g>')
     if 'actual' in el:
         win = el['actual'] >= be
         txt = el.get('verdict_win', 'فوق الـ break-even: كسبان') if win else el.get('verdict_lose', 'تحت الـ break-even: خسران')
         out += (f'<g {t0(times, 2, 0.3)}>' + kits.b_pill({'text': f'ROAS {fmt_num(el["actual"])} — {txt}',
                                                                         'color': 'green' if win else 'red', 'size': 40})
-                .replace('<g', '<g transform="translate(0,300)"', 1) + '</g>')
+                .replace('<g', f'<g transform="translate(0,{400 if kits.LOOK[0] >= 2 else 300})"', 1) + '</g>')
     return out
 
 

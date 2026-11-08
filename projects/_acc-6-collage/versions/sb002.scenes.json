@@ -1,0 +1,351 @@
+{
+ "look": 2,
+ "mode": "B",
+ "brand": "media-buying",
+ "words": "words.json",
+ "audio": "build/cut_audio.m4a",
+ "captions": true,
+ "caption_style": "highlight",
+ "caption_keywords": [
+  "Creative",
+  "Diversity",
+  "angles",
+  "ANGLES"
+ ],
+ "scenes": [
+  {
+   "id": "hook",
+   "style": "cinematic",
+   "elements": [
+    {
+     "type": "chapter",
+     "number": "01",
+     "text": "نفس النوع ولا مختلف؟",
+     "size": 84,
+     "w": 860,
+     "x": 540,
+     "y": 260,
+     "in": "نفس",
+     "anim": "blur-in",
+     "backdrop": true,
+     "backdrop_opacity": 0.55
+    }
+   ]
+  },
+  {
+   "id": "same",
+   "start": "يعني",
+   "style": "collage",
+   "elements": [
+    {
+     "type": "paper",
+     "text": "عشر إعلانات على Meta",
+     "x": 540,
+     "y": 120,
+     "rot": -3,
+     "paper": "white",
+     "size": 54,
+     "in": "عشر",
+     "anim": "rise"
+    },
+    {
+     "type": "hand_arrow",
+     "x": 640,
+     "y": 210,
+     "dx": -140,
+     "dy": 140,
+     "bend": 0.3,
+     "color": "red",
+     "in": "شايفاهم"
+    },
+    {
+     "type": "paper",
+     "x": 400,
+     "y": 470,
+     "rot": 2,
+     "paper": "note",
+     "size": 46,
+     "in": "شايفاهم",
+     "anim": "rise",
+     "lines": [
+      "Meta شايفاهم",
+      "تقريبًا نفس الإعلان"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "why",
+   "start": "ليه",
+   "style": "collage",
+   "elements": [
+    {
+     "type": "paper",
+     "text": "غيرت الصورة",
+     "x": 330,
+     "y": 110,
+     "rot": -4,
+     "paper": "kraft",
+     "size": 50,
+     "in": "الصورة",
+     "anim": "rise"
+    },
+    {
+     "type": "paper",
+     "text": "غيرت اللون",
+     "x": 760,
+     "y": 230,
+     "rot": 3,
+     "paper": "pink",
+     "size": 50,
+     "in": "اللون",
+     "anim": "rise"
+    },
+    {
+     "type": "paper",
+     "text": "hook جديد",
+     "x": 330,
+     "y": 370,
+     "rot": -2,
+     "paper": "blue",
+     "size": 50,
+     "in": "hook",
+     "anim": "rise"
+    },
+    {
+     "type": "pill",
+     "text": "≠ three creative angles",
+     "color": "red",
+     "x": 600,
+     "y": 560,
+     "size": 46,
+     "in": "three",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "metric",
+   "start": "هوريك",
+   "style": "cinematic",
+   "transition": "blur",
+   "elements": [
+    {
+     "type": "chapter",
+     "number": "02",
+     "text": "Creative Diversity",
+     "sub": "metric جوه Ads Manager",
+     "size": 88,
+     "w": 860,
+     "x": 540,
+     "y": 260,
+     "in": "Creative",
+     "anim": "blur-in",
+     "backdrop": true,
+     "backdrop_opacity": 0.55,
+     "out": "بيساعدك"
+    }
+   ]
+  },
+  {
+   "id": "path",
+   "start": "تفتح",
+   "layout": "pip-right",
+   "transition": "blur",
+   "elements": [
+    {
+     "type": "flow",
+     "x": 540,
+     "y": 120,
+     "direction": "down",
+     "box_w": 560,
+     "box_h": 110,
+     "gap": 60,
+     "nodes": [
+      {
+       "label": "Ads Manager",
+       "color": "blue",
+       "in": "تفتح"
+      },
+      {
+       "label": "Columns",
+       "color": "blue",
+       "in": "Columns"
+      },
+      {
+       "label": "Customize Columns",
+       "color": "blue",
+       "in": "Customize"
+      },
+      {
+       "label": "Creative Diversity",
+       "color": "green",
+       "in": "تدور"
+      }
+     ]
+    },
+    {
+     "type": "pill",
+     "text": "لو متاحة عندك ضيفها",
+     "color": "green",
+     "x": 540,
+     "y": 860,
+     "size": 44,
+     "in": "ضيفها",
+     "anim": "rise"
+    }
+   ]
+  },
+  {
+   "id": "levels",
+   "start": "هتشوف",
+   "layout": "top",
+   "elements": [
+    {
+     "type": "pill",
+     "text": "Low",
+     "color": "red",
+     "x": 820,
+     "y": 90,
+     "size": 54,
+     "in": "Low",
+     "anim": "spring"
+    },
+    {
+     "type": "pill",
+     "text": "Medium",
+     "color": "yellow",
+     "x": 540,
+     "y": 90,
+     "size": 54,
+     "in": "وMedium",
+     "anim": "spring"
+    },
+    {
+     "type": "pill",
+     "text": "High",
+     "color": "green",
+     "x": 260,
+     "y": 90,
+     "size": 54,
+     "in": "وHigh",
+     "anim": "spring"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "High مش معناها",
+      "إن الإعلان هيبيع أكتر"
+     ],
+     "x": 540,
+     "y": 330,
+     "size": 50,
+     "in": "هيبيع",
+     "anim": "blur-in"
+    },
+    {
+     "type": "pill",
+     "text": "معناها angles كتير متنوعة",
+     "color": "blue",
+     "x": 540,
+     "y": 580,
+     "size": 44,
+     "in": "angles",
+     "anim": "rise"
+    }
+   ]
+  },
+  {
+   "id": "angles",
+   "start": "فالتنوع",
+   "style": "collage",
+   "transition": "zoom",
+   "elements": [
+    {
+     "type": "text",
+     "text": "التنوع = تغير الـ angle",
+     "size": 60,
+     "weight": 900,
+     "x": 540,
+     "y": 40,
+     "in": "angle",
+     "anim": "fade"
+    },
+    {
+     "type": "paper",
+     "text": "إعلان بيحل مشكلة",
+     "x": 330,
+     "y": 170,
+     "rot": -4,
+     "paper": "note",
+     "size": 46,
+     "in": "مشكلة",
+     "anim": "rise"
+    },
+    {
+     "type": "paper",
+     "text": "إعلان بيشرح ميزة",
+     "x": 770,
+     "y": 300,
+     "rot": 3,
+     "paper": "kraft",
+     "size": 46,
+     "in": "ميزة",
+     "anim": "rise"
+    },
+    {
+     "type": "paper",
+     "text": "إعلان بيرد على اعتراض",
+     "x": 330,
+     "y": 440,
+     "rot": 2,
+     "paper": "blue",
+     "size": 44,
+     "in": "اعتراض",
+     "anim": "rise"
+    },
+    {
+     "type": "paper",
+     "text": "إعلان بيرد على تساؤل",
+     "x": 760,
+     "y": 590,
+     "rot": -3,
+     "paper": "pink",
+     "size": 44,
+     "in": "تساؤل",
+     "anim": "rise"
+    }
+   ]
+  },
+  {
+   "id": "cta",
+   "start": "قبل",
+   "layout": "top",
+   "transition": "blur",
+   "elements": [
+    {
+     "type": "kinetic",
+     "from": "جرب",
+     "count": 4,
+     "emphasis": [
+      "three"
+     ],
+     "intensity": "medium",
+     "size": 76,
+     "w": 920,
+     "x": 540,
+     "y": 170
+    },
+    {
+     "type": "cta",
+     "keyword": "ANGLES",
+     "magnet": "أمثلة عملية للـ angles",
+     "x": 540,
+     "y": 420,
+     "in": "اكتبلي",
+     "anim": "spring"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,206 @@
+{
+ "look": 2,
+ "mode": "B",
+ "brand": "media-buying",
+ "style": "data",
+ "words": "words.json",
+ "audio": "build/cut_audio.m4a",
+ "captions": true,
+ "caption_style": "highlight",
+ "caption_keywords": [
+  "خسارة",
+  "ROAS",
+  "Break-even",
+  "PROFIT"
+ ],
+ "scenes": [
+  {
+   "id": "hook",
+   "layout": "full",
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "elements": [
+    {
+     "type": "statcard",
+     "label": "مبيعات",
+     "value": 100000,
+     "tone": "positive",
+     "x": 540,
+     "y": 110,
+     "size": 76,
+     "in": "100",
+     "anim": "rise"
+    },
+    {
+     "type": "headline",
+     "pre": "",
+     "hl": "بيخسر أكتر",
+     "post": "",
+     "x": 540,
+     "y": 320,
+     "size": 112,
+     "in": "بيخسر",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "setup",
+   "start": "تخيل",
+   "transition": "blur",
+   "elements": [
+    {
+     "type": "pill",
+     "text": "مثال",
+     "color": "blue",
+     "x": 540,
+     "y": 30,
+     "size": 40,
+     "in": "تخيل",
+     "anim": "fade"
+    },
+    {
+     "type": "bars",
+     "x": 540,
+     "y": 380,
+     "w": 760,
+     "h": 500,
+     "unit": "ج",
+     "items": [
+      {
+       "label": "مبيعات",
+       "value": 100000,
+       "tone": "positive",
+       "in": "sales"
+      },
+      {
+       "label": "إعلانات",
+       "value": 25000,
+       "tone": "negative",
+       "in": "25"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "waterfall",
+   "start": "لو تكلفة",
+   "elements": [
+    {
+     "type": "waterfall",
+     "x": 540,
+     "y": 330,
+     "w": 960,
+     "h": 460,
+     "unit": "ج",
+     "rows": [
+      {
+       "label": "مبيعات",
+       "value": 100000,
+       "in": {
+        "rel": 0.05
+       }
+      },
+      {
+       "label": "تكاليف متغيرة",
+       "value": 80000,
+       "op": "-",
+       "in": "80"
+      },
+      {
+       "label": "إعلانات",
+       "value": 25000,
+       "op": "-",
+       "in": "تخصم"
+      }
+     ],
+     "result": {
+      "label": "ربح",
+      "label_negative": "خسارة",
+      "value": -5000,
+      "in": "خسارة"
+     }
+    },
+    {
+     "type": "pill",
+     "text": "ودا قبل المصاريف الثابتة",
+     "color": "red",
+     "x": 540,
+     "y": 40,
+     "size": 50,
+     "in": "الثابتة",
+     "anim": "rise"
+    }
+   ],
+   "layout": "split"
+  },
+  {
+   "id": "roas",
+   "start": "رغم",
+   "layout": "hero",
+   "transition": "zoom",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "ROAS 4",
+     "hl": "مبروك؟",
+     "post": "",
+     "x": 540,
+     "y": 70,
+     "size": 88,
+     "in": "مبروك",
+     "anim": "blur-in"
+    },
+    {
+     "type": "pill",
+     "text": "كل 1 ج إعلان ← 4 ج مبيعات",
+     "color": "blue",
+     "x": 540,
+     "y": 200,
+     "size": 44,
+     "in": "بتعمل",
+     "anim": "rise"
+    }
+   ]
+  },
+  {
+   "id": "breakeven",
+   "start": "عشان كدا",
+   "layout": "split",
+   "transition": "blur",
+   "elements": [
+    {
+     "type": "breakeven",
+     "x": 540,
+     "y": 230,
+     "revenue": 100000,
+     "variable_costs": 80000,
+     "expect": 5,
+     "actual": 4,
+     "in": "Contribution",
+     "in_be": "Break",
+     "in_actual": "بتخسر"
+    }
+   ]
+  },
+  {
+   "id": "cta",
+   "start": "لو عايز",
+   "layout": "top",
+   "elements": [
+    {
+     "type": "cta",
+     "keyword": "PROFIT",
+     "magnet": "فيديو: احسب الـ Break-even ROAS",
+     "x": 540,
+     "y": 160,
+     "in": "اكتب",
+     "anim": "spring"
+    }
+   ]
+  }
+ ]
+}

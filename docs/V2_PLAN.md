@@ -249,3 +249,14 @@ acceptance: caption max bottom, waterfall negative labels, arrow bend clamp, per
 `--frames-only` + words backup, single raster thread (determinism under load), −1.5 dBTP audio limiter, `paper` note
 for collage. Comparison exports via `scripts/compare_exports.sh`. Results and measured performance: `docs/V2_REPORT.md`.
 Tests: 79 in tests/test_pipeline.py, 86 in the whole suite.
+
+### Visual-quality pass — "look 2" (2026-11-09)
+Review of the four V1/V2 comparisons (docs/VISUAL_REVIEW.md) → opt-in look 2: phone-readable text (46–58 px floor),
+480 px PiP + `split` layout, speaker-first until graphics arrive, content-fitted versus/flow/equation, caption fixes
+(PiP edge, kinetic mute, 56 px minimal), round-step counters, motion-adaptive segmentation smoothing; planner art
+direction (focal element, ≤ 3 elements, one chart for ≥ 3 amounts, reading time, speaker prominence); `accept` gains
+`readable` and `art` checks (rendered font sizes, focal element, density, new words per 2 s, speaker share, empty page).
+Re-rendered the five V2 acceptance reels (case 1 v005, case 3 v002, case 4 v003, case 5 v002, case 6 v003) and the four
+comparison videos; all hard checks pass, only art-direction notes remain. Look-1 projects: 11/11 pixel-identical.
+Render times this pass: 48.6 s in 603–661 s, 50.8 s in 498 s, 47.3 s in 556 s, 71.8 s in 1153 s (2 vCPU, other jobs
+running alongside for part of it). Tests: 87 in tests/test_pipeline.py, 94 in the whole suite.

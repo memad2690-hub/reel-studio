@@ -1,7 +1,7 @@
 {
  "project": "_acc-4-data",
- "video": "exports/v001.mp4",
- "verdict": "pass",
+ "video": "exports/v003.mp4",
+ "verdict": "warn",
  "checks": [
   {
    "id": "finance",
@@ -60,10 +60,28 @@
    "evidence": []
   },
   {
+   "id": "readable",
+   "name": "Text readable on a phone (≥ 44 px)",
+   "status": "pass",
+   "detail": "every text ≥ 44 px (captions included)",
+   "evidence": []
+  },
+  {
+   "id": "art",
+   "name": "Art direction (focus, density, speaker, empty page)",
+   "status": "warn",
+   "detail": "3 note(s) to review",
+   "evidence": [
+    "waterfall: 13 new words within 2 s (more than a 2-second read)",
+    "breakeven: 17 new words within 2 s (more than a 2-second read)",
+    "breakeven: page mostly empty at 2 sampled moments"
+   ]
+  },
+  {
    "id": "shaping",
    "name": "Correct Arabic shaping",
    "status": "pass",
-   "detail": "63 distinct texts; Cairo loaded; letters join (each word drawn shaped differs from its letters drawn apart)",
+   "detail": "62 distinct texts; Cairo loaded; letters join (each word drawn shaped differs from its letters drawn apart)",
    "evidence": []
   },
   {
@@ -84,7 +102,7 @@
    "id": "export",
    "name": "Export format (1080×1920 · 9:16 · 30 fps · H.264 · MP4)",
    "status": "pass",
-   "detail": "1080×1920, 30/1, h264 High yuv420p, faststart yes, 48.60s, 4921 kb/s, 29.9 MB",
+   "detail": "1080×1920, 30/1, h264 High yuv420p, faststart yes, 48.60s, 5680 kb/s, 34.5 MB",
    "evidence": []
   },
   {
@@ -127,13 +145,13 @@
   {
    "id": "setup",
    "style": "data",
-   "layout": "top",
+   "layout": "split",
    "tr": "blur"
   },
   {
    "id": "waterfall",
    "style": "data",
-   "layout": "pip-right",
+   "layout": "split",
    "tr": null
   },
   {
@@ -145,7 +163,7 @@
   {
    "id": "breakeven",
    "style": "data",
-   "layout": "top",
+   "layout": "split",
    "tr": "blur"
   },
   {
@@ -155,5 +173,61 @@
    "tr": null
   }
  ],
- "duration": 48.6
+ "duration": 48.6,
+ "art": [
+  {
+   "scene": "hook",
+   "look_first": "بيخسر أكتر",
+   "focal_px": 112,
+   "max_elements": 2,
+   "max_words": 3,
+   "speaker_share": 1.0,
+   "empty_moments": 0
+  },
+  {
+   "scene": "setup",
+   "look_first": "100K ج مبيعات 25K ج إعلانات",
+   "focal_px": 53,
+   "max_elements": 2,
+   "max_words": 7,
+   "speaker_share": 0.37,
+   "empty_moments": 0
+  },
+  {
+   "scene": "waterfall",
+   "look_first": "ودا قبل المصاريف الثابتة",
+   "focal_px": 58,
+   "max_elements": 2,
+   "max_words": 13,
+   "speaker_share": 0.37,
+   "empty_moments": 0
+  },
+  {
+   "scene": "roas",
+   "look_first": "ROAS 4 مبروك؟",
+   "focal_px": 88,
+   "max_elements": 2,
+   "max_words": 11,
+   "speaker_share": 0.63,
+   "empty_moments": 0
+  },
+  {
+   "scene": "breakeven",
+   "look_first": "هامش المساهمة ⁦20%⁩ 100,000 ÷ ",
+   "focal_px": 140,
+   "max_elements": 1,
+   "max_words": 17,
+   "speaker_share": 0.37,
+   "empty_moments": 2
+  },
+  {
+   "scene": "cta",
+   "look_first": "اكتب في الكومنتات PROFIT فيديو",
+   "focal_px": 120,
+   "max_elements": 1,
+   "max_words": 9,
+   "speaker_share": 0.44,
+   "empty_moments": 0
+  }
+ ]
 }

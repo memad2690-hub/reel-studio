@@ -34,5 +34,71 @@
     },
     "draft": false,
     "note": "acceptance render"
+  },
+  {
+    "id": "sb002",
+    "kind": "storyboard",
+    "file": "storyboard/sb002.png",
+    "created": "2026-11-08T22:29:24+02:00",
+    "times": [
+      3.53,
+      10.08,
+      18.56,
+      24.357,
+      31.75,
+      36.61,
+      40.44,
+      48.227
+    ],
+    "anchor_misses": [],
+    "note": ""
+  },
+  {
+    "id": "sb003",
+    "kind": "storyboard",
+    "file": "storyboard/sb003.png",
+    "created": "2026-11-08T22:36:00+02:00",
+    "times": [
+      3.53,
+      10.08,
+      18.56,
+      24.357,
+      31.75,
+      36.61,
+      40.44,
+      48.227
+    ],
+    "anchor_misses": [],
+    "note": ""
+  },
+  {
+    "id": "sb004",
+    "kind": "storyboard",
+    "file": "storyboard/sb004.png",
+    "created": "2026-11-08T22:36:32+02:00",
+    "times": [
+      18.6,
+      31.8
+    ],
+    "anchor_misses": [],
+    "note": ""
+  },
+  {
+    "id": "v002",
+    "kind": "render",
+    "file": "exports/v002.mp4",
+    "sheet": "exports/v002_sheet.png",
+    "created": "2026-11-08T23:15:45+02:00",
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 50.77,
+      "mbps": 5.07,
+      "audio": true,
+      "problems": []
+    },
+    "draft": false,
+    "note": "look 2: visual-quality pass"
   }
 ]

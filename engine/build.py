@@ -32,6 +32,29 @@ LAYOUTS = {
     # collage: the speaker as a paper sticker (cut-out with white outline), no video rectangle
     'sticker':     {'x': 300, 'y': 700, 'w': 760, 'h': 1220, 'r': 0, 'b': 0, 'y0': 60, 'rh': 760, 'rot': -3, 'sticker': 1},
 }
+BASE_LAYOUTS = json.loads(json.dumps(LAYOUTS))
+# Look 2: no tiny talking heads. Bigger PiP (480×600 instead of 350×430), a 'split' layout (big speaker, roomy graphics
+# area) and a larger sticker. Look 1 projects keep the layouts they were approved with.
+LAYOUTS_V2 = {
+    'pip-right': {'x': 560, 'y': 130, 'w': 480, 'h': 600, 'r': 40, 'b': 6, 'y0': 760, 'rh': 1000},
+    'pip-left':  {'x': 40,  'y': 130, 'w': 480, 'h': 600, 'r': 40, 'b': 6, 'y0': 760, 'rh': 1000},
+    'split':     {'x': 40,  'y': 110, 'w': 1000, 'h': 760, 'r': 44, 'b': 7, 'y0': 900, 'rh': 760},
+    'sticker':   {'x': 200, 'y': 620, 'w': 860, 'h': 1300, 'r': 0, 'b': 0, 'y0': 60, 'rh': 700, 'rot': -3, 'sticker': 1},
+}
+STYLE_V2 = {'data': {'layout': 'split'}, 'whiteboard': {'layout': 'split'}, 'editorial': {}}
+SPEAKER_FIRST_GAP = 2.0          # s without graphics after a scene starts → keep the speaker big until they arrive
+SPEAKER_FIRST_FROM = ('top', 'bottom', 'split', 'pip-left', 'pip-right', 'sticker')
+
+
+def set_look(look):
+    """Activate a look: layouts and text sizes. Called at the start of every build."""
+    LAYOUTS.clear(); LAYOUTS.update(json.loads(json.dumps(BASE_LAYOUTS)))
+    if look >= 2:
+        LAYOUTS.update(json.loads(json.dumps(LAYOUTS_V2)))
+    REGION.clear(); REGION.update({k: v['y0'] for k, v in LAYOUTS.items()})
+    kits.LOOK[0] = look
+
+
 REGION = {k: v['y0'] for k, v in LAYOUTS.items()}
 
 # V2 style mixing: each style is a set of scene defaults (a scene's own keys always win).
@@ -49,6 +72,9 @@ STYLE_IDS = {'01': 'editorial', '02': 'kinetic', '03': 'collage', '04': 'data', 
              '07': 'battle', '08': 'whiteboard', '09': 'cinematic'}
 TRANSITIONS = {'cut': 0, 'blur': 0.18, 'whip': 0.16, 'flash': 0.25, 'zoom': 0.35}   # half-width / length in seconds
 CAPTION_STYLES = ('box', 'highlight', 'clean', 'kinetic', 'editorial', 'energy', 'minimal')
+
+
+LOOK2 = [False]
 
 
 def style_name(v):
@@ -69,7 +95,10 @@ def style_mix(scenes, starts, ends, base_style, problems, notes):
             problems.append({'anchor': None, 'element': s.get('id', i),
                              'problem': f'unknown style {s.get("style")!r} (use {", ".join(STYLES)} or 01-09)'})
             sty = ''
-        e = dict(STYLES.get(sty, {})); e.update(s)
+        e = dict(STYLES.get(sty, {}))
+        if LOOK2[0]:
+            e.update(STYLE_V2.get(sty, {}))
+        e.update(s)
         if sty: e['_style'] = sty
         out.append(e)
         if sty and sty not in used: used.append(sty)
@@ -104,8 +133,13 @@ def esc(s):
     return kits.esc(s)
 
 
+CUR_TYPE = ['']                                                 # element type being expanded (for inspection)
+CAP_MUTE = []                                                    # [start, end] windows where captions step aside
+
+
 def anim_group(inner, t_in, t_out, kind, x=0, y=0, rot=0, scale=1, extra='', exit='fade'):
-    return (f'<g class="a" data-in="{t_in:.3f}" data-out="{t_out:.3f}" data-k="{kind}" data-x="{exit}" {extra}>'
+    return (f'<g class="a" data-in="{t_in:.3f}" data-out="{t_out:.3f}" data-k="{kind}" data-x="{exit}" '
+            f'data-type="{CUR_TYPE[0]}" {extra}>'
             f'<g transform="translate({x},{y}) rotate({rot}) scale({scale})">{inner}</g></g>')
 
 
@@ -132,6 +166,7 @@ def expand(el, mode, anchors, s_start, s_end, idx, ins=None, floor=None):
     ex = el.get('exit', 'fade')
     x, y, rot, sc = el.get('x', 0), el.get('y', 0), el.get('rot', 0), el.get('scale', 1)
     t = el['type']
+    CUR_TYPE[0] = t
     if t == 'equation':
         return expand_equation(el, mode, anchors, s_start, t_in, t_out, ins, floor, kind, ex)
     if t == 'photo':
@@ -260,6 +295,8 @@ def expand_chart(el, mode, anchors, s_start, t_in, t_out, ins, floor, kind, ex):
     x, y = el.get('x', 540), el.get('y', 0)
     if el['type'] == 'kinetic':
         ins.append(el['_words'][-1]['start'])
+        if LOOK2[0] and el.get('mute_caption', True):       # the words are on screen already: no duplicate caption
+            CAP_MUTE.append([round(el['_words'][0]['start'] - 0.05, 3), round(el['_words'][-1]['end'] + 0.25, 3)])
     return anim_group(mod.build(el, times), t_in, t_out, kind if kind != 'pop' else 'none', x, y, exit=ex)
 
 
@@ -303,6 +340,9 @@ def build(project_dir, out_dir=None):
     with open(os.path.join(pdir, 'scenes.json'), encoding='utf-8') as f:
         spec = json.load(f)
     mode = proj.get('mode', spec.get('mode', 'A'))
+    look = int(spec.get('look', proj.get('look', 1)) or 1)
+    set_look(look); LOOK2[0] = look >= 2
+    CAP_MUTE.clear()
     M = MODES[mode]
     brand_cfg = {}
     brand_problem = None
@@ -370,6 +410,7 @@ def build(project_dir, out_dir=None):
         floor = st + CARD_SLIDE if (mode == 'B' and i > 0 and card_pos != prev_pos) else None
         els, behind = [], []
         latest_in = st
+        first_ins = []
         for j, el in enumerate(s.get('elements', [])):
             ins = []
             svg = expand(el, mode, anchors, st, en, j, ins,
@@ -380,8 +421,14 @@ def build(project_dir, out_dir=None):
             if el.get('behind') and not has_cut:
                 notes.append(f'{s.get("id", i)}: "behind" element drawn in front (run reel.py segment for cut-outs)')
             latest_in = max([latest_in] + [t for t in ins if t < en])
+            first_ins += ins[:1]
         sb = min(max(latest_in + 0.6, st + 1.0), en - 0.35)
         cam = {}
+        if mode == 'B' and LOOK2[0] and s.get('speaker_first', True) and card_pos in SPEAKER_FIRST_FROM:
+            first = min([t for t in first_ins if t < en] or [en])
+            if first - st >= SPEAKER_FIRST_GAP:
+                # nothing to look at yet: the speaker stays big, the card moves to the layout as the graphics arrive
+                cam['pre'] = ['hero', round(min(first, en) - (CARD_SLIDE if first < en else 0), 3)]
         if mode == 'B':
             z = s.get('zoom')                                    # slow drift: [start, end] scale over the scene
             if z:
@@ -461,7 +508,8 @@ def build(project_dir, out_dir=None):
             'layouts': LAYOUTS, 'slide': CARD_SLIDE, 'cf': cfi, 'focus': focus, 'capStyle': caption_style,
             'hlColor': kits.B['yellow'], 'scenes': scene_meta, 'captions': captions, 'cap': cap_cfg,
             'cut': has_cut, 'maskq': maskq, 'maskMin': spec.get('mask_min_quality', 0.62),
-            'film': bool(film and film.get('grain')), 'audio_peak_db': cfg.get('output', {}).get('audio_peak_db')}
+            'film': bool(film and film.get('grain')), 'audio_peak_db': cfg.get('output', {}).get('audio_peak_db'),
+            'look': look, 'capMute': CAP_MUTE}
 
     g = M['grid']
     bg = f'''<svg id="bg" width="{W}" height="{H}" style="position:absolute;left:0;top:0">
