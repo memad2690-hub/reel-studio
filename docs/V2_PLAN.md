@@ -130,3 +130,28 @@ segmentation quality in a car interior.
 
 2 vCPU / 7 GB, no GPU; Hugging Face downloads blocked (local Whisper models unavailable here —
 ElevenLabs STT works); Google Drive only via your PC folder; renders must be split into ≤10-minute commands.
+
+## 7. Progress log
+
+### Milestone 1 — Style 01 Editorial Motion Explainer (2026-11-08)
+Built (extends the current engine; old projects unchanged — demo B storyboard identical, approved reels untouched):
+- Talking-head layouts `top`, `bottom`, `hero`, `full`, `pip-right`, `pip-left` with face-focus cropping from
+  full-frame card frames (`finalize-cut --full-frame`) and a 0.45 s morph between layouts; graphics wait
+  for the morph; captions follow the scene's target layout.
+- Motion: `spring`, `wipe`, `slide-left/right/up/down` entrances; `fade`/`shrink`/`slide-*` exits.
+- Components: `statcard` (tone-colored, count-up, never a leading minus) and `equation` (rows + computed
+  result; build checks the arithmetic and the sign/tone; a failed check blocks render).
+- Caption presets `box` / `highlight` (keywords on the brand highlighter) / `clean`; brand presets
+  `media-buying` and `ceos` (lime #D1FE17).
+- Bug fixed on the way: `finalize-cut` failed on a project with no `build/` folder yet.
+- Tests: 29 passing (8 new for V2).
+
+Validation on real footage: project `mb-roas-loss-v2` (same approved cut + script as `mb-roas-loss`).
+Measured here: full-frame card extraction 140 s / 4.0 GB / 207 MB peak for 48.6 s; render 597 s for
+48.6 s (≈12.3 s per output second) vs ≈13.9 s/s for the original reel 1 render — full-frame layouts
+did not slow rendering.
+
+Determinism: the same 5 frames rendered twice are byte-identical (md5).
+
+Not done yet in M1 terms: arrows/diagram components beyond the existing arrow, keyword highlight
+inside headlines beyond the existing highlighter, low-res preview renders, transitions.dev study.

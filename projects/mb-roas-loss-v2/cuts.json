@@ -1,0 +1,174 @@
+{
+  "source": "raw/raw.mp4",
+  "segments": [
+    [
+      3.08,
+      8.18
+    ],
+    [
+      8.74,
+      13.32
+    ],
+    [
+      13.6,
+      17.96
+    ],
+    [
+      18.44,
+      21.9
+    ],
+    [
+      22.3,
+      25.98
+    ],
+    [
+      26.26,
+      27.96
+    ],
+    [
+      28.4,
+      32.88
+    ],
+    [
+      33.98,
+      37.76
+    ],
+    [
+      37.86,
+      44.37
+    ],
+    [
+      45.59,
+      50.44
+    ],
+    [
+      77.18,
+      83.28
+    ]
+  ],
+  "report": [
+    {
+      "start": 3.2,
+      "end": 8.0,
+      "text": "في brand ممكن يبيع بـ100 ألف جنيه، ويكون كل ما بيبيع أكتر بيخسر أكتر.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 8.86,
+      "end": 13.14,
+      "text": "تخيل الـ brand دوت عنده sales بـ100 ألف جنيه، صرف 25 ألف على الـ ads.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 13.72,
+      "end": 17.78,
+      "text": "لو تكلفة البضاعة والشحن والمرتجعات والمصاريف المتغيرة 80 ألف جنيه،",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 18.56,
+      "end": 21.72,
+      "text": "يبقى فاضل له 20 ألف بس قبل ما نخصم الإعلانات.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 22.42,
+      "end": 25.8,
+      "text": "فلما تيجي تخصم الـ 25 ألف بتوع الإعلانات، تلاقي عنده خسارة بـ5 آلاف جنيه.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 26.38,
+      "end": 27.78,
+      "text": "دا أصلًا قبل المصاريف الثابتة.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 28.52,
+      "end": 32.7,
+      "text": "رغم كدا ممكن حد يفتح الـ Ads Manager يقولك: \"يا باشا إنت جايب ROAS 4، مبروك.\"",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 34.1,
+      "end": 37.58,
+      "text": "معنى كدا إنك بتعمل مع كل جنيه تصرفه، بتعمل 4 جنيه.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 37.98,
+      "end": 42.3,
+      "text": "عشان كدا أنا مش ببدأ من الـ ROAS، ببدأ من الـ Contribution Margin والـ Break Even ROAS.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 42.36,
+      "end": 44.34,
+      "text": "الـ Break Even ROAS هو اللي هيعرفك",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 45.1,
+      "end": 50.26,
+      "text": "الـ، الـ ROAS اللي ما ينفعش تقل عنه، لإنك لو قلت عنه هتبقى ساعتها بتخسر.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 45.1,
+      "end": 45.4,
+      "text": "الـ،",
+      "kept": false,
+      "reason": "repeat \"الـ،\""
+    },
+    {
+      "start": 51.0,
+      "end": 55.62,
+      "text": "لو عاوز نعمل فيديو نشرح فيه إزاي نحسب الـ Break Even ROAS للـ brand بتاعك اكتب profit،",
+      "kept": false,
+      "reason": "CTA take 1"
+    },
+    {
+      "start": 56.28,
+      "end": 57.18,
+      "text": "ونقدر نعمل فيديو...",
+      "kept": false,
+      "reason": "CTA take 1 trailing \"ونقدر نعمل فيديو...\""
+    },
+    {
+      "start": 59.84,
+      "end": 65.379,
+      "text": "لو عايز أعمل فيديو نشرح فيه إزاي تحسب الـ Break Even ROAS للـ brand بتاعك، طيب.",
+      "kept": false,
+      "reason": "CTA take 2 (\"طيب\")"
+    },
+    {
+      "start": 67.58,
+      "end": 72.88,
+      "text": "لو عايز أعمل فيديو أشرح فيه إزاي أحسب الـ Break Even ROAS للـ brand بتاعك اكتب profit.",
+      "kept": false,
+      "reason": "CTA take 3"
+    },
+    {
+      "start": 77.3,
+      "end": 83.1,
+      "text": "لو عايز أعمل فيديو أشرح فيه إزاي تحسب الـ Break Even ROAS للـ brand بتاعك اكتب profit.",
+      "kept": true,
+      "reason": ""
+    }
+  ],
+  "created": "2026-11-07T23:41:55+02:00",
+  "note": "Hand-reviewed cut list (dropped sentences and stumble words). Edit, then: reel.py roughcut <slug> --reuse",
+  "crop": "1440:1325:0:700",
+  "card_frames": "full"
+}

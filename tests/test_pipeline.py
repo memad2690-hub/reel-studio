@@ -103,6 +103,68 @@ class CardSlideTests(Tmp):
         self.assertEqual(ins, [0.05, 1.5 + builder.CARD_SLIDE, 1.55])  # first scene and canvas elements unaffected
 
 
+class EditorialV2Tests(Tmp):
+    def scenes(self, scenes, **spec):
+        self.write('project.json', {'mode': 'B'})
+        self.write('words.json', W('المبيعات مية ألف والتكاليف تمانين والإعلانات خمسة وعشرين يبقى خسارة'))
+        d = {'mode': 'B', 'duration': 6.0, 'scenes': scenes}; d.update(spec)
+        self.write('scenes.json', d)
+        return builder.build(self.d)
+
+    EQ = {'type': 'equation', 'rows': [{'label': 'مبيعات', 'value': 100000}, {'label': 'تكاليف', 'value': 80000, 'op': '-'},
+                                       {'label': 'إعلانات', 'value': 25000, 'op': '-'}],
+          'result': {'label': 'ربح', 'label_negative': 'خسارة', 'value': -5000, 'tone': 'negative'}}
+
+    def test_equation_arithmetic_ok(self):
+        self.assertEqual(builder.equation_result(self.EQ), (-5000, []))
+        self.assertEqual(self.scenes([{'id': 'a', 'elements': [self.EQ]}])['anchor_misses'], [])
+
+    def test_equation_wrong_result_blocks(self):
+        bad = json.loads(json.dumps(self.EQ)); bad['result']['value'] = -15000
+        misses = self.scenes([{'id': 'a', 'elements': [bad]}])['anchor_misses']
+        self.assertTrue(any('finance' in m['problem'] and 'add up' in m['problem'] for m in misses), misses)
+
+    def test_equation_wrong_tone_blocks(self):
+        bad = json.loads(json.dumps(self.EQ)); bad['result'] = {'tone': 'positive'}
+        self.assertTrue(any('tone' in p for p in builder.equation_result(bad)[1]))
+
+    def test_negative_result_shown_without_minus(self):
+        self.scenes([{'id': 'a', 'elements': [self.EQ]}])
+        page = open(os.path.join(self.d, 'build', 'page.html'), encoding='utf-8').read()
+        self.assertIn('خسارة', page); self.assertIn('5,000 ج', page)
+        self.assertNotIn('-5,000', page); self.assertNotIn('\u22125,000', page)
+
+    def test_unknown_layout_flagged(self):
+        misses = self.scenes([{'id': 'a', 'layout': 'sideways', 'elements': []}])['anchor_misses']
+        self.assertTrue(any('unknown layout' in m['problem'] for m in misses))
+
+    def test_layout_region_and_floor(self):
+        import re
+        self.scenes([{'id': 'a', 'layout': 'full', 'elements': []},
+                     {'id': 'b', 'layout': 'pip-right', 'start': 'والإعلانات', 'elements': [{'type': 'text', 'text': 'x', 'y': 10}]}])
+        page = open(os.path.join(self.d, 'build', 'page.html'), encoding='utf-8').read()
+        self.assertIn(f'translate(0,{builder.LAYOUTS["pip-right"]["y0"]})', page)
+        start = 5 * 0.5  # 'والإعلانات' is the 6th word, 0.5 s apart
+        self.assertEqual(float(re.findall(r'data-in="([\d.]+)"', page)[0]), start + builder.CARD_SLIDE)
+
+    def test_brand_preset_applies_and_resets(self):
+        import kits
+        self.scenes([{'id': 'a', 'elements': []}], brand='ceos')
+        self.assertEqual(kits.B['yellow'], '#D1FE17')
+        self.scenes([{'id': 'a', 'elements': []}])
+        self.assertEqual(kits.B['yellow'], '#f2cf4a')
+
+    def test_caption_keywords_marked(self):
+        m = self.scenes([{'id': 'a', 'elements': []}], caption_keywords=['خسارة'])
+        hl = [c for c in m['captions'] if c['hl']]
+        self.assertTrue(hl and 'خسارة' in hl[0]['text'].split()[hl[0]['hl'][0]])
+
+    def test_statcard_negative_absolute(self):
+        import kits
+        svg = kits.build({'type': 'statcard', 'label': 'Ads', 'value': -25000, 'tone': 'negative'}, 'B')
+        self.assertIn('25,000 ج', svg); self.assertNotIn('-25,000', svg)
+
+
 class SnapTests(unittest.TestCase):
     def test_snap_to_frames(self):
         import footage

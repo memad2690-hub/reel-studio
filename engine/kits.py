@@ -16,6 +16,21 @@ A = {'ink': '#1b1b1b', 'navy': '#2c4a7c', 'teal': '#3f7a72', 'mustard': '#c99a2e
      'red': '#b8322a', 'cream': '#f3efe4', 'olive': '#5b6b3a', 'white': '#ffffff', 'grey': '#8a857a'}
 B = {'ink': '#222222', 'red': '#d64541', 'blue': '#2f5d8a', 'yellow': '#f2cf4a', 'paper': '#f4eddd',
      'white': '#ffffff', 'green': '#3f8a5a', 'grey': '#8d8676'}
+_DEFAULTS = {'A': dict(A), 'B': dict(B)}
+
+
+def reset_palettes():
+    """Brand presets mutate B in place (builders read it at call time); reset before every build."""
+    A.clear(); A.update(_DEFAULTS['A'])
+    B.clear(); B.update(_DEFAULTS['B'])
+
+
+def fmt_num(v):
+    v = float(v)
+    return f'{v:,.0f}' if abs(v - round(v)) < 1e-9 else f'{v:,.2f}'
+
+
+TONES = {'positive': 'green', 'negative': 'red', 'neutral': 'ink'}
 
 
 def esc(s):
@@ -246,6 +261,57 @@ def b_cta(e):
     return out
 
 
+def b_statcard(e):
+    """Financial stat card: small label on top, big value below, colored by tone (positive green /
+    negative red / neutral ink). value is a number; it counts up from count_from (default 0) if count is set.
+    Negative amounts are shown as their absolute value with a word label (never a leading minus)."""
+    tone = e.get('tone', 'neutral')
+    c = col(TONES.get(tone, 'ink'), B)
+    size = e.get('size', 76)
+    v = e.get('value', 0)
+    unit = e.get('unit', 'ج')
+    attrs = ''
+    if e.get('count', True) and isinstance(v, (int, float)):
+        attrs = (f'class="count" data-from="{e.get("count_from", 0)}" data-to="{abs(v)}" data-prefix="" '
+                 f'data-suffix="{esc(" " + unit if unit else "")}" data-dur="{e.get("count_dur", 0.9)}"')
+    val = (fmt_num(abs(v)) if isinstance(v, (int, float)) else str(v)) + (f' {unit}' if unit else '')
+    inner = text(e.get('label', ''), size * 0.48, col('ink', B), 800, y=-size * 0.62)
+    inner += text(val, size, c, 900, y=size * 0.32, extra=attrs)
+    return (f'<g data-fit="{e.get("pad", 34)}">'
+            f'<rect class="fitbox" rx="26" fill="url(#hatch)" transform="translate(12,14)"/>'
+            f'<rect class="fitbox" rx="26" fill="#fff" stroke="{B["ink"]}" stroke-width="6"/>{inner}</g>')
+
+
+def eq_row(r, i, size, w, mode):
+    """One equation row: label (right, RTL) ... value (left), operator in its own circle at the far left."""
+    pal = B if mode == 'B' else A
+    tone = r.get('tone', 'positive' if i == 0 else 'negative')
+    c = col(TONES.get(tone, 'ink'), pal)
+    out = text(r.get('label', ''), size * 0.82, col('ink', pal), 800, anchor='start', x=w / 2 - 10)
+    out += text(fmt_num(r['value']) + ' ' + r.get('unit', 'ج'), size, c, 900, anchor='end', x=-w / 2 + 110)
+    if i:
+        op = r.get('op', '+')
+        cx = -w / 2 + 40
+        # operator drawn as shapes, not a glyph: fonts lack U+2212 and RTL can move a '-' character
+        bar = f'<rect x="{cx - 15}" y="-4.5" width="30" height="9" rx="4" fill="#fff"/>'
+        if op == '+':
+            bar += f'<rect x="{cx - 4.5}" y="-15" width="9" height="30" rx="4" fill="#fff"/>'
+        out += f'<circle cx="{cx}" cy="0" r="30" fill="{col("ink", pal)}"/>' + bar
+    return out
+
+
+def eq_result(res, total, size, w, mode):
+    """Result row under a rule: label + absolute value, red with 'خسارة' wording when negative."""
+    pal = B if mode == 'B' else A
+    neg = total < 0
+    c = col('red' if neg else 'green', pal)
+    label = res.get('label_negative' if neg else 'label', res.get('label', 'الصافي'))
+    out = f'<line x1="{-w / 2}" y1="-58" x2="{w / 2}" y2="-58" stroke="{col("ink", pal)}" stroke-width="6" stroke-linecap="round"/>'
+    out += text(label, size * 0.9, c, 900, anchor='start', x=w / 2 - 10)
+    out += text(fmt_num(abs(total)) + ' ' + res.get('unit', 'ج'), size * 1.15, c, 900, anchor='end', x=-w / 2 + 110)
+    return out
+
+
 # ---------------------------------------------------------------- shared
 
 def plain_text(e, pal):
@@ -271,7 +337,8 @@ BUILDERS = {
     'A': {'torn': a_torn, 'label': a_label, 'person': a_person, 'chair': a_chair, 'building': a_building,
           'money': a_money, 'ballot': a_ballot, 'siren': a_siren, 'calendar': a_calendar, 'card': a_card,
           'stamp': a_stamp},
-    'B': {'icon': b_icon, 'wcard': b_wcard, 'pill': b_pill, 'headline': b_headline, 'cta': b_cta},
+    'B': {'icon': b_icon, 'wcard': b_wcard, 'pill': b_pill, 'headline': b_headline, 'cta': b_cta,
+          'statcard': b_statcard},
 }
 SHARED = {'xmark': x_mark, 'check': check, 'arrow': arrow, 'text': plain_text, 'number': number, 'svg': raw_svg}
 
@@ -290,4 +357,4 @@ def build(e, mode):
 
 
 def element_types():
-    return sorted(set(BUILDERS['A']) | set(BUILDERS['B']) | set(SHARED) | {'seats', 'steps'})
+    return sorted(set(BUILDERS['A']) | set(BUILDERS['B']) | set(SHARED) | {'seats', 'steps', 'equation'})

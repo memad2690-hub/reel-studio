@@ -5,7 +5,7 @@ import subprocess
 import sys
 
 sys.path.insert(0, os.path.dirname(__file__))
-from timing import Anchors, chunk_captions, load_words  # noqa: E402
+from timing import Anchors, chunk_captions, load_words, norm  # noqa: E402
 import kits  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -15,8 +15,18 @@ MODES = {
     'B': {'W': 1080, 'H': 1920, 'scale': 1.0, 'fps': 30, 'bg': '#f4eddd', 'grid': 54, 'grid_color': '#e2d9c4'},
 }
 CARD = {'x': 40, 'top': 130, 'bottom': 900, 'w': 1000, 'h': 920}
-REGION = {'top': 1080, 'bottom': 60}   # graphics-half origin when the card is at top / bottom
-CARD_SLIDE = 0.45                      # must match the slide duration in runtime.js cardY()
+CARD_SLIDE = 0.45                      # must match SLIDE in runtime.js
+# Mode B talking-head layouts: card rectangle (canvas px), corner radius, border, and the origin/height
+# of the graphics region elements are placed in (element y is measured from region y0).
+LAYOUTS = {
+    'top':       {'x': 40,  'y': 130, 'w': 1000, 'h': 920,  'r': 44, 'b': 7, 'y0': 1080, 'rh': 820},
+    'bottom':    {'x': 40,  'y': 900, 'w': 1000, 'h': 920,  'r': 44, 'b': 7, 'y0': 60,   'rh': 820},
+    'hero':      {'x': 40,  'y': 130, 'w': 1000, 'h': 1300, 'r': 44, 'b': 7, 'y0': 1460, 'rh': 420},
+    'full':      {'x': 0,   'y': 0,   'w': 1080, 'h': 1920, 'r': 0,  'b': 0, 'y0': 1080, 'rh': 780},
+    'pip-right': {'x': 690, 'y': 150, 'w': 350,  'h': 430,  'r': 36, 'b': 6, 'y0': 620,  'rh': 1200},
+    'pip-left':  {'x': 40,  'y': 150, 'w': 350,  'h': 430,  'r': 36, 'b': 6, 'y0': 620,  'rh': 1200},
+}
+REGION = {k: v['y0'] for k, v in LAYOUTS.items()}
 
 
 def load_config():
@@ -37,8 +47,8 @@ def esc(s):
     return kits.esc(s)
 
 
-def anim_group(inner, t_in, t_out, kind, x=0, y=0, rot=0, scale=1, extra=''):
-    return (f'<g class="a" data-in="{t_in:.3f}" data-out="{t_out:.3f}" data-k="{kind}" {extra}>'
+def anim_group(inner, t_in, t_out, kind, x=0, y=0, rot=0, scale=1, extra='', exit='fade'):
+    return (f'<g class="a" data-in="{t_in:.3f}" data-out="{t_out:.3f}" data-k="{kind}" data-x="{exit}" {extra}>'
             f'<g transform="translate({x},{y}) rotate({rot}) scale({scale})">{inner}</g></g>')
 
 
@@ -62,8 +72,11 @@ def expand(el, mode, anchors, s_start, s_end, idx, ins=None, floor=None):
     flag_late(anchors, el.get('in'), t_in, t_out, s_start, what)
     ins.append(t_in)
     kind = el.get('anim', 'pop')
+    ex = el.get('exit', 'fade')
     x, y, rot, sc = el.get('x', 0), el.get('y', 0), el.get('rot', 0), el.get('scale', 1)
     t = el['type']
+    if t == 'equation':
+        return expand_equation(el, mode, anchors, s_start, t_in, t_out, ins, floor, kind, ex)
     if t == 'seats':
         n, cols = el.get('n', 20), el.get('cols', 10)
         size, gap = el.get('size', 36), el.get('gap', 10)
@@ -99,7 +112,88 @@ def expand(el, mode, anchors, s_start, s_end, idx, ins=None, floor=None):
             sub.setdefault('size', el.get('size', 46))
             out += anim_group(kits.build(sub, mode), ti, t_out, item.get('anim', kind), x, y + i * gap, 0, sc)
         return out
-    return anim_group(kits.build(el, mode), t_in, t_out, kind, x, y, rot, sc)
+    return anim_group(kits.build(el, mode), t_in, t_out, kind, x, y, rot, sc, exit=ex)
+
+
+def equation_result(el):
+    """Evaluate an equation element: rows [{value, op}] (first row has no op). Returns (total, problems)."""
+    rows = el.get('rows', [])
+    problems, total = [], 0.0
+    for i, r in enumerate(rows):
+        v = r.get('value')
+        if not isinstance(v, (int, float)):
+            problems.append(f'row {i + 1} ({r.get("label", "")!r}) has no numeric value')
+            continue
+        op = r.get('op', '+' if i else '=')
+        if i and op not in ('+', '-'):
+            problems.append(f'row {i + 1}: op must be "+" or "-"')
+        total = v if i == 0 else (total + v if op == '+' else total - v)
+    res = el.get('result', {})
+    if 'value' in res and abs(res['value'] - total) > 1e-6:
+        problems.append(f'result says {res["value"]:,} but the rows add up to {total:,}')
+    if res.get('tone') == 'negative' and total >= 0 or res.get('tone') == 'positive' and total < 0:
+        problems.append(f'result tone {res.get("tone")!r} contradicts the computed total {total:,}')
+    return total, problems
+
+
+def expand_equation(el, mode, anchors, s_start, t_in, t_out, ins, floor, kind, ex):
+    """Financial equation: one row per term (label, value, operator in its own glyph so RTL never flips a minus),
+    then a rule and the computed result. The arithmetic is checked here; problems block the render."""
+    total, problems = equation_result(el)
+    for p in problems:
+        anchors.misses.append({'anchor': None, 'element': 'equation', 'problem': 'finance: ' + p})
+    x, y = el.get('x', 540), el.get('y', 0)
+    gap, size, w = el.get('gap', 104), el.get('size', 50), el.get('w', 860)
+    out = ''
+    rows = el.get('rows', [])
+    for i, r in enumerate(rows):
+        ti = anchors.resolve(r.get('in'), s_start, default=t_in + 0.5 * i)
+        if floor is not None:
+            ti = max(ti, floor)
+        flag_late(anchors, r.get('in'), ti, t_out, s_start, r.get('label', f'row {i + 1}'))
+        ins.append(ti)
+        out += anim_group(kits.eq_row(r, i, size, w, mode), ti, t_out, r.get('anim', 'slide-left'), x, y + i * gap, exit=ex)
+    res = el.get('result', {})
+    tr = anchors.resolve(res.get('in'), s_start, default=t_in + 0.5 * len(rows))
+    if floor is not None:
+        tr = max(tr, floor)
+    flag_late(anchors, res.get('in'), tr, t_out, s_start, 'equation result')
+    ins.append(tr)
+    out += anim_group(kits.eq_result(res, total, size, w, mode), tr, t_out, res.get('anim', 'stamp'), x,
+                      y + len(rows) * gap + 30, exit=ex)
+    return out
+
+
+def apply_brand(name, cfg):
+    """Reset palettes, then apply a brand preset from studio.config.json (colors only; fonts stay Cairo)."""
+    kits.reset_palettes()
+    brand = cfg.get('brands', {}).get(name or '', {})
+    kits.B.update(brand.get('palette', {}))
+    m = dict(MODES['B'])
+    m.update({k: brand[k] for k in ('bg', 'grid_color') if k in brand})
+    return m
+
+
+def rj_safe(path):
+    try:
+        with open(path, encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return None
+
+
+def card_frame_info(out_dir):
+    """Full-frame card frames (1080x1920) let layouts crop/zoom freely; legacy frames are pre-cropped."""
+    cf = os.path.join(out_dir, 'cf', '00001.png')
+    if not os.path.exists(cf):
+        return {'full': False}
+    try:
+        from PIL import Image
+        with Image.open(cf) as im:
+            w, h = im.size
+    except Exception:
+        return {'full': False}
+    return {'full': (w, h) == (1080, 1920), 'w': w, 'h': h}
 
 
 def build(project_dir, out_dir=None):
@@ -111,6 +205,10 @@ def build(project_dir, out_dir=None):
         spec = json.load(f)
     mode = proj.get('mode', spec.get('mode', 'A'))
     M = MODES[mode]
+    if mode == 'B':
+        M = apply_brand(spec.get('brand'), cfg)
+    else:
+        kits.reset_palettes()
     W, H = M['W'], M['H']
     words_path = os.path.join(pdir, spec.get('words', 'words.json'))
     words = load_words(words_path) if os.path.exists(words_path) else []
@@ -143,7 +241,11 @@ def build(project_dir, out_dir=None):
         st, en = starts[i], ends[i]
         prev_pos = card_pos
         if mode == 'B':
-            card_pos = s.get('card') or ('top' if card_pos == 'bottom' else 'bottom')
+            card_pos = s.get('layout') or s.get('card') or ('top' if card_pos == 'bottom' else 'bottom')
+            if card_pos not in LAYOUTS:
+                anchors.misses.append({'anchor': None, 'element': s.get('id', i),
+                                       'problem': f'unknown layout {card_pos!r} (use {", ".join(LAYOUTS)})'})
+                card_pos = 'top'
         # Mode B: the card slides for CARD_SLIDE s when it changes side; graphics wait until it has landed
         floor = st + CARD_SLIDE if (mode == 'B' and i > 0 and card_pos != prev_pos) else None
         els = []
@@ -153,7 +255,7 @@ def build(project_dir, out_dir=None):
             svg = expand(el, mode, anchors, st, en, j, ins,
                          floor=None if el.get('space') == 'canvas' else floor)
             if mode == 'B' and el.get('space') != 'canvas':
-                svg = f'<g transform="translate(0,{REGION[card_pos]})">{svg}</g>'
+                svg = f'<g transform="translate(0,{LAYOUTS[card_pos]["y0"]})">{svg}</g>'
             els.append(svg)
             latest_in = max([latest_in] + [t for t in ins if t < en])
         sb = min(max(latest_in + 0.6, st + 1.0), en - 0.35)
@@ -167,12 +269,26 @@ def build(project_dir, out_dir=None):
     if spec.get('captions', True) and words:
         captions = chunk_captions(words, cap_cfg['min_words'], cap_cfg['max_words'], max_chars=cap_cfg.get('max_chars', 26),
                                   orphan_slack=cap_cfg.get('orphan_slack', 1))
+        kw = [norm(k) for k in spec.get('caption_keywords', []) if norm(k)]
+        for c in captions:
+            c['hl'] = [j for j, wd in enumerate(c['text'].split()) if kw and any(k in norm(wd) for k in kw)]
 
     brand = spec.get('brand', proj.get('brand', cfg.get('brand', '')))
     show_badge = spec.get('badge', mode == 'A') and brand
 
+    cfi = card_frame_info(out_dir) if mode == 'B' else {'full': False}
+    focus = spec.get('focus')
+    if not focus:
+        crop = (rj_safe(os.path.join(pdir, 'cuts.json')) or {}).get('crop')
+        fy = 0.45
+        if crop:
+            cw, ch, cx, cy = [float(v) for v in crop.split(':')]
+            fy = (cy + ch / 2) / 2560 if cw == 1440 else 0.45
+        focus = [0.5, round(fy, 3)]
+    caption_style = spec.get('caption_style', 'box')
     data = {'mode': mode, 'W': W, 'H': H, 'fps': M['fps'], 'duration': duration, 'card': CARD,
-            'scenes': scene_meta, 'captions': captions, 'cap': cap_cfg}
+            'layouts': LAYOUTS, 'slide': CARD_SLIDE, 'cf': cfi, 'focus': focus, 'capStyle': caption_style,
+            'hlColor': kits.B['yellow'], 'scenes': scene_meta, 'captions': captions, 'cap': cap_cfg}
 
     g = M['grid']
     bg = f'''<svg id="bg" width="{W}" height="{H}" style="position:absolute;left:0;top:0">
@@ -188,7 +304,7 @@ def build(project_dir, out_dir=None):
         card_html = (f'<div id="card" style="position:absolute;left:{CARD["x"]}px;top:{CARD["top"]}px;'
                      f'width:{CARD["w"]}px;height:{CARD["h"]}px;border:7px solid #222;border-radius:44px;'
                      'box-sizing:border-box;overflow:hidden;background:#333;box-shadow:12px 14px 0 rgba(34,34,34,.22)">'
-                     '<img id="cardimg" style="width:100%;height:100%;object-fit:cover;display:block" alt=""></div>')
+                     '<img id="cardimg" style="position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;display:block" alt=""></div>')
 
     fg = (f'<svg id="fg" width="{W}" height="{H}" style="position:absolute;left:0;top:0" '
           f'font-family="Cairo, sans-serif"><defs>'

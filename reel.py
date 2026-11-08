@@ -439,11 +439,19 @@ def cmd_finalize_cut(a):
     raw = os.path.join(d, cuts['source'])
     segs = footage.snap(cuts['segments'])  # same frame-aligned cuts as the audio and card frames
     words = load_words(os.path.join(d, a.words))
+    os.makedirs(os.path.join(d, 'build'), exist_ok=True)
     wj(os.path.join(d, 'words.json'), map_through_cuts(words, segs))
     footage.render_cut(raw, segs, os.path.join(d, 'build', 'cut_audio.m4a'), audio_only=True)
-    n = footage.card_frames(raw, segs, os.path.join(d, 'build', 'cf'), crop=a.crop or cuts.get('crop'))
+    if a.full_frame:
+        # V2 layouts: keep the whole 9:16 frame; the runtime crops/zooms per layout around the face focus
+        n = footage.card_frames(raw, segs, os.path.join(d, 'build', 'cf'), crop=None, size=(1080, 1920))
+        cuts['card_frames'] = 'full'
+    else:
+        n = footage.card_frames(raw, segs, os.path.join(d, 'build', 'cf'), crop=a.crop or cuts.get('crop'))
+        cuts.pop('card_frames', None)
     if a.crop:
-        cuts['crop'] = a.crop; wj(os.path.join(d, 'cuts.json'), cuts)
+        cuts['crop'] = a.crop
+    wj(os.path.join(d, 'cuts.json'), cuts)
     log_status(d, f'final cut prepared: words.json mapped, {n} card frames')
     print(json.dumps({'words': 'words.json', 'audio': 'build/cut_audio.m4a', 'card_frames': n}))
 
@@ -554,7 +562,9 @@ def main():
     s = sp.add_parser('crop-preview', help='Mode B: draw a crop box on a frame'); s.add_argument('slug'); s.add_argument('crop')
     s.add_argument('--t', type=float, default=1.0); s.add_argument('--raw', default='raw/raw.mp4'); s.set_defaults(f=cmd_crop_preview)
     s = sp.add_parser('finalize-cut', help='Mode B: words, audio and card frames for the approved cut'); s.add_argument('slug')
-    s.add_argument('--words', default='words_raw.json'); s.add_argument('--crop'); s.set_defaults(f=cmd_finalize_cut)
+    s.add_argument('--words', default='words_raw.json'); s.add_argument('--crop')
+    s.add_argument('--full-frame', action='store_true', help='V2 layouts: full 1080x1920 card frames (cropped live per layout)')
+    s.set_defaults(f=cmd_finalize_cut)
     s = sp.add_parser('align', help='Mode B: time an approved clean script'); s.add_argument('slug')
     s.add_argument('--script', default='script_clean.txt'); s.add_argument('--words', default='words.json'); s.set_defaults(f=cmd_align)
     s = sp.add_parser('library', help='techniques and references'); s.add_argument('action', choices=['list', 'show', 'add-ref'])

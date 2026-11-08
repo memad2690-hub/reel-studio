@@ -94,3 +94,37 @@ Palette names: ink, red, blue, yellow, green, grey, white (or any hex).
 - Never put a minus sign before a number (`-5,000` renders reversed). Write `خسارة 5,000 ج`.
 - English terms stay in Latin script inside Arabic text (`الـROAS`, `Break-even`).
 - Illustrative numbers get a `مثال` tag. Never invent results.
+
+## V2 — Style 01 Editorial Motion Explainer (Mode B)
+
+Optional keys; projects without them render exactly as before.
+
+### Project-level keys
+| key | values |
+|---|---|
+| `brand` | `media-buying` (current look) · `ceos` (lime #D1FE17 highlighter, black ink). Defined in `studio.config.json → brands`. |
+| `caption_style` | `box` (default) · `highlight` (keywords on a highlighter chip) · `clean` (no box, white text with shadow) |
+| `caption_keywords` | words to highlight in captions (matched like anchors: `"ROAS"` matches `الـROAS`) |
+| `focus` | `[fx, fy]` face point in the frame (0–1). Default comes from the `cuts.json` crop. |
+
+### Talking-head layouts (`scene.layout`)
+Needs full-frame card frames: `reel.py finalize-cut <slug> --full-frame` (1080×1920 frames, cropped live per layout).
+The card morphs between layouts over 0.45 s; graphics in that scene wait until it lands.
+
+| layout | card | graphics region (element `y` measured from) |
+|---|---|---|
+| `top` / `bottom` | 1000×920 at y 130 / 900 | y0 1080 / 60, height 820 |
+| `hero` | 1000×1300 at y 130 | y0 1460, height 420 |
+| `full` | whole screen, no border | y0 1080, height 780 (over the video: use cards, not bare text) |
+| `pip-right` / `pip-left` | 350×430 in the top corner | y0 620, height 1200 |
+
+`card: top|bottom` still works (old name for the two original layouts).
+
+### Motion
+- `anim`: `pop`, `stamp`, `shake`, `fade`, `slide`/`slide-up`, `slide-down`, `slide-left` (enters from the right, RTL start), `slide-right`, `spring`, `wipe` (reveals right→left), `none`.
+- `exit` (last 0.3 s before `out`): `fade` (default), `shrink`, `slide-left`, `slide-right`, `slide-down`, `none`.
+
+### Financial components
+- `statcard`: `label`, `value` (number), `unit` (default `ج`, `""` for ratios), `tone` `positive` (green) / `negative` (red) / `neutral`, `count` (count-up, default true), `size`. Negative values are shown as their absolute amount; say "خسارة" in the label.
+- `equation`: `rows[]` of `{label, value, op ("+"|"-"), tone, in}` (first row has no op) and `result {label, label_negative, value, tone, in}`. `build` recomputes the total; a wrong `result.value` or a tone that contradicts the sign is a **finance problem** and `render` refuses to run. Operators are drawn as shapes (never a `-` character), the result shows the absolute value with `label_negative` when below zero.
+- Illustrative numbers still need a `مثال` pill. Never invent results.

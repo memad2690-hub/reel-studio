@@ -5,7 +5,7 @@
   const easeOut = p => 1 - Math.pow(1 - p, 3);
   const easeInOut = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  let scenes, anims, counts, cap, card;
+  let scenes, anims, counts, cap, card, cardImg;
 
   function fitBoxes() {
     document.querySelectorAll('[data-fit]').forEach(g => {
@@ -54,19 +54,96 @@
   function init() {
     fitBoxes(); layoutHeadlines();
     scenes = [...document.querySelectorAll('.scene')].map(g => ({ g, s: +g.dataset.start, e: +g.dataset.end }));
-    anims = [...document.querySelectorAll('.a')].map(g => ({ g, i: +g.dataset.in, o: +g.dataset.out, k: g.dataset.k }));
+    anims = [...document.querySelectorAll('.a')].map(g => ({ g, i: +g.dataset.in, o: +g.dataset.out, k: g.dataset.k, x: g.dataset.x || 'fade' }));
     counts = [...document.querySelectorAll('.count')].map(t => ({ t, from: +t.dataset.from, to: +t.dataset.to, dur: +t.dataset.dur,
       pre: t.dataset.prefix || '', suf: t.dataset.suffix || '', g: t.closest('.a') }));
     cap = document.getElementById('cap'); card = document.getElementById('card');
+    cardImg = document.getElementById('cardimg');
   }
 
-  function cardY(t) {
-    const sc = D.scenes; if (!sc.length) return D.card.top;
+  // deterministic damped spring (0 → 1), no state between frames
+  const spring = (p, z = 0.55, w = 13) => {
+    const t = p * 0.9; if (t <= 0) return 0;
+    const wd = w * Math.sqrt(1 - z * z);
+    return 1 - Math.exp(-z * w * t) * (Math.cos(wd * t) + (z * w / wd) * Math.sin(wd * t));
+  };
+  const SLIDE = D.slide || 0.45;
+  const L = name => (D.layouts && D.layouts[name]) || { x: D.card.x, y: D.card[name] ?? D.card.top, w: D.card.w, h: D.card.h, r: 44, b: 7 };
+
+  function cardRect(t) {
+    const sc = D.scenes; if (!sc.length) return L('top');
     let idx = sc.findIndex(s => t >= s.start && t < s.end); if (idx < 0) idx = t < sc[0].start ? 0 : sc.length - 1;
-    const target = D.card[sc[idx].card || 'top'];
-    const prev = idx > 0 ? D.card[sc[idx - 1].card || 'top'] : target;
-    const p = clamp((t - sc[idx].start) / 0.45, 0, 1);
-    return prev + (target - prev) * easeInOut(p);
+    const target = L(sc[idx].card || 'top');
+    const prev = idx > 0 ? L(sc[idx - 1].card || 'top') : target;
+    const p = easeInOut(clamp((t - sc[idx].start) / SLIDE, 0, 1));
+    const out = { target };
+    ['x', 'y', 'w', 'h', 'r', 'b'].forEach(k => { out[k] = prev[k] + (target[k] - prev[k]) * p; });
+    return out;
+  }
+
+  function placeCard(rc) {
+    const st = card.style;
+    st.left = rc.x + 'px'; st.top = rc.y + 'px'; st.width = rc.w + 'px'; st.height = rc.h + 'px';
+    st.borderRadius = rc.r + 'px'; st.borderWidth = rc.b + 'px';
+    st.boxShadow = rc.b > 0.5 ? '12px 14px 0 rgba(34,34,34,.22)' : 'none';
+    if (D.cf && D.cf.full && cardImg) {
+      // full-frame (1080x1920) card frames: cover the card, keep the face focus point near the centre
+      const iw = rc.w - 2 * rc.b, ih = rc.h - 2 * rc.b;
+      const s = Math.max(iw / 1080, ih / 1920);
+      const W = 1080 * s, H = 1920 * s;
+      const fx = D.focus[0] * W, fy = D.focus[1] * H;
+      const left = clamp(iw / 2 - fx, iw - W, 0), top = clamp(ih * 0.5 - fy, ih - H, 0);
+      const is = cardImg.style;
+      is.objectFit = 'fill'; is.width = W + 'px'; is.height = H + 'px'; is.left = left + 'px'; is.top = top + 'px';
+    }
+  }
+
+  function entrance(a, t) {
+    const p = clamp((t - a.i) / 0.4, 0, 1);
+    let op = Math.min(1, 3 * p), sc = 1, rot = 0, tx = 0, ty = 0, clip = '';
+    const k = a.k;
+    if (k === 'pop') sc = easeOutBack(p);
+    else if (k === 'stamp') { sc = 1.8 - 0.8 * easeOut(p); op = Math.min(1, 4 * p); }
+    else if (k === 'shake') { sc = easeOutBack(p); const q = (t - a.i); rot = 9 * Math.sin(q * 28) * Math.exp(-q * 4); }
+    else if (k === 'fade') op = p;
+    else if (k === 'slide' || k === 'slide-up') { ty = 50 * (1 - easeOut(p)); op = p; }
+    else if (k === 'slide-down') { ty = -60 * (1 - easeOut(p)); op = p; }
+    else if (k === 'slide-left') { tx = 90 * (1 - easeOut(p)); op = p; }      // comes in from the right (RTL reading start)
+    else if (k === 'slide-right') { tx = -90 * (1 - easeOut(p)); op = p; }
+    else if (k === 'spring') { const q = clamp((t - a.i) / 0.7, 0, 1); sc = 0.4 + 0.6 * spring(q); op = Math.min(1, 4 * q); }
+    else if (k === 'wipe') { const q = easeOut(clamp((t - a.i) / 0.5, 0, 1)); clip = `inset(-20% -20% -20% ${(1 - q) * 120 - 20}%)`; op = 1; }
+    else if (k === 'none') op = 1;
+    return { op, sc, rot, tx, ty, clip };
+  }
+
+  function exitFx(a, t, v) {
+    const left = a.o - t;
+    if (!(left < 0.3 && a.o - a.i > 0.5)) return v;
+    const q = 1 - left / 0.3;                       // 0 → 1 over the last 0.3 s
+    if (a.x === 'none') return v;
+    if (a.x === 'shrink') { v.sc *= 1 - 0.6 * easeInOut(q); v.op *= 1 - q; }
+    else if (a.x === 'slide-left') { v.tx -= 90 * easeInOut(q); v.op *= 1 - q; }
+    else if (a.x === 'slide-right') { v.tx += 90 * easeInOut(q); v.op *= 1 - q; }
+    else if (a.x === 'slide-down') { v.ty += 60 * easeInOut(q); v.op *= 1 - q; }
+    else v.op *= 1 - q;                             // fade (default)
+    return v;
+  }
+
+  function showCaption(c, rc) {
+    const style = D.capStyle || 'box';
+    if (style === 'box' && !(c.hl && c.hl.length)) cap.textContent = c.text;
+    else {
+      const esc = s => s.replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+      cap.innerHTML = c.text.split(' ').map((w, j) => (c.hl || []).includes(j)
+        ? `<span style="background:${D.hlColor};color:#111;padding:0 10px;border-radius:8px">${esc(w)}</span>` : esc(w)).join(' ');
+    }
+    cap.style.display = 'block';
+    if (!card) return;
+    // placement follows the scene's target layout, so the caption never rides a shrinking card
+    const tg = rc.target || rc, big = tg.h >= 600;
+    cap.style.left = (big ? rc.x + rc.w / 2 : 540) + 'px';
+    cap.style.top = (big ? rc.y + rc.h - 110 : 1560) + 'px';
+    if (style === 'clean') { cap.style.background = 'none'; cap.style.textShadow = '0 3px 0 #000, 0 0 14px rgba(0,0,0,.7)'; }
   }
 
   window.setTime = function (t) {
@@ -74,28 +151,18 @@
     anims.forEach(a => {
       const st = a.g.style;
       if (t < a.i || t >= a.o) { st.opacity = 0; return; }
-      const p = clamp((t - a.i) / 0.4, 0, 1);
-      let op = Math.min(1, 3 * p), sc = 1, rot = 0, ty = 0;
-      if (a.k === 'pop') sc = easeOutBack(p);
-      else if (a.k === 'stamp') { sc = 1.8 - 0.8 * easeOut(p); op = Math.min(1, 4 * p); }
-      else if (a.k === 'shake') { sc = easeOutBack(p); const q = (t - a.i); rot = 9 * Math.sin(q * 28) * Math.exp(-q * 4); }
-      else if (a.k === 'fade') op = p;
-      else if (a.k === 'slide') { ty = 50 * (1 - easeOut(p)); op = p; }
-      else if (a.k === 'none') op = 1;
-      const left = a.o - t; if (left < 0.25 && a.o - a.i > 0.5) op *= left / 0.25;
-      st.opacity = op; st.transform = `translateY(${ty}px) rotate(${rot}deg) scale(${sc})`;
+      const v = exitFx(a, t, entrance(a, t));
+      st.opacity = v.op; st.transform = `translate(${v.tx}px, ${v.ty}px) rotate(${v.rot}deg) scale(${v.sc})`;
+      st.clipPath = v.clip || '';
     });
     counts.forEach(c => {
       const t0 = c.g ? +c.g.dataset.in : 0; const p = clamp((t - t0) / c.dur, 0, 1);
       c.t.textContent = c.pre + fmt(c.from + (c.to - c.from) * easeOut(p)) + c.suf;
     });
-    let y = null;
-    if (card) { y = cardY(t); card.style.top = y + 'px'; }
+    let rc = null;
+    if (card) { rc = cardRect(t); placeCard(rc); }
     const c = D.captions.find(c => t >= c.start && t < c.end);
-    if (c) {
-      cap.textContent = c.text; cap.style.display = 'block';
-      if (card) cap.style.top = (y + D.card.h - 110) + 'px';
-    } else cap.style.display = 'none';
+    if (c) showCaption(c, rc || {}); else cap.style.display = 'none';
   };
 
   window.cardFrame = t => Math.floor(t * D.fps + 1e-6) + 1;
