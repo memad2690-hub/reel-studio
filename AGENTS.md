@@ -126,3 +126,6 @@ After `finalize-cut` (use `--full-frame` for V2 layouts) and `align`:
    `finalize-cut --full-frame`; check `build/mask/quality.json` and the storyboard stills: frames below
    `mask_min_quality` fall back automatically. Budget ≈0.7 s per frame for segmentation and ≈22 s per output second to
    render with the cut layer (measured, 2 vCPU). Photos/collage images come only from the user's uploads in `assets/`.
+6. Mixing (milestone 7): give scenes a `style` (01–09) only where the content changes register; prefer cuts and use
+   `blur`/`whip`/`flash`/`zoom` for real section changes (≈1 per 5 s at most). Read the build `notes` for mixing warnings.
+   Brand look comes from `studio.config.json` presets; per-reel tweaks only via `brand_overrides`.

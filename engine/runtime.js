@@ -87,6 +87,7 @@
     kbs = [...document.querySelectorAll('.kb')].map(el => ({ el, z: +el.dataset.z, d: +el.dataset.d,
       t0: el.closest('.a') ? +el.closest('.a').dataset.in : 0 }));
     kbs.forEach(o => { o.el.style.transformBox = 'fill-box'; o.el.style.transformOrigin = '50% 50%'; });
+    mainEl = document.getElementById('main'); flashEl = document.getElementById('flash');
     cutDiv = document.getElementById('cut'); cutImg = document.getElementById('cutimg'); grainT = document.getElementById('grt');
     parts = [...document.querySelectorAll('.grow,.draw,.arc,.tl')].map(el => {
       const k = el.classList.contains('grow') ? 'grow' : el.classList.contains('draw') ? 'draw' : el.classList.contains('arc') ? 'arc' : 'tl';
@@ -166,7 +167,7 @@
 
   function entrance(a, t) {
     const p = clamp((t - a.i) / 0.4, 0, 1);
-    let op = Math.min(1, 3 * p), sc = 1, rot = 0, tx = 0, ty = 0, clip = '';
+    let op = Math.min(1, 3 * p), sc = 1, rot = 0, tx = 0, ty = 0, clip = '', blur = 0;
     const k = a.k;
     if (k === 'pop') sc = easeOutBack(p);
     else if (k === 'stamp') { sc = 1.8 - 0.8 * easeOut(p); op = Math.min(1, 4 * p); }
@@ -178,8 +179,11 @@
     else if (k === 'slide-right') { tx = -90 * (1 - easeOut(p)); op = p; }
     else if (k === 'spring') { const q = clamp((t - a.i) / 0.7, 0, 1); sc = 0.4 + 0.6 * spring(q); op = Math.min(1, 4 * q); }
     else if (k === 'wipe') { const q = easeOut(clamp((t - a.i) / 0.5, 0, 1)); clip = `inset(-20% -20% -20% ${(1 - q) * 120 - 20}%)`; op = 1; }
+    else if (k === 'blur-in') { op = easeOut(p); blur = 14 * (1 - easeOut(p)); sc = 0.96 + 0.04 * easeOut(p); }   // text swap
+    else if (k === 'rise') { const q = clamp((t - a.i) / 0.5, 0, 1); ty = 44 * (1 - easeOut(q)); op = Math.min(1, 2.5 * q);
+      blur = 6 * (1 - easeOut(q)); sc = 0.94 + 0.06 * easeOut(q); }                                                   // toast rise
     else if (k === 'none') op = 1;
-    return { op, sc, rot, tx, ty, clip };
+    return { op, sc, rot, tx, ty, clip, blur };
   }
 
   function exitFx(a, t, v) {
@@ -191,6 +195,7 @@
     else if (a.x === 'slide-left') { v.tx -= 90 * easeInOut(q); v.op *= 1 - q; }
     else if (a.x === 'slide-right') { v.tx += 90 * easeInOut(q); v.op *= 1 - q; }
     else if (a.x === 'slide-down') { v.ty += 60 * easeInOut(q); v.op *= 1 - q; }
+    else if (a.x === 'blur') { v.blur = (v.blur || 0) + 12 * easeInOut(q); v.op *= 1 - q; }
     else v.op *= 1 - q;                             // fade (default)
     return v;
   }
@@ -203,11 +208,15 @@
     minimal:   { box: 'background:none;color:#fff;font-size:42px;font-weight:700;text-shadow:0 2px 6px rgba(0,0,0,.85)', act: null },
   };
   let capBase = null;
+  const sceneAt = t => D.scenes.find(s => t >= s.start && t < s.end);
   function showCaption(c, rc, t) {
-    const style = D.capStyle || 'box';
+    const sc0 = sceneAt(c.start);
+    const style = (sc0 && sc0.cap) || D.capStyle || 'box';
     const P = CAPS[style];
     if (capBase === null) capBase = cap.getAttribute('style') || '';
     if (P) cap.setAttribute('style', capBase + ';' + P.box.replace(/HL/g, D.hlColor));
+    else if (cap.dataset.st && cap.dataset.st !== style) cap.setAttribute('style', capBase);   // back from a styled preset
+    cap.dataset.st = style;
     const esc = s => s.replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
     const tg0 = (rc && (rc.target || rc)) || {}, onPage = card && !(tg0.h >= 600);
     let act = -1;
@@ -229,6 +238,27 @@
     if (!big && (style === 'kinetic' || style === 'minimal' || style === 'clean')) { cap.style.color = '#111'; cap.style.textShadow = 'none'; }
   }
 
+  // scene transitions on the main layer (footage + graphics; captions, film and page background stay put)
+  let mainEl, flashEl;
+  function transition(t) {
+    if (!mainEl) return;
+    let fil = '', tf = '', fl = 0;
+    for (const s of D.scenes) {
+      if (!s.tr) continue;
+      const [k, h] = s.tr, d = t - s.start;
+      if (d < -h || d > h) continue;
+      const u = clamp(d / h, -1, 1), near = 1 - Math.abs(u);
+      if (k === 'blur') fil = `blur(${(12 * near).toFixed(2)}px) brightness(${(1 + 0.08 * near).toFixed(3)})`;
+      else if (k === 'whip') { const sg = u < 0 ? -1 : 1; tf = `translateX(${(sg * 180 * near * near).toFixed(1)}px)`;
+        fil = `blur(${(16 * near).toFixed(2)}px)`; }
+      else if (k === 'zoom' && d >= 0) { const q = easeOut(clamp(d / h, 0, 1)); tf = `scale(${(1.1 - 0.1 * q).toFixed(4)})`;
+        fil = d < 0.1 ? `blur(${(6 * (1 - d / 0.1)).toFixed(2)}px)` : ''; }
+      else if (k === 'flash') fl = d < 0 ? clamp(1 + d / 0.06, 0, 1) : Math.max(0, 1 - d / h);
+    }
+    mainEl.style.filter = fil; mainEl.style.transform = tf;
+    if (flashEl) flashEl.style.opacity = fl.toFixed(3);
+  }
+
   window.setTime = function (t) {
     scenes.forEach(s => { s.g.style.display = (t >= s.s && t < s.e) ? '' : 'none'; });
     anims.forEach(a => {
@@ -237,6 +267,7 @@
       const v = exitFx(a, t, entrance(a, t));
       st.opacity = v.op; st.transform = `translate(${v.tx}px, ${v.ty}px) rotate(${v.rot}deg) scale(${v.sc})`;
       st.clipPath = v.clip || '';
+      st.filter = v.blur > 0.05 ? `blur(${v.blur.toFixed(2)}px)` : '';
     });
     parts.forEach(o => {
       const p = clamp((t - o.t0) / o.d, 0, 1), e = easeOut(p), st = o.el.style;
@@ -268,6 +299,7 @@
     if (grainT) grainT.setAttribute('seed', String(Math.floor(t * D.fps) % 997 + 1));
     const c = D.captions.find(c => t >= c.start && t < c.end);
     if (c) showCaption(c, rc || {}, t); else cap.style.display = 'none';
+    transition(t);
   };
 
   window.cardFrame = t => Math.floor(t * D.fps + 1e-6) + 1;

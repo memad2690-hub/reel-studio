@@ -252,6 +252,58 @@ class SegmentTests(unittest.TestCase):
             self.assertIn('"maskMin": 0.7', open(os.path.join(d, 'build', 'page.html'), encoding='utf-8').read())
 
 
+class MixTests(Tmp):
+    """Milestone 7: style mixing, scene transitions, per-scene captions, brand presets."""
+    scenes = EditorialV2Tests.scenes
+
+    def page(self):
+        return open(os.path.join(self.d, 'build', 'page.html'), encoding='utf-8').read()
+
+    def two(self, a=None, b=None, **spec):
+        return self.scenes([dict({'id': 'a', 'elements': []}, **(a or {})),
+                            dict({'id': 'b', 'start': 'والإعلانات', 'elements': []}, **(b or {}))], **spec)
+
+    def test_style_defaults_and_scene_keys_win(self):
+        m = self.two({'style': 'cinematic'}, {'style': '07', 'layout': 'bottom'})
+        a, b = m['scenes']
+        self.assertEqual((a['card'], a['zoom'], a['style'], a.get('cap')), ('full', [1.0, 1.06], 'cinematic', 'minimal'))
+        self.assertEqual((b['card'], b['tr'][0], b['style']), ('bottom', 'whip', 'battle'))
+        self.assertNotIn('tr', a)                       # no transition into the first scene
+
+    def test_unknown_style_and_floating_ui_block(self):
+        misses = self.two({'style': 'vaporwave'}, {'style': '05'})['anchor_misses']
+        self.assertTrue(any('unknown style' in x['problem'] for x in misses))
+        self.assertTrue(any('CEOS' in x['problem'] for x in misses))
+
+    def test_transition_layer_only_when_used(self):
+        self.two()
+        self.assertNotIn('id="main"', self.page())
+        self.two(b={'transition': 'flash'})
+        self.assertIn('id="main"', self.page()); self.assertIn('id="flash"', self.page())
+
+    def test_unknown_transition_and_caption_style_block(self):
+        misses = self.two(b={'transition': 'spin', 'caption_style': 'comic'})['anchor_misses']
+        self.assertTrue(any('unknown transition' in x['problem'] for x in misses))
+        self.assertTrue(any('caption_style' in x['problem'] for x in misses))
+
+    def test_brand_defaults_overrides_and_preset_untouched(self):
+        import kits
+        cfg_before = open(os.path.join(ROOT, 'studio.config.json'), encoding='utf-8').read()
+        m = self.two(brand='ceos', brand_overrides={'palette': {'red': '#ff0000'}})
+        self.assertEqual((m['capStyle'], m['scenes'][1]['tr'][0]), ('energy', 'blur'))
+        self.assertEqual((kits.B['red'], kits.B['yellow']), ('#ff0000', '#D1FE17'))
+        self.assertEqual(open(os.path.join(ROOT, 'studio.config.json'), encoding='utf-8').read(), cfg_before)
+        self.assertTrue(any('unknown brand' in x['problem'] for x in self.two(brand='acme')['anchor_misses']))
+
+    def test_mix_notes(self):
+        sc = [{'id': f's{i}', 'style': st, 'elements': []} for i, st in enumerate(['01', '02', '04', '09'])]
+        for s_, w in zip(sc[1:], ['ألف', 'والإعلانات', 'خسارة']):
+            s_['start'] = w
+        m = self.scenes(sc)
+        self.assertTrue(any('4 styles' in n for n in m['notes']), m['notes'])
+        self.assertTrue(any('s1: style changes' in n for n in m['notes']), m['notes'])
+
+
 class ChartCheckTests(unittest.TestCase):
     def check(self, el):
         import charts

@@ -82,7 +82,9 @@
       "note": "Current reel look (approved 2026-11-08): cream grid, ink, yellow highlighter, green/red numbers, Cairo",
       "bg": "#f4eddd",
       "grid_color": "#e2d9c4",
-      "palette": {}
+      "palette": {},
+      "caption_style": "highlight",
+      "transition": "cut"
     },
     "ceos": {
       "note": "CEOS brand color lime #D1FE17 with black and white (font not yet approved: Cairo used)",
@@ -95,7 +97,9 @@
         "green": "#3f8a5a",
         "red": "#d64541",
         "paper": "#f6f6f2"
-      }
+      },
+      "caption_style": "energy",
+      "transition": "blur"
     },
     "whiteboard": {
       "note": "Style 08: white board, marker colors",
@@ -108,7 +112,10 @@
         "green": "#2f8a4c",
         "yellow": "#ffe066",
         "paper": "#fbfbf7"
-      }
+      },
+      "caption_style": "highlight",
+      "transition": "cut"
     }
-  }
+  },
+  "brands_note": "Brand presets: colors (palette/bg/grid), default caption_style and scene transition. Do not edit a preset for one reel: use \"brand_overrides\" in that reel's scenes.json."
 }

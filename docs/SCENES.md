@@ -238,3 +238,44 @@ edge, fill shirt holes, soft edge), smoothed over time, and scored 0–1 from th
 speaker (never a broken silhouette), parallax becomes a plain zoom, and the sticker layout becomes a normal card.
 **Known limit:** objects touching the speaker in the same colour range (car-seat backs by the shoulders) can stay
 attached to the cut-out; works best against a contrasting background; use `--exclude` for fixed objects.
+
+## V2 — Style mixing, scene transitions, brand presets (milestone 7)
+`python3 reel.py brands` lists brand presets, style ids and transitions.
+
+### Per-scene `style` (mixing)
+`"style"` on a scene (or on the project as the default) adds that style's scene defaults; keys the scene sets itself win.
+Names or ids: `01 editorial`, `02 kinetic`, `03 collage`, `04 data`, `06 parallax`, `07 battle`, `08 whiteboard`,
+`09 cinematic` (`05 floating-ui` is blocked until real CEOS screens exist).
+
+| style | layout | other defaults |
+|---|---|---|
+| editorial | (rotation) | transition cut |
+| kinetic | (rotation) | caption kinetic, transition blur |
+| collage | sticker | transition zoom |
+| data / whiteboard | top | transition cut |
+| parallax | full | parallax 1, zoom 1.0→1.08, transition blur |
+| battle | half-top | transition whip |
+| cinematic | full | zoom 1.0→1.06, transition blur, caption minimal |
+
+Mixing checks (in `notes`, not blocking): more than 3 styles in one reel; a style change on a scene shorter than 2 s;
+more non-cut transitions than ≈1 per 5 s. The colour grade is per reel (or per cut clip via `reel.py grade --clip`),
+not per scene: a `cinematic` scene inside a non-cinematic reel keeps the reel's grade.
+
+### Scene `transition` (into that scene)
+`cut` (default) · `blur` (cross-blur dip, 0.18 s each side) · `whip` (push + motion blur, 0.16 s) ·
+`flash` (white flash, decays over 0.25 s) · `zoom` (1.10 → 1.0 settle over 0.35 s; best when the layout does not change).
+They move the footage and graphics only; captions, film grain and the page background stay put. Unknown names block render.
+
+### Scene `caption_style`
+Overrides the reel's caption preset for that scene's captions (presets: box, highlight, clean, kinetic, editorial,
+energy, minimal).
+
+### New element entrances / exit
+`"anim": "blur-in"` (fade in from a 14 px blur, slight scale), `"anim": "rise"` (rises 44 px with fade, blur and scale) ·
+`"exit": "blur"`.
+
+### Brand presets
+In `studio.config.json` → `brands`: `bg`, `grid_color`, `palette`, default `caption_style`, default `transition`.
+Current: `media-buying` (highlight captions, cuts), `ceos` (lime/black, energy captions, blur), `whiteboard`.
+Per-reel tweaks go in that reel's scenes.json, never in the preset:
+`"brand_overrides": {"palette": {"red": "#e0413a"}, "caption_style": "minimal"}`. Unknown brand names block render.

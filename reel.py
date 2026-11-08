@@ -128,6 +128,17 @@ def cmd_new(a):
     print(f'projects/{a.slug} created. Next: fill brief.md, then script.md.')
 
 
+def cmd_brands(a):
+    cfg = builder.load_config()
+    for name, b in cfg.get('brands', {}).items():
+        pal = ', '.join(f'{k} {v}' for k, v in b.get('palette', {}).items()) or 'default palette'
+        print(f'{name:14} caption={b.get("caption_style", "box"):10} transition={b.get("transition", "cut"):6} bg={b.get("bg")}  {pal}')
+        if b.get('note'):
+            print(f'{"":14} {b["note"]}')
+    print('styles:', ', '.join(f'{k}={v}' for k, v in builder.STYLE_IDS.items()))
+    print('transitions:', ', '.join(builder.TRANSITIONS))
+
+
 def cmd_build(a):
     d = pdir(a.slug)
     m = builder.build(d)
@@ -722,6 +733,7 @@ def main():
     s.set_defaults(f=cmd_finalize_cut)
     s = sp.add_parser('align', help='Mode B: time an approved clean script'); s.add_argument('slug')
     s.add_argument('--script', default='script_clean.txt'); s.add_argument('--words', default='words.json'); s.set_defaults(f=cmd_align)
+    s = sp.add_parser('brands', help='list brand presets, styles and transitions'); s.set_defaults(f=cmd_brands)
     s = sp.add_parser('segment', help='person masks + cut-outs (text behind speaker, parallax, sticker collage)')
     s.add_argument('slug'); s.add_argument('--every', type=int, default=2); s.add_argument('--frames', help='e.g. 1-300')
     s.add_argument('--exclude', action='append', help='zone to drop from the mask, normalised x0,y0,x1,y1 (repeatable; saved in cuts.json)')

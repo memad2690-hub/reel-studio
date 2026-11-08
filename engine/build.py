@@ -33,6 +33,56 @@ LAYOUTS = {
     'sticker':     {'x': 300, 'y': 700, 'w': 760, 'h': 1220, 'r': 0, 'b': 0, 'y0': 60, 'rh': 760, 'rot': -3, 'sticker': 1},
 }
 REGION = {k: v['y0'] for k, v in LAYOUTS.items()}
+
+# V2 style mixing: each style is a set of scene defaults (a scene's own keys always win).
+STYLES = {
+    'editorial':  {'transition': 'cut'},                                                     # 01
+    'kinetic':    {'caption_style': 'kinetic', 'transition': 'blur'},                        # 02
+    'collage':    {'layout': 'sticker', 'transition': 'zoom'},                               # 03
+    'data':       {'layout': 'top', 'transition': 'cut'},                                    # 04
+    'parallax':   {'layout': 'full', 'parallax': 1, 'zoom': [1.0, 1.08], 'transition': 'blur'},  # 06
+    'battle':     {'layout': 'half-top', 'transition': 'whip'},                              # 07
+    'whiteboard': {'layout': 'top', 'transition': 'cut'},                                    # 08
+    'cinematic':  {'layout': 'full', 'zoom': [1.0, 1.06], 'transition': 'blur', 'caption_style': 'minimal'},  # 09
+}
+STYLE_IDS = {'01': 'editorial', '02': 'kinetic', '03': 'collage', '04': 'data', '05': 'floating-ui', '06': 'parallax',
+             '07': 'battle', '08': 'whiteboard', '09': 'cinematic'}
+TRANSITIONS = {'cut': 0, 'blur': 0.18, 'whip': 0.16, 'flash': 0.25, 'zoom': 0.35}   # half-width / length in seconds
+CAPTION_STYLES = ('box', 'highlight', 'clean', 'kinetic', 'editorial', 'energy', 'minimal')
+
+
+def style_name(v):
+    v = str(v or '').strip().lower()
+    return STYLE_IDS.get(v, STYLE_IDS.get(v.zfill(2), v)) if v else ''
+
+
+def style_mix(scenes, starts, ends, base_style, problems, notes):
+    """Resolve each scene's style into scene defaults and check the mix (returns the effective scene dicts)."""
+    out, used, prev = [], [], None
+    for i, s in enumerate(scenes):
+        sty = style_name(s.get('style') or base_style)
+        if sty == 'floating-ui':
+            problems.append({'anchor': None, 'element': s.get('id', i),
+                             'problem': 'style 05 floating UI needs real CEOS screens/recordings (not built yet)'})
+            sty = ''
+        elif sty and sty not in STYLES:
+            problems.append({'anchor': None, 'element': s.get('id', i),
+                             'problem': f'unknown style {s.get("style")!r} (use {", ".join(STYLES)} or 01-09)'})
+            sty = ''
+        e = dict(STYLES.get(sty, {})); e.update(s)
+        if sty: e['_style'] = sty
+        out.append(e)
+        if sty and sty not in used: used.append(sty)
+        if i > 0 and sty != prev and ends[i] - starts[i] < 2.0:
+            notes.append(f'{s.get("id", i)}: style changes on a {ends[i] - starts[i]:.1f} s scene (mixing reads best on scenes ≥ 2 s)')
+        prev = sty
+    if len(used) > 3:
+        notes.append(f'{len(used)} styles in one reel ({", ".join(used)}): more than 3 usually reads as noise')
+    fancy = [e for e in out[1:] if e.get('transition', 'cut') != 'cut']
+    total = (ends[-1] - starts[0]) if out else 0
+    if total and len(fancy) > max(2, total / 5):
+        notes.append(f'{len(fancy)} non-cut transitions in {total:.0f} s: keep them for real section changes (≈1 per 5 s at most)')
+    return out
 PROJECT = {'dir': '', 'out': '', 'n': 0}     # set per build (photo assets are resolved against the project)
 
 
@@ -254,8 +304,19 @@ def build(project_dir, out_dir=None):
         spec = json.load(f)
     mode = proj.get('mode', spec.get('mode', 'A'))
     M = MODES[mode]
+    brand_cfg = {}
+    brand_problem = None
     if mode == 'B':
-        M = apply_brand(spec.get('brand'), cfg)
+        if spec.get('brand') and spec['brand'] not in cfg.get('brands', {}):
+            brand_problem = f'unknown brand {spec["brand"]!r} (use {", ".join(cfg.get("brands", {}))})'
+        brand_cfg = json.loads(json.dumps(cfg.get('brands', {}).get(spec.get('brand') or '', {})))
+        ov = spec.get('brand_overrides') or {}
+        for k, v in ov.items():                                   # project-level tweaks; the preset file is never changed
+            if k == 'palette':
+                brand_cfg.setdefault('palette', {}).update(v)
+            else:
+                brand_cfg[k] = v
+        M = apply_brand(spec.get('brand'), {'brands': {spec.get('brand') or '': brand_cfg}})
     else:
         kits.reset_palettes()
     W, H = M['W'], M['H']
@@ -264,6 +325,8 @@ def build(project_dir, out_dir=None):
     fx.WORDS = words
     PROJECT.update(dir=pdir, out=out_dir or os.path.join(pdir, 'build'), n=0)
     anchors = Anchors(words)
+    if brand_problem:
+        anchors.misses.append({'anchor': None, 'element': 'brand', 'problem': brand_problem})
 
     audio = spec.get('audio') or ('audio/vo.mp3' if mode == 'A' else 'build/cut_audio.m4a')
     audio_path = os.path.join(pdir, audio)
@@ -281,12 +344,15 @@ def build(project_dir, out_dir=None):
             print(f'[warn] scene {s.get("id", i)} start anchor not found: {s.get("start")!r}', file=sys.stderr)
         starts.append(st); prev = st
     ends = starts[1:] + [duration]
+    notes = []
+    if mode == 'B':
+        scenes = style_mix(scenes, starts, ends, spec.get('style'), anchors.misses, notes)
 
     out_dir = out_dir or os.path.join(pdir, 'build')
     os.makedirs(out_dir, exist_ok=True)
     font = os.path.relpath(os.path.join(ROOT, 'fonts', 'Cairo-Variable.ttf'), out_dir).replace(os.sep, '/')
 
-    scene_meta, scene_svg, behind_svg, notes = [], [], [], []
+    scene_meta, scene_svg, behind_svg = [], [], []
     cut_dir = os.path.join(out_dir, 'cut')
     has_cut = mode == 'B' and os.path.isdir(cut_dir) and any(f.endswith('.png') for f in os.listdir(cut_dir))
     maskq = (rj_safe(os.path.join(out_dir, 'mask', 'quality.json')) or {}).get('per_frame', []) if has_cut else []
@@ -325,6 +391,21 @@ def build(project_dir, out_dir=None):
                 cam['punch'] = [round(pt, 3), float(s['punch'].get('zoom', 1.22))]
             if s.get('parallax'):
                 cam['parallax'] = float(s['parallax'] if not isinstance(s['parallax'], bool) else 1.0)
+            tr = s.get('transition') or (brand_cfg.get('transition') if i > 0 else None) or 'cut'
+            if tr not in TRANSITIONS:
+                anchors.misses.append({'anchor': None, 'element': s.get('id', i),
+                                       'problem': f'unknown transition {tr!r} (use {", ".join(TRANSITIONS)})'})
+                tr = 'cut'
+            if i > 0 and tr != 'cut':
+                cam['tr'] = [tr, TRANSITIONS[tr]]
+            if s.get('caption_style'):
+                if s['caption_style'] not in CAPTION_STYLES:
+                    anchors.misses.append({'anchor': None, 'element': s.get('id', i),
+                                           'problem': f'unknown caption_style {s["caption_style"]!r}'})
+                else:
+                    cam['cap'] = s['caption_style']
+            if s.get('_style'):
+                cam['style'] = s['_style']
         scene_meta.append({'id': s.get('id', f's{i + 1}'), 'title': s.get('title', ''), 'start': round(st, 3),
                            'end': round(en, 3), 'card': card_pos if mode == 'B' else None,
                            'storyboard_t': round(max(st, sb), 3), **cam})
@@ -364,7 +445,7 @@ def build(project_dir, out_dir=None):
             cw, ch, cx, cy = [float(v) for v in crop.split(':')]
             fy = (cy + ch / 2) / 2560 if cw == 1440 else 0.45
         focus = [0.5, round(fy, 3)]
-    caption_style = spec.get('caption_style', 'box')
+    caption_style = spec.get('caption_style') or brand_cfg.get('caption_style') or 'box'
     data = {'mode': mode, 'W': W, 'H': H, 'fps': M['fps'], 'duration': duration, 'card': CARD,
             'layouts': LAYOUTS, 'slide': CARD_SLIDE, 'cf': cfi, 'focus': focus, 'capStyle': caption_style,
             'hlColor': kits.B['yellow'], 'scenes': scene_meta, 'captions': captions, 'cap': cap_cfg,
@@ -401,6 +482,13 @@ def build(project_dir, out_dir=None):
           '<filter id="sepia"><feColorMatrix type="matrix" values=".39 .77 .19 0 0  .35 .69 .17 0 0  .27 .53 .13 0 0  0 0 0 1 0"/></filter>'
           f'</defs>{"".join(scene_svg)}</svg>')
 
+    trs = {m['tr'][0] for m in scene_meta if m.get('tr')}
+    main_html = card_html + fg
+    if trs:
+        main_html = (f'<div id="main" style="position:absolute;left:0;top:0;width:{W}px;height:{H}px;'
+                     f'transform-origin:50% 45%">{main_html}</div>')
+        if 'flash' in trs:
+            main_html += f'<div id="flash" style="position:absolute;left:0;top:0;width:{W}px;height:{H}px;background:#fff;opacity:0"></div>'
     badge = ''
     if show_badge:
         badge = (f'<div id="badge" style="position:absolute;top:{36 if mode == "A" else 40}px;left:28px;'
@@ -423,7 +511,7 @@ def build(project_dir, out_dir=None):
 <style>@font-face{{font-family:Cairo;src:url("{font}") format("truetype");font-weight:200 1000}}
 html,body{{margin:0;background:#000}} #stage{{position:relative;width:{W}px;height:{H}px;overflow:hidden}}
 .a{{transform-box:fill-box;transform-origin:center;opacity:0}} text{{font-family:Cairo}}</style></head>
-<body><div id="stage">{bg}{card_html}{fg}{film_html}{badge}<div id="cap" style="{cap_style}"></div></div>
+<body><div id="stage">{bg}{main_html}{film_html}{badge}<div id="cap" style="{cap_style}"></div></div>
 <script>window.D={json.dumps(data, ensure_ascii=False)};</script><script>{runtime}</script></body></html>'''
 
     with open(os.path.join(out_dir, 'page.html'), 'w', encoding='utf-8') as f:

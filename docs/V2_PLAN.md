@@ -209,3 +209,19 @@ inferred), quality mean 0.787, min 0.675, 0 frames below 0.62; render with cut l
 Known limit: car-seat backs adjacent to the shoulders partly stay in the cut-out (exclusion zones reduce it).
 Tests: 55 passing (10 new: cinematic defaults, chapter, missing photo, behind fallback / behind with cut-outs, sticker,
 mask refine, exclude zone, quality score, mask threshold).
+
+### Milestone 7 — Style mixing, scene transitions, brand presets (2026-11-08)
+transitions.dev study (fetched 2026-11-08): a library of ~44 web UI micro-interactions; no licence stated, so no code
+was copied — only general motion ideas, re-implemented for a frame-exact renderer. Adopted: text swap with blur →
+`blur-in`; toast rise (fade + blur + scale) → `rise`; blur exit; cross-blur → scene `blur` transition. Already covered:
+stroke-drawn checks (whiteboard draw), staggered line reveals (kinetic), shake, spring pop. Not adopted: hover / pointer /
+physics / drag interactions (no viewer input in a video); digit drum counters (future: needs per-digit clipping in SVG).
+Built: per-scene `style` with style defaults and mixing checks; scene transitions cut/blur/whip/flash/zoom on a `#main`
+layer (only added when a reel uses one); per-scene caption presets; brand presets with default caption + transition,
+`brand_overrides`, unknown-brand / style / transition / caption-preset checks; `reel.py brands`.
+Measured: 24 s mixed sample (720 frames, full-frame card PNGs) rendered in 233 s ≈ 9.7 s per output second;
+finalize-cut --full-frame for the 48.6 s reel 1458 frames in 116 s.
+Regression: 11 projects render pixel-identical storyboard stills vs milestone 5 (card frames present only in `_demo-b`;
+the approved reels' card frames had been deleted, so their footage layer was checked through `_demo-b`).
+Known limit: `zoom` scales the whole layer, so a small PiP layout can touch the frame edge during a layout change.
+Tests: 61 in tests/test_pipeline.py (6 new).
