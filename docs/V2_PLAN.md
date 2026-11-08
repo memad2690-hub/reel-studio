@@ -133,7 +133,7 @@ ElevenLabs STT works); Google Drive only via your PC folder; renders must be spl
 
 ## 7. Progress log
 
-### Milestone 1 — Style 01 Editorial Motion Explainer (2026-11-08)
+### Milestone 1 — Style 01 Editorial Motion Explainer (2026-11-08) — APPROVED ("New style is perfect", reference: mb-roas-loss-v2 v002)
 Built (extends the current engine; old projects unchanged — demo B storyboard identical, approved reels untouched):
 - Talking-head layouts `top`, `bottom`, `hero`, `full`, `pip-right`, `pip-left` with face-focus cropping from
   full-frame card frames (`finalize-cut --full-frame`) and a 0.45 s morph between layouts; graphics wait

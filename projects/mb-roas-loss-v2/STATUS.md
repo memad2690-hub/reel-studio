@@ -8,3 +8,5 @@
 - 2026-11-08T04:03:08+02:00: render v001 1080x1920 48.6s  QA ok
 - 2026-11-08T04:03:46+02:00: storyboard sb003 (2 frames)
 - 2026-11-08T04:13:43+02:00: render v002 1080x1920 48.6s  QA ok
+- 2026-11-08T11:38:49+02:00: approved final v002
+- 2026-11-08T11:38:50+02:00: final approved (v002) — Style 01 reference: "New style is perfect"; build/cf cleared

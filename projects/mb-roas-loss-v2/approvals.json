@@ -12,5 +12,11 @@
     "at": "2026-11-08T00:19:27+02:00",
     "by": "user",
     "inherited_from": "mb-roas-loss"
+  },
+  "final": {
+    "approved": true,
+    "version": "v002",
+    "at": "2026-11-08T11:38:49+02:00",
+    "by": "user"
   }
 }
