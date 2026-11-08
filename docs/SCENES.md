@@ -182,3 +182,22 @@ cinematic). Light presets switch to dark text when the caption sits on the page 
 Pacing presets: `low` (min scene 6 s, ≤4 graphic scenes/min, captions `clean`), `medium` (4 s, ≤8/min, `highlight`),
 `high` (2.5 s, ≤14/min, `kinetic`, opens full-frame). Draft scenes keep a `_plan` note (role, confidence, reason) that
 `--apply` strips. See AGENTS.md "V2 editing director" for the review steps.
+
+## Colour grading (Style 09 default: RC Warm Cinematic)
+Presets live in `grades/` and are never modified (variations go in `grades/custom/`). `RC_Warm_Cinematic_v1` keeps the
+original CapCut sliders (`source`) and a `calibration` that maps them to visual equivalents; `engine/grade.py` builds a
+33³ LUT (exposure, contrast, highlight roll-off, shadow lift, fade, saturation, warmth, six HSL bands, skin-tone
+protection) + restrained sharpen + soft vignette. The grade is applied **to the footage only** while card frames are
+extracted, so text, graphics and brand colours are never recoloured.
+
+```bash
+python3 reel.py grade <slug> --preset RC_Warm_Cinematic_v1 --intensity 85      # 0-100, writes grade.json
+python3 reel.py grade <slug> --exposure 0.2 --temperature -2                    # whole-reel correction (EV / units)
+python3 reel.py grade <slug> --clip 3 --exposure 0.15                           # one cut segment
+python3 reel.py grade <slug> --off
+python3 reel.py grade-preview <slug> [--times 2,12,24] [--intensity 60] [--mp4] # before/after sheet, checks, split MP4
+python3 reel.py finalize-cut <slug> --full-frame                                # (re)extracts graded card frames
+```
+A project whose `scenes.json` has `"style": "cinematic"` gets RC Warm Cinematic at 100% unless `grade.json` says otherwise.
+`grade-preview` reports highlight clipping, crushed shadows, skin hue/saturation shift, neutral-white cast and luma spread
+across shots (flagged > 0.12 → add a per-clip exposure correction).

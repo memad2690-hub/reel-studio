@@ -176,7 +176,7 @@ def render_cut(video, segments, out_path, audio_only=False, fade=0.035, fps=FPS_
     return out_path
 
 
-def card_frames(video, segments, out_dir, crop=None, size=(1000, 920), fps=FPS_B):
+def card_frames(video, segments, out_dir, crop=None, size=(1000, 920), fps=FPS_B, grade_vfs=None):
     """Face-card PNG frames straight from raw (never from the rough cut), one segment at a time:
     seek → exact frame count → crop → scale. Numbered continuously across segments."""
     os.makedirs(out_dir, exist_ok=True)
@@ -187,9 +187,10 @@ def card_frames(video, segments, out_dir, crop=None, size=(1000, 920), fps=FPS_B
     vf = f'fps={fps}' + (f',crop={crop}' if crop else '') + \
          f',scale={w}:{h}:force_original_aspect_ratio=increase:flags=lanczos,crop={w}:{h}'
     k = 1
-    for s, e in snap(segments, fps):
+    for si, (s, e) in enumerate(snap(segments, fps)):
         n = round((e - s) * fps)
-        run(['ffmpeg', '-y', '-v', 'error', '-ss', f'{s:.4f}', '-i', video, '-frames:v', str(n), '-vf', vf,
+        seg_vf = vf if not grade_vfs else vf.replace(f'fps={fps}', f'fps={fps},{grade_vfs[si]}', 1)  # grade the footage only
+        run(['ffmpeg', '-y', '-v', 'error', '-ss', f'{s:.4f}', '-i', video, '-frames:v', str(n), '-vf', seg_vf,
              '-start_number', str(k), os.path.join(out_dir, '%05d.png')])
         got = len([f for f in os.listdir(out_dir) if f.endswith('.png')])
         if got < k - 1 + n:  # a short read at the very end of the file: repeat the last frame

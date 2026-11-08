@@ -317,6 +317,68 @@ class PlanCommandTests(Tmp):
             shutil.rmtree(d, ignore_errors=True)
 
 
+class GradeTests(unittest.TestCase):
+    ORIGINAL = {'exposure': -12, 'contrast': 8, 'highlights': -45, 'shadows': 8, 'saturation': -14, 'temperature': 3,
+                'tint': -3, 'sharpen': 5, 'fade': 5, 'vignette': 12}
+    HSL = {'red': (0, -10, 0), 'orange': (-3, -12, 4), 'yellow': (-15, -30, -8), 'green': (-15, -35, -5),
+           'cyan': (0, -20, -5), 'blue': (-8, -25, -10)}
+
+    def test_preset_keeps_original_capcut_values(self):
+        import grade
+        pre = grade.load_preset('RC_Warm_Cinematic_v1')
+        self.assertTrue(pre['locked'])
+        self.assertEqual(pre['source']['basic'], self.ORIGINAL)
+        self.assertEqual({k: (v['hue'], v['saturation'], v['lightness']) for k, v in pre['source']['hsl'].items()}, self.HSL)
+
+    def test_code_never_writes_presets(self):
+        for f in ('engine/grade.py', 'reel.py'):
+            src = open(os.path.join(ROOT, f), encoding='utf-8').read()
+            self.assertNotRegex(src, r"open\([^)]*grades[^)]*['\"]w['\"]")
+
+    def test_intensity_zero_is_identity_and_skin_is_protected(self):
+        import numpy as np
+        import grade
+        pre = grade.load_preset('RC_Warm_Cinematic_v1')
+        x = np.array([[0.82, 0.6, 0.48], [0.3, 0.6, 0.25], [0.5, 0.5, 0.5]])
+        self.assertTrue(np.allclose(grade.apply(x, pre, 0.0), x))
+        y = grade.apply(x, pre, 1.0)
+        hb, sb, _ = grade._hsv(x); ha, sa, _ = grade._hsv(y)
+        self.assertLess(abs(ha[0] - hb[0]), 2.0)            # skin hue stays
+        self.assertGreater(sa[0] / sb[0], 0.9)              # skin keeps >90% saturation
+        self.assertLess(sa[1] / sb[1], 0.8)                 # greens are muted
+        self.assertGreater(y[2].max() - y[2].min(), -1)     # grey stays near-neutral
+        self.assertLess(y[2].max() - y[2].min(), 0.02)
+
+    def test_half_intensity_is_between(self):
+        import numpy as np
+        import grade
+        pre = grade.load_preset('RC_Warm_Cinematic_v1')
+        x = np.array([[0.3, 0.6, 0.25]])
+        a, b, c = grade.apply(x, pre, 0), grade.apply(x, pre, 0.5), grade.apply(x, pre, 1)
+        self.assertTrue(np.allclose(b, (a + c) / 2, atol=1e-6))
+
+    def test_metrics_flag_problems(self):
+        import numpy as np
+        import grade
+        before = np.full((40, 40, 3), 0.5)
+        after = before.copy(); after[:10] = 1.0; after[10:20] = 0.0
+        p = grade.problems(grade.metrics(before, after))
+        self.assertTrue(any('clipping' in x for x in p) and any('crushed' in x for x in p))
+
+    def test_style09_default(self):
+        import grade
+        d = tempfile.mkdtemp()
+        try:
+            with open(os.path.join(d, 'scenes.json'), 'w') as f:
+                json.dump({'style': 'cinematic', 'scenes': []}, f)
+            self.assertEqual(grade.project_grade(d)['preset'], 'RC_Warm_Cinematic_v1')
+            with open(os.path.join(d, 'grade.json'), 'w') as f:
+                json.dump({'preset': None, 'intensity': 0}, f)
+            self.assertIsNone(grade.project_grade(d))       # explicitly off wins
+        finally:
+            shutil.rmtree(d, ignore_errors=True)
+
+
 class SnapTests(unittest.TestCase):
     def test_snap_to_frames(self):
         import footage

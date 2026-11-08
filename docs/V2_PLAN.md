@@ -7,7 +7,7 @@ Decisions (Mohamed, 2026-11-08):
 - D3 Director: **Claude in the session** (rule-based planner proposes, Claude refines; no per-reel API cost).
 - D4 Collage images: **uploads + templates only** (no paid image generation).
 - Media Buying brand preset: **current reel look** (cream grid, ink, yellow highlighter, green/red numbers, Cairo).
-- Still open: reference screenshot, REEL_STUDIO_HANDOFF.md, "RC Warm Cinematic" grade definition, CEOS font.
+- Still open: reference screenshot, REEL_STUDIO_HANDOFF.md, CEOS font. (RC Warm Cinematic received 2026-11-08.)
 Source brief: "Claude Code — AI Reel Studio V2" (9 styles, AI editing director, style mixing, editing UX).
 
 ## 1. What exists today (audited 2026-11-08, commit eda082c)
@@ -186,3 +186,13 @@ Output `plan.md` / `plan.json` / `scenes.draft.json`; `--apply` backs up `scenes
 Evaluated on the six real reels (plans in each project). Known limits: step names from Arabic-only sentences are rough
 (Claude rewrites them); comparisons need "ولا" or "الأولاني/التاني"; calculations are drafted as stat cards, not equations.
 Tests: 46 passing (6 new).
+
+### Style 09 grade — RC_Warm_Cinematic_v1 (2026-11-08)
+Locked preset `grades/RC_Warm_Cinematic_v1.json` (original CapCut sliders + calibration v1), LUT pipeline in
+`engine/grade.py`, intensity 0–100, whole-reel and per-clip exposure/white-balance corrections, footage-only application
+(overlay pixels identical to the ungraded render within codec noise: 0.49/255 vs 2.83/255 on the face), before/after
+sheet + split-screen test MP4 + checks (`reel.py grade-preview`). Measured on mb-roas-loss raw at 100%: highlight
+clipping 0.34% → 0%, crushed shadows < 0.6% (dark seats), skin hue +1.0–1.1°, skin saturation −5.7%, cyan shirt
+saturation −19%, neutral cast 0.021, luma spread across shots 0.001. Calibration is by measurement on this footage,
+not a side-by-side with CapCut: a CapCut-exported frame of the same shot would let calibration v2 match it exactly.
+Tests: 52 passing (6 new).

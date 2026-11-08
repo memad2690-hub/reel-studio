@@ -1,0 +1,42 @@
+{
+  "id": "RC_Warm_Cinematic_v1",
+  "name": "RC Warm Cinematic",
+  "version": 1,
+  "locked": true,
+  "note": "Original preset. Never edit this file: save variations under grades/custom/. Default grade for Style 09 (Cinematic Mini Documentary); selectable for any style.",
+  "source": {
+    "app": "CapCut",
+    "values_are_capcut_sliders": true,
+    "basic": {"exposure": -12, "contrast": 8, "highlights": -45, "shadows": 8, "saturation": -14, "temperature": 3,
+              "tint": -3, "sharpen": 5, "fade": 5, "vignette": 12},
+    "hsl": {
+      "red":    {"hue": 0,   "saturation": -10, "lightness": 0},
+      "orange": {"hue": -3,  "saturation": -12, "lightness": 4},
+      "yellow": {"hue": -15, "saturation": -30, "lightness": -8},
+      "green":  {"hue": -15, "saturation": -35, "lightness": -5},
+      "cyan":   {"hue": 0,   "saturation": -20, "lightness": -5},
+      "blue":   {"hue": -8,  "saturation": -25, "lightness": -10}
+    }
+  },
+  "calibration": {
+    "version": 1,
+    "note": "CapCut slider units are not FFmpeg units. These factors convert slider values to the visual equivalents used by engine/grade.py (tuned by eye on the car-interior footage, checked with the clipping/skin/neutral metrics).",
+    "exposure_ev_per_unit": 0.012,
+    "contrast_per_unit": 0.006,
+    "contrast_pivot": 0.45,
+    "highlights_knee": 0.62,
+    "highlights_strength_per_unit": 0.011,
+    "shadows_range": 0.38,
+    "shadows_lift_per_unit": 0.0045,
+    "fade_black_per_unit": 0.0035,
+    "saturation_per_unit": 0.008,
+    "temperature_per_unit": 0.003,
+    "tint_per_unit": 0.0015,
+    "hsl_hue_deg_per_unit": 0.3,
+    "hsl_sat_per_unit": 0.008,
+    "hsl_light_per_unit": 0.0022,
+    "skin_protect": 0.55,
+    "sharpen_amount_per_unit": 0.07,
+    "vignette_angle_per_unit": 0.022
+  }
+}

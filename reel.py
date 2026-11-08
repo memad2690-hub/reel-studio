@@ -442,13 +442,17 @@ def cmd_finalize_cut(a):
     os.makedirs(os.path.join(d, 'build'), exist_ok=True)
     wj(os.path.join(d, 'words.json'), map_through_cuts(words, segs))
     footage.render_cut(raw, segs, os.path.join(d, 'build', 'cut_audio.m4a'), audio_only=True)
+    import grade as grading
+    g = grading.project_grade(d)
+    gvfs = grading.segment_vfs(g, os.path.join(d, 'build', 'grade'), len(footage.snap(segs))) if g else None
     if a.full_frame:
         # V2 layouts: keep the whole 9:16 frame; the runtime crops/zooms per layout around the face focus
-        n = footage.card_frames(raw, segs, os.path.join(d, 'build', 'cf'), crop=None, size=(1080, 1920))
+        n = footage.card_frames(raw, segs, os.path.join(d, 'build', 'cf'), crop=None, size=(1080, 1920), grade_vfs=gvfs)
         cuts['card_frames'] = 'full'
     else:
-        n = footage.card_frames(raw, segs, os.path.join(d, 'build', 'cf'), crop=a.crop or cuts.get('crop'))
+        n = footage.card_frames(raw, segs, os.path.join(d, 'build', 'cf'), crop=a.crop or cuts.get('crop'), grade_vfs=gvfs)
         cuts.pop('card_frames', None)
+    cuts['graded'] = {'preset': g['preset'], 'intensity': g.get('intensity', 1.0)} if g else None
     if a.crop:
         cuts['crop'] = a.crop
     wj(os.path.join(d, 'cuts.json'), cuts)
@@ -502,6 +506,101 @@ def cmd_plan(a):
     log_status(d, f'plan ({a.intensity}): {out["segments"]} segments, {out["graphic_scenes"]} with graphics'
                   + (' — applied to scenes.json' if a.apply else ' — draft only'))
     print(json.dumps(out, ensure_ascii=False))
+
+
+def cmd_grade(a):
+    """Set the project's colour grade (non-destructive: grade.json; presets in grades/ are never modified)."""
+    import grade as grading
+    d = pdir(a.slug)
+    p = os.path.join(d, 'grade.json')
+    g = rj(p, {}) or {}
+    if a.off:
+        g = {'preset': None, 'intensity': 0}
+    else:
+        if a.preset:
+            grading.load_preset(a.preset)
+            g['preset'] = a.preset
+        g.setdefault('preset', grading.DEFAULT_STYLE09)
+        if a.intensity is not None:
+            if not 0 <= a.intensity <= 100:
+                sys.exit('intensity is 0-100')
+            g['intensity'] = a.intensity / 100
+        g.setdefault('intensity', 1.0)
+        corr = {k: v for k, v in (('exposure', a.exposure), ('temperature', a.temperature), ('tint', a.tint)) if v is not None}
+        if corr:
+            if a.clip is not None:
+                g.setdefault('clips', {}).setdefault(str(a.clip), {}).update(corr)
+            else:
+                g.setdefault('correction', {}).update(corr)
+    wj(p, g)
+    log_status(d, f'grade set: {json.dumps(g, ensure_ascii=False)} (re-run finalize-cut to apply)')
+    print(json.dumps(g, ensure_ascii=False))
+
+
+def cmd_grade_preview(a):
+    """Before/after frames + checks (+ optional split-screen test MP4) straight from raw, using the cut timeline."""
+    import numpy as np
+    from PIL import Image, ImageDraw, ImageFont
+    import grade as grading
+    d = pdir(a.slug)
+    cuts = rj(os.path.join(d, 'cuts.json'))
+    if not cuts:
+        sys.exit('no cuts.json')
+    g = grading.project_grade(d) or {'preset': a.preset or grading.DEFAULT_STYLE09, 'intensity': 1.0}
+    if a.preset:
+        g = dict(g, preset=a.preset)
+    if a.intensity is not None:
+        g = dict(g, intensity=a.intensity / 100)
+    raw = os.path.join(d, cuts['source'])
+    segs = footage.snap(cuts['segments'])
+    out = os.path.join(d, 'build', 'grade'); os.makedirs(out, exist_ok=True)
+    vfs = grading.segment_vfs(g, out, len(segs))
+    # timeline time → (segment, raw time)
+    acc, spans = 0.0, []
+    for s0, e0 in segs:
+        spans.append((acc, acc + e0 - s0, s0)); acc += e0 - s0
+    times = [float(x) for x in a.times.split(',')] if a.times else [sp[0] + (sp[1] - sp[0]) / 2 for sp in spans][:6]
+    font = ImageFont.truetype(os.path.join(ROOT, 'fonts', 'Cairo-Variable.ttf'), 34)
+    report, sheets = [], []
+    for t in times:
+        si = next((i for i, sp in enumerate(spans) if sp[0] <= t < sp[1]), len(spans) - 1)
+        rt = spans[si][2] + (t - spans[si][0])
+        b_png, a_png = os.path.join(out, f'before_{t:06.2f}.png'), os.path.join(out, f'after_{t:06.2f}.png')
+        base = ['ffmpeg', '-y', '-v', 'error', '-ss', f'{rt:.3f}', '-i', raw, '-frames:v', '1']
+        subprocess.run(base + ['-vf', 'scale=1080:1920', b_png], check=True)
+        subprocess.run(base + ['-vf', f'{vfs[si]},scale=1080:1920', a_png], check=True)
+        B = np.asarray(Image.open(b_png).convert('RGB'), dtype=np.float32) / 255
+        A = np.asarray(Image.open(a_png).convert('RGB'), dtype=np.float32) / 255
+        m = grading.metrics(B, A)
+        m.update(t=t, segment=si, problems=grading.problems(m))
+        report.append(m)
+        im = Image.new('RGB', (1080 + 20, 960 + 60), (24, 24, 24))
+        im.paste(Image.open(b_png).resize((540, 960)), (0, 60)); im.paste(Image.open(a_png).resize((540, 960)), (560, 60))
+        dr = ImageDraw.Draw(im)
+        dr.text((10, 8), f'BEFORE  t={t:.1f}s', fill=(255, 255, 255), font=font)
+        dr.text((570, 8), f'AFTER  {g["preset"]} {round(g.get("intensity", 1) * 100)}%', fill=(255, 220, 90), font=font)
+        sheets.append(im)
+    sheet = Image.new('RGB', (sheets[0].width * min(3, len(sheets)), sheets[0].height * ((len(sheets) + 2) // 3)), (24, 24, 24))
+    for i, im in enumerate(sheets):
+        sheet.paste(im, ((i % 3) * im.width, (i // 3) * im.height))
+    cmp_path = os.path.join(out, 'compare.png'); sheet.save(cmp_path)
+    lum = [r['mean_luma_after'] for r in report]
+    consistency = {'luma_spread': round(max(lum) - min(lum), 3), 'flag': max(lum) - min(lum) > 0.12}
+    res = {'grade': g, 'compare': cmp_path, 'frames': report, 'consistency': consistency}
+    if a.mp4:
+        # 6 s split-screen test: left = original, right = graded (same raw segment)
+        si = next((i for i, sp in enumerate(spans) if sp[0] <= times[0] < sp[1]), 0)
+        rt = spans[si][2] + (times[0] - spans[si][0])
+        mp4 = os.path.join(d, 'exports', f'grade_test_{g["preset"]}_{round(g.get("intensity", 1) * 100)}.mp4')
+        fc = (f'[0:v]fps=30,scale=1080:1920,split[o][c];[c]{vfs[si]}[g];[o]crop=540:1920:0:0[l];[g]crop=540:1920:540:0[r];'
+              f'[l][r]hstack,drawbox=x=538:y=0:w=4:h=1920:color=white@0.9:t=fill[v]')
+        subprocess.run(['ffmpeg', '-y', '-v', 'error', '-ss', f'{rt:.3f}', '-t', '6', '-i', raw, '-filter_complex', fc,
+                        '-map', '[v]', '-map', '0:a?', '-c:v', 'libx264', '-crf', '17', '-preset', 'medium', '-pix_fmt', 'yuv420p',
+                        '-c:a', 'aac', '-b:a', '160k', '-movflags', '+faststart', mp4], check=True)
+        res['mp4'] = mp4
+    wj(os.path.join(out, 'grade_report.json'), res)
+    print(json.dumps({'compare': cmp_path, 'mp4': res.get('mp4'), 'consistency': consistency,
+                      'problems': {f'{r["t"]:.1f}s': r['problems'] for r in report if r['problems']}}, ensure_ascii=False))
 
 
 def cmd_library(a):
@@ -598,6 +697,14 @@ def main():
     s.set_defaults(f=cmd_finalize_cut)
     s = sp.add_parser('align', help='Mode B: time an approved clean script'); s.add_argument('slug')
     s.add_argument('--script', default='script_clean.txt'); s.add_argument('--words', default='words.json'); s.set_defaults(f=cmd_align)
+    s = sp.add_parser('grade', help='set the colour grade (preset, intensity 0-100, per-reel or per-clip corrections)')
+    s.add_argument('slug'); s.add_argument('--preset'); s.add_argument('--intensity', type=float)
+    s.add_argument('--exposure', type=float, help='EV, e.g. 0.2'); s.add_argument('--temperature', type=float)
+    s.add_argument('--tint', type=float); s.add_argument('--clip', type=int, help='cut segment index for a per-clip correction')
+    s.add_argument('--off', action='store_true'); s.set_defaults(f=cmd_grade)
+    s = sp.add_parser('grade-preview', help='before/after frames, clipping/skin/neutral checks, optional test MP4')
+    s.add_argument('slug'); s.add_argument('--times'); s.add_argument('--preset'); s.add_argument('--intensity', type=float)
+    s.add_argument('--mp4', action='store_true'); s.set_defaults(f=cmd_grade_preview)
     s = sp.add_parser('plan', help='AI director first pass: plan.md + scenes.draft.json from words.json')
     s.add_argument('slug'); s.add_argument('--intensity', choices=['low', 'medium', 'high'], default='medium')
     s.add_argument('--brand', default='media-buying'); s.add_argument('--apply', action='store_true')
