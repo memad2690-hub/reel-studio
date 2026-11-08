@@ -513,6 +513,17 @@ def cmd_plan(a):
         clean = json.loads(json.dumps(draft))
         for sc in clean['scenes']:
             sc.pop('_plan', None)
+        old = rj(cur, None)
+        if old and any(sc.get('locked') for sc in old.get('scenes', [])):
+            import editor
+            from timing import Anchors
+            cur_scenes = builder.build(d)['scenes']
+            an, times, prev = Anchors(words), [], 0.0
+            for j, ds in enumerate(clean['scenes']):
+                t = 0.0 if j == 0 and ds.get('start') is None else an.resolve(ds.get('start'), prev, default=prev)
+                times.append(t); prev = t
+            clean = editor.merge_with_locks(old, cur_scenes, clean, times)
+            out['kept_locked'] = [sc.get('id') for sc in old['scenes'] if sc.get('locked')]
         wj(cur, clean); out['applied'] = True
     log_status(d, f'plan ({a.intensity}): {out["segments"]} segments, {out["graphic_scenes"]} with graphics'
                   + (' — applied to scenes.json' if a.apply else ' — draft only'))

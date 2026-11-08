@@ -129,3 +129,5 @@ After `finalize-cut` (use `--full-frame` for V2 layouts) and `align`:
 6. Mixing (milestone 7): give scenes a `style` (01–09) only where the content changes register; prefer cuts and use
    `blur`/`whip`/`flash`/`zoom` for real section changes (≈1 per 5 s at most). Read the build `notes` for mixing warnings.
    Brand look comes from `studio.config.json` presets; per-reel tweaks only via `brand_overrides`.
+7. The user may edit in the studio (docs/STUDIO.md). Before changing a project, read `edits.json` and respect
+   `locked` scenes; never overwrite a locked scene, a variant, or a `*.prev-*` backup.

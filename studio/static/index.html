@@ -43,6 +43,23 @@ pre{white-space:pre-wrap;font:inherit;background:#fff;border:2px solid var(--lin
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
 .muted{color:var(--muted)}
 [dir=auto]{unicode-bidi:plaintext}
+.pipe{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 14px}
+.pipe .st{border:2px solid var(--ink);border-radius:10px;padding:4px 10px;background:#fff;font-weight:700;font-size:13px;display:flex;gap:6px;align-items:center}
+.pipe .st.done{background:var(--green);color:#fff;border-color:var(--green)}
+.pipe .st button{font:inherit;font-size:12px;border:1px solid currentColor;background:none;color:inherit;border-radius:6px;cursor:pointer;padding:0 6px}
+.tl{position:relative;height:54px;border:2px solid var(--ink);border-radius:10px;background:#fff;overflow:hidden;margin:6px 0}
+.tl .sc{position:absolute;top:0;bottom:22px;border-left:2px solid var(--ink);font-size:11px;font-weight:800;padding:2px 4px;overflow:hidden;white-space:nowrap;cursor:pointer}
+.tl .sc.on{outline:3px solid var(--blue);outline-offset:-3px;z-index:2}
+.tl .pl{position:absolute;bottom:0;height:20px;font-size:10px;padding:2px 3px;overflow:hidden;white-space:nowrap;color:#fff}
+.tl .ph{position:absolute;top:0;bottom:0;width:2px;background:var(--red);z-index:3;pointer-events:none}
+.prev{width:302px;height:537px;overflow:hidden;border:3px solid var(--ink);border-radius:14px;background:#000;position:relative}
+.prev iframe{width:1080px;height:1920px;border:0;transform:scale(.2796);transform-origin:0 0;position:absolute;left:0;top:0}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:6px 10px;align-items:center}
+.kv label{font-weight:700;font-size:13px}
+.prob{color:var(--red);font-weight:700}.notes{color:var(--muted);font-size:13px}
+.w{display:inline-block;padding:1px 4px;margin:2px 1px;border-radius:6px;cursor:pointer;border:1px solid transparent}
+.w:hover{border-color:var(--ink)}.w.kw{background:var(--yellow)}.w.ch{outline:2px solid var(--blue)}
+.log{font:12px/1.4 ui-monospace,Menlo,monospace;background:#111;color:#e8e8e8;border-radius:10px;padding:10px;max-height:220px;overflow:auto;white-space:pre-wrap;direction:ltr}
 @media(max-width:800px){main{grid-template-columns:1fr}aside{border-right:0;border-bottom:2px solid var(--line);max-height:220px}}
 </style>
 </head>
@@ -83,14 +100,14 @@ function stagesHtml(){
 
 function render(){
   const p = data.project;
-  const tabs = ['review','storyboards','script','status'];
+  const tabs = ['review','edit','transcript','compare','storyboards','script','status'];
   $('#detail').innerHTML = `<h2 dir="auto" style="margin:0">${h(p.title)}</h2>
    <div class="muted">${h(p.slug)} · mode ${p.mode} ${p.reel_id?'· '+h(p.reel_id):''} ${p.cta_keyword?'· CTA '+h(p.cta_keyword):''}</div>
    ${stagesHtml()}
    <nav style="margin-bottom:14px">${tabs.map(t => `<button data-t="${t}" class="${t===tab?'on':''}">${t[0].toUpperCase()+t.slice(1)}</button>`).join('')}</nav>
    <div id="tab"></div>`;
   document.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { tab = b.dataset.t; render(); });
-  ({review: renderReview, storyboards: renderBoards, script: renderScript, status: renderStatus})[tab]();
+  ({review: renderReview, edit: renderEdit, transcript: renderTranscript, compare: renderCompare, storyboards: renderBoards, script: renderScript, status: renderStatus})[tab]();
 }
 
 function notesHtml(filterVersion){
@@ -175,6 +192,195 @@ function renderScript(){
 
 function renderStatus(){
   $('#tab').innerHTML = `<div class="panel"><pre>${h(data.text['STATUS.md'])}</pre></div>`;
+}
+
+
+// ---------------- Edit (milestone 8) ----------------
+let ed = null, selScene = null, jobTimer = null, playRaf = null;
+const ROLE_COL = {hook:'#c8423a', data:'#2f5d8a', process:'#3f7a5a', comparison:'#8a4f9e', contrast:'#8a4f9e', emphasis:'#b8860b',
+  example:'#5b7a8a', conclusion:'#1f1d1a', cta:'#c8423a', setup:'#7a7366'};
+const STYLE_COL = {editorial:'#fff6d8', kinetic:'#fde2e0', collage:'#e8f3e0', data:'#e0ecf8', parallax:'#efe4f6', battle:'#fbe7d2', whiteboard:'#f5f5f0', cinematic:'#e8e1d6'};
+const post = (what, body) => api(`/api/project/${cur}/${what}`, body);
+function say(res, okMsg){
+  const el = $('#edmsg'); if (!el) return;
+  if (res.error){ el.innerHTML = `<span class="prob">✗ ${h(res.error)}</span>`; return; }
+  const pr = (res.problems||[]).length;
+  el.innerHTML = `<span style="color:var(--green);font-weight:800">✓ ${h(res.regenerated && !res.regenerated.elements ? 'no change' : (okMsg||'saved'))}</span>` + (res.backup?` <span class="muted">(previous version kept: ${h(res.backup)})</span>`:'') +
+    (pr?` · <span class="prob">${pr} problem(s) block render</span>`:'') + (res.regenerated?` · ${h(res.regenerated.elements)} element(s) — ${h(res.regenerated.note)}${res.regenerated.roles.length?' · '+h(res.regenerated.roles.join(', ')):''}`:'');
+}
+async function loadEdit(){ ed = await api(`/api/project/${cur}/edit`); }
+
+function pipelineHtml(){
+  return `<div class="pipe">${ed.pipeline.map((p,i) => `<span class="st ${p.done?'done':''}">${i+1}. ${h(p.label)}${p.run?` <button data-run="${p.run}" title="python3 reel.py ${h(p.run)}">run</button>`:''}</span>`).join('<span style="align-self:center">→</span>')}</div>
+   <div id="job"></div>`;
+}
+function bindRun(){
+  document.querySelectorAll('[data-run]').forEach(b => b.onclick = async () => {
+    const cmd = b.dataset.run; const body = {cmd};
+    if (cmd === 'plan') body.intensity = ($('#intens')||{}).value || 'medium';
+    if (cmd === 'stt'){ if (!confirm('Transcribing uses ElevenLabs speech-to-text credits. Continue?')) return; body.confirm_cost = true; }
+    if (cmd === 'render' && !confirm('Full-quality render: this can take a long time (≈10–22 s per second of video). Start?')) return;
+    const r = await post('run', body); if (r.error){ $('#job').innerHTML = `<p class="prob">${h(r.error)}</p>`; return; }
+    watchJob(r.id);
+  });
+}
+function watchJob(id){
+  clearInterval(jobTimer);
+  const tick = async () => {
+    const j = await api('/api/jobs/' + id); const el = $('#job'); if (!el) { clearInterval(jobTimer); return; }
+    el.innerHTML = `<div class="panel" style="margin-bottom:12px"><b>${h(j.cmd)}</b> · ${h(j.status)} · ${j.seconds ?? j.elapsed}s
+      ${j.status==='running'?`<button class="btn ghost" id="jc" style="padding:1px 8px;font-size:12px;margin-left:8px">cancel</button>`:''}
+      <div class="log">${h(j.tail || '…')}</div></div>`;
+    if ($('#jc')) $('#jc').onclick = () => api(`/api/jobs/${id}/cancel`, {});
+    if (j.status !== 'running'){ clearInterval(jobTimer); const d = await api('/api/project/' + encodeURIComponent(cur)); data = d; await loadEdit(); if (tab==='edit') drawEditBody(true); }
+  };
+  tick(); jobTimer = setInterval(tick, 1500);
+}
+
+async function renderEdit(){
+  $('#tab').innerHTML = '<p class="muted">Loading…</p>';
+  await loadEdit(); drawEditBody();
+  const running = (await api('/api/jobs')).find(j => j.status === 'running' && j.slug === cur); if (running) watchJob(running.id);
+}
+function drawEditBody(keepJob){
+  const jobHtml = keepJob && $('#job') ? $('#job').innerHTML : '';
+  if (!ed.spec){ $('#tab').innerHTML = pipelineHtml() + `<p class="muted">No scenes.json yet: run <b>Analyze</b>, then ask Claude to turn plan.md into scenes (or apply the draft).</p>`; bindRun(); return; }
+  const ck = ed.check || {problems:[], notes:[], scenes:[]}, sc = ck.scenes, dur = ck.duration || (sc.length ? sc[sc.length-1].end : 1);
+  const specSc = ed.spec.scenes || [];
+  if (selScene == null || !sc.find(x => x.id === selScene)) selScene = sc.length ? sc[0].id : null;
+  $('#tab').innerHTML = pipelineHtml() + `
+   <div id="edmsg" style="min-height:22px;margin-bottom:6px"></div>
+   ${ck.problems.length?`<div class="panel" style="margin-bottom:12px;border-color:var(--red)"><b class="prob">Blocks render</b>${ck.problems.map(p => `<div dir="auto">• ${h(p.element ?? '')} ${h(p.problem)}</div>`).join('')}</div>`:''}
+   ${ck.notes.length?`<div class="notes" style="margin-bottom:10px">${ck.notes.map(n => `<div dir="auto">ℹ ${h(n)}</div>`).join('')}</div>`:''}
+   <div class="row">
+    <div><div class="prev"><iframe id="pv" src="/media/${cur}/build/page.html?${Date.now()}"></iframe></div>
+     <div style="display:flex;gap:6px;align-items:center;margin-top:6px;width:302px"><button class="btn ghost" id="pp" style="padding:2px 10px">▶</button>
+     <input type="range" id="scrub" min="0" max="${dur}" step="0.033" value="0" style="flex:1;padding:0"><span id="tt" class="muted" style="font-size:12px">0:00.0</span></div>
+     <audio id="au" src="/media/${cur}/${h(ed.spec.audio || (data.project.mode==='A'?'audio/vo.mp3':'build/cut_audio.m4a'))}" preload="auto"></audio>
+     <div class="muted" style="font-size:12px;width:302px">Preview of the built page (draft quality). Graphics and timing are exact; renders are the reference.</div></div>
+    <div style="flex:1;min-width:340px">
+     <div class="tl" id="tl">${sc.map((x,i) => { const s0 = specSc[i] || {}; return `<div class="sc ${x.id===selScene?'on':''}" data-sc="${h(x.id)}" title="${h(x.id)} ${fmt(x.start)}–${fmt(x.end)}"
+        style="left:${x.start/dur*100}%;width:${(x.end-x.start)/dur*100}%;background:${STYLE_COL[x.style]||'#fff'}">${s0.locked?'🔒':''}${x.tr?'⟿':''}${h(x.id)}</div>`; }).join('')}
+       ${ed.plan.map(p => `<div class="pl" title="${h(p.role)} ${p.confidence}" style="left:${p.t0/dur*100}%;width:${(p.t1-p.t0)/dur*100}%;background:${ROLE_COL[p.role]||'#999'};opacity:${.35+.65*(p.confidence||0)}">${h(p.role)}</div>`).join('')}
+       <div class="ph" id="ph" style="left:0"></div></div>
+     <div class="muted" style="font-size:12px">Top: scenes (colour = style, 🔒 locked, ⟿ transition in). Bottom: director's read of the speech (darker = more confident).</div>
+     <div class="panel" style="margin-top:10px" id="insp"></div>
+     <div class="panel" style="margin-top:12px"><b>Variants</b> <span class="muted" style="font-size:13px">snapshots of scenes.json; never overwritten</span>
+       <div style="display:flex;gap:6px;margin:6px 0"><input id="vn" placeholder="e.g. high-energy" style="width:200px"><button class="btn" id="vs">Save current</button></div>
+       ${ed.variants.map(v => `<span class="tag">${h(v)} <a href="#" data-uv="${h(v)}">use</a></span>`).join('') || '<span class="muted">none yet</span>'}
+       <div style="margin-top:10px;display:flex;gap:6px;align-items:center"><b>Director</b><select id="intens" style="width:auto"><option>low</option><option selected>medium</option><option>high</option></select>
+       <button class="btn ghost" data-run="plan">Re-analyze (draft only)</button></div></div>
+     ${ed.edits.length?`<div class="notes" style="margin-top:10px"><b>Recent edits</b>${ed.edits.slice().reverse().map(e => `<div>${h(e.at.replace('T',' '))} · ${h(e.action)} ${h(e.scene||e.name||'')} ${e.keys?h(e.keys.join(',')):''}</div>`).join('')}</div>`:''}
+    </div></div>`;
+  if (jobHtml) $('#job').innerHTML = jobHtml;
+  bindRun(); drawInspector(); bindPreview(sc);
+  document.querySelectorAll('[data-sc]').forEach(el => el.onclick = () => { selScene = el.dataset.sc; document.querySelectorAll('[data-sc]').forEach(e => e.classList.toggle('on', e.dataset.sc === selScene));
+    drawInspector(); const x = sc.find(q => q.id === selScene); if (x) seekPreview(x.storyboard_t ?? x.start); });
+  $('#vs').onclick = async () => { const r = await post('edit/variant', {name: $('#vn').value}); if (!r.error){ await loadEdit(); drawEditBody(); } say(r, 'variant saved: ' + (r.variant || '')); };
+  document.querySelectorAll('[data-uv]').forEach(a => a.onclick = async e => { e.preventDefault(); if (!confirm(`Replace scenes.json with variant "${a.dataset.uv}"? (current one is backed up)`)) return;
+    const r = await post('edit/variant/use', {name: a.dataset.uv}); await loadEdit(); drawEditBody(); say(r, 'variant applied'); });
+}
+
+function drawInspector(){
+  const sc = ed.check.scenes, i = sc.findIndex(x => x.id === selScene); if (i < 0){ $('#insp').innerHTML = ''; return; }
+  const s = ed.spec.scenes[i], x = sc[i], o = ed.options, lock = !!s.locked;
+  const opt = (list, val, none) => `<option value="">${none}</option>` + list.map(v => `<option ${String(val||'')===String(v)?'selected':''}>${h(v)}</option>`).join('');
+  const overl = ed.plan.filter(p => p.t1 > x.start && p.t0 < x.end);
+  const dis = lock ? 'disabled' : '';
+  $('#insp').innerHTML = `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><b dir="auto">${h(s.id)}</b><span class="muted">${fmt(x.start)}–${fmt(x.end)} · ${(x.end-x.start).toFixed(1)}s</span>
+     <label style="margin-left:auto;font-weight:700"><input type="checkbox" id="lk" ${lock?'checked':''} style="width:auto"> lock</label></div>
+   <div class="kv">
+    <label>Starts at word</label><input id="f-start" dir="auto" ${dis} ${i===0?'disabled placeholder="0:00 (first scene)"':''} value="${h(typeof s.start==='string'?s.start:(s.start?JSON.stringify(s.start):''))}">
+    <label>Style</label><select id="f-style" ${dis}>${`<option value="">— (reel default)</option>`+Object.entries(o.styles).filter(([k,v]) => v!=='floating-ui').map(([k,v]) => `<option value="${v}" ${(s.style&&[k,v].includes(String(s.style)))?'selected':''}>${k} ${v}</option>`).join('')}</select>
+    <label>Layout</label><select id="f-layout" ${dis}>${opt(o.layouts, s.layout, '— (style / rotation)')}</select>
+    <label>Transition in</label><select id="f-transition" ${dis} ${i===0?'disabled':''}>${opt(o.transitions, s.transition, '— (style / brand)')}</select>
+    <label>Captions</label><select id="f-caption_style" ${dis}>${opt(o.captions, s.caption_style, '— (reel preset)')}</select>
+    <label>Zoom</label><span><input id="f-z0" type="number" step="0.01" ${dis} style="width:80px" value="${s.zoom?s.zoom[0]:''}"> → <input id="f-z1" type="number" step="0.01" ${dis} style="width:80px" value="${s.zoom?s.zoom[1]:''}"></span>
+    <label>Parallax</label><input id="f-parallax" type="number" min="0" max="1" step="0.1" ${dis} style="width:80px" value="${s.parallax ?? ''}">
+   </div>
+   <details style="margin-top:8px"><summary><b>Elements</b> (${(s.elements||[]).length}: ${h((s.elements||[]).map(e => e.type).join(', '))})</summary>
+     <textarea id="f-elements" dir="ltr" ${dis} style="min-height:200px;font:12px ui-monospace,monospace">${h(JSON.stringify(s.elements||[], null, 1))}</textarea></details>
+   ${overl.length?`<div class="notes" style="margin-top:6px">Director: ${overl.map(p => `${h(p.role)} (${p.confidence})`).join(' · ')}</div>`:''}
+   <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn" id="sv" ${dis}>Save scene</button>
+     <button class="btn ghost" id="rg" ${dis} title="Replace this scene's graphics with the director's draft for the same speech">Regenerate this scene</button>
+     ${lock?'<span class="muted">Locked: unlock to edit. Locked scenes are kept by Regenerate and by re-planning.</span>':''}</div>`;
+  $('#lk').onchange = async e => { const r = await post('edit/scene', {id: s.id, patch: {locked: e.target.checked || null}}); await loadEdit(); drawEditBody(); say(r, e.target.checked?'locked':'unlocked'); };
+  if (lock) return;
+  $('#sv').onclick = async () => {
+    let els; try { els = JSON.parse($('#f-elements').value); } catch (e) { say({error: 'elements: not valid JSON — ' + e.message}); return; }
+    const z0 = $('#f-z0').value, z1 = $('#f-z1').value;
+    const patch = {style: $('#f-style').value || null, layout: $('#f-layout').value || null, transition: $('#f-transition').value || null,
+      caption_style: $('#f-caption_style').value || null, parallax: $('#f-parallax').value === '' ? null : +$('#f-parallax').value,
+      zoom: z0 && z1 ? [+z0, +z1] : null, elements: els};
+    if (i > 0 && $('#f-start').value.trim()) { const v = $('#f-start').value.trim(); try { patch.start = v.startsWith('{') ? JSON.parse(v) : v; } catch (e) { say({error: 'start: ' + e.message}); return; } }
+    const same = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
+    Object.keys(patch).forEach(k => { if (same(patch[k], s[k])) delete patch[k]; });   // send only what changed
+    if (!Object.keys(patch).length){ say({error: 'nothing changed'}); return; }
+    const r = await post('edit/scene', {id: s.id, patch}); if (!r.error){ await loadEdit(); drawEditBody(); } say(r, 'scene saved');
+  };
+  $('#rg').onclick = async () => { if (!confirm(`Replace the graphics of "${s.id}" with the director's draft? (current scenes.json is backed up)`)) return;
+    const r = await post('edit/regenerate', {id: s.id, intensity: ($('#intens')||{}).value || 'medium'}); if (!r.error){ await loadEdit(); drawEditBody(); } say(r, 'scene regenerated'); };
+}
+
+// live preview: same frame feeding as the renderer (card frame + cut-out per frame), driven by the audio clock
+let pvState = {};
+function bindPreview(sc){
+  const ifr = $('#pv'), au = $('#au'), scrub = $('#scrub'); pvState = {ready: false, fps: 30};
+  ifr.onload = () => { const w = ifr.contentWindow; (w.ready || Promise.resolve()).then(() => { pvState.ready = true; pvState.fps = (w.D && w.D.fps) || 30; pvState.cut = !!(w.D && w.D.cut); pvState.card = w.D && w.D.mode === 'B'; seekPreview(+scrub.value); }); };
+  scrub.oninput = () => { au.pause(); $('#pp').textContent = '▶'; au.currentTime = +scrub.value; seekPreview(+scrub.value); };
+  $('#pp').onclick = () => { if (au.paused){ au.play(); $('#pp').textContent = '❚❚'; loop(); } else { au.pause(); $('#pp').textContent = '▶'; } };
+  const loop = () => { cancelAnimationFrame(playRaf); if (au.paused || !$('#pv')) return; scrub.value = au.currentTime; seekPreview(au.currentTime); playRaf = requestAnimationFrame(loop); };
+}
+function seekPreview(t){
+  const ifr = $('#pv'); if (!ifr || !pvState.ready) return; const w = ifr.contentWindow, doc = ifr.contentDocument;
+  const n = String(Math.floor(t * pvState.fps + 1e-6) + 1).padStart(5, '0');
+  if (pvState.card){ const img = doc.getElementById('cardimg'); const src = 'cf/' + n + '.png'; if (img && img.getAttribute('src') !== src) img.src = src;
+    const cut = doc.getElementById('cutimg'); if (cut && pvState.cut){ const cs = w.cutKind(t) + '/' + n + '.png'; if (cut.getAttribute('src') !== cs) cut.src = cs; } }
+  w.setTime(t); $('#tt').textContent = fmt(t); const ck = ed.check; const ph = $('#ph'); if (ph && ck.duration) ph.style.left = (t / ck.duration * 100) + '%';
+}
+
+// ---------------- Transcript ----------------
+let wChanges = {};
+async function renderTranscript(){
+  await loadEdit(); wChanges = {};
+  const W = ed.words ? (Array.isArray(ed.words) ? ed.words : ed.words.words) : null;
+  if (!W){ $('#tab').innerHTML = '<p class="muted">No words.json yet (Transcribe and time the script first).</p>'; return; }
+  const kw = (ed.spec && ed.spec.caption_keywords) || [], sc = (ed.check && ed.check.scenes) || [];
+  const blocks = sc.length ? sc.map(x => ({x, ws: W.map((w,i) => ({w,i})).filter(o => o.w.start >= x.start - 1e-3 && o.w.start < x.end)})) : [{x: null, ws: W.map((w,i) => ({w,i}))}];
+  $('#tab').innerHTML = `<div id="edmsg" style="min-height:22px"></div>
+   <div class="panel" style="margin-bottom:12px"><b>Fix spellings</b> <span class="muted" style="font-size:13px">Click a word to correct it (one word, timing kept). Shift-click toggles a caption highlight keyword. The speaker's words are never added, removed or re-timed.</span>
+    <div style="margin-top:8px"><button class="btn" id="wsave">Save corrections</button> <span id="wcount" class="muted"></span></div></div>
+   ${blocks.map(b => `<div class="panel" style="margin-bottom:10px">${b.x?`<div class="muted" style="font-size:12px;margin-bottom:4px">${h(b.x.id)} · ${fmt(b.x.start)}</div>`:''}
+     <div dir="rtl" style="font-size:19px;line-height:2">${b.ws.map(o => `<span class="w ${kw.some(k => o.w.text.includes(k))?'kw':''}" data-wi="${o.i}" title="${fmt(o.w.start)}">${h(o.w.text)}</span>`).join(' ')}</div></div>`).join('')}`;
+  document.querySelectorAll('[data-wi]').forEach(el => el.onclick = async e => {
+    const i = +el.dataset.wi;
+    if (e.shiftKey){ const r = await post('edit/keyword', {word: el.textContent}); say(r, 'keywords: ' + (r.caption_keywords||[]).join(', ')); if (!r.error){ ed.spec.caption_keywords = r.caption_keywords; el.classList.toggle('kw'); } return; }
+    const v = prompt(`Correct the spelling of word ${i} (${fmt(W[i].start)}):`, wChanges[i] ?? W[i].text); if (v == null) return;
+    if (v.trim() === W[i].text) delete wChanges[i]; else wChanges[i] = v.trim();
+    el.textContent = wChanges[i] ?? W[i].text; el.classList.toggle('ch', i in wChanges); $('#wcount').textContent = Object.keys(wChanges).length + ' unsaved';
+  });
+  $('#wsave').onclick = async () => { if (!Object.keys(wChanges).length) return; const r = await post('edit/words', {changes: wChanges});
+    if (!r.error) { wChanges = {}; $('#wcount').textContent = ''; document.querySelectorAll('.w.ch').forEach(e => e.classList.remove('ch')); } say(r, `${r.changed||0} word(s) corrected` + (r.anchors_fixed ? ` · ${r.anchors_fixed} timing anchor(s) updated to the new spelling` : '')); };
+}
+
+// ---------------- Compare ----------------
+async function renderCompare(){
+  const vids = data.versions.filter(v => v.kind === 'render' && v.exists).reverse();
+  if (vids.length < 2){ $('#tab').innerHTML = '<p class="muted">Render at least two versions (e.g. two variants) to compare them here.</p>'; return; }
+  const a = window._ca || vids[1].id, b = window._cb || vids[0].id;
+  const sel = (id, v) => `<select id="${id}" style="width:330px">${vids.map(x => `<option ${x.id===v?'selected':''}>${x.id}</option>`).join('')}</select>`;
+  const file = id => vids.find(x => x.id === id).file;
+  const df = await api(`/api/project/${cur}/diff?a=${a}&b=${b}`);
+  $('#tab').innerHTML = `<div class="row"><div>${sel('ca', a)}<video id="va" playsinline muted src="/media/${cur}/${file(a)}"></video></div>
+    <div>${sel('cb', b)}<video id="vb" playsinline src="/media/${cur}/${file(b)}"></video></div>
+    <div class="panel" style="flex:1;min-width:260px"><b>What changed (${h(a)} → ${h(b)})</b>
+     ${(df.diff||[]).length ? df.diff.map(d => `<div dir="auto">• <b>${h(d.scene)}</b> ${h(d.change)} ${d.keys&&d.keys.length?h(d.keys.join(', ')):''}${d.elements?` <span class="muted">elements ${h(d.elements[0].join(','))} → ${h(d.elements[1].join(','))}</span>`:''}</div>`).join('') : '<p class="muted">No scene differences recorded (or a snapshot is missing).</p>'}</div></div>
+   <div style="display:flex;gap:8px;margin-top:10px;align-items:center"><button class="btn" id="cp">▶ Play both</button><input type="range" id="cs" min="0" max="100" step="0.1" value="0" style="width:400px;padding:0"><span class="muted">sound from the right</span></div>`;
+  const va = $('#va'), vb = $('#vb');
+  $('#ca').onchange = e => { window._ca = e.target.value; renderCompare(); }; $('#cb').onchange = e => { window._cb = e.target.value; renderCompare(); };
+  $('#cp').onclick = () => { if (vb.paused){ va.currentTime = vb.currentTime; va.play(); vb.play(); $('#cp').textContent = '❚❚ Pause'; } else { va.pause(); vb.pause(); $('#cp').textContent = '▶ Play both'; } };
+  vb.ontimeupdate = () => { if (vb.duration) $('#cs').value = vb.currentTime / vb.duration * 100; if (Math.abs(va.currentTime - vb.currentTime) > 0.15) va.currentTime = vb.currentTime; };
+  $('#cs').oninput = e => { const t = +e.target.value / 100 * (vb.duration || 0); va.currentTime = vb.currentTime = t; };
 }
 
 async function renderLibrary(){

@@ -304,6 +304,108 @@ class MixTests(Tmp):
         self.assertTrue(any('s1: style changes' in n for n in m['notes']), m['notes'])
 
 
+class EditorTests(Tmp):
+    """Milestone 8: non-destructive edits, locks, regenerate, transcript fixes, variants."""
+    TEXT = 'المبيعات مية ألف جنيه والإعلانات خمسة وعشرين ألف يعني الربح قليل جدا'
+
+    def setUp(self):
+        super().setUp()
+        import editor
+        self.ed = editor
+        self.write('project.json', {'mode': 'B', 'slug': 't'})
+        self.write('words.json', W(self.TEXT))
+        self.write('scenes.json', {'mode': 'B', 'duration': 7.0, 'scenes': [
+            {'id': 'a', 'elements': []},
+            {'id': 'b', 'start': 'والإعلانات', 'elements': [{'type': 'text', 'text': 'x', 'y': 100}]}]})
+
+    def spec(self):
+        return json.load(open(os.path.join(self.d, 'scenes.json'), encoding='utf-8'))
+
+    def backups(self, stem='scenes'):
+        return [f for f in os.listdir(self.d) if f.startswith(stem + '.prev-')]
+
+    def test_update_backs_up_and_logs(self):
+        r = self.ed.update_scene(self.d, 'b', {'layout': 'pip-right', 'transition': 'blur'})
+        self.assertEqual(r['problems'], [])
+        self.assertEqual(self.spec()['scenes'][1]['layout'], 'pip-right')
+        self.assertEqual(len(self.backups()), 1)
+        self.assertEqual(json.load(open(os.path.join(self.d, 'edits.json')))[-1]['action'], 'scene')
+        self.ed.update_scene(self.d, 'b', {'layout': None})
+        self.assertNotIn('layout', self.spec()['scenes'][1])
+
+    def test_bad_patch_refused_and_file_untouched(self):
+        before = self.spec()
+        for patch in ({'layout': 'sideways'}, {'transition': 'spin'}, {'style': '05'}, {'zoom': [1, 9]},
+                      {'audio': 'x.mp3'}, {'elements': [{'no': 'type'}]}):
+            with self.assertRaises(self.ed.EditError):
+                self.ed.update_scene(self.d, 'b', patch)
+        self.assertEqual(self.spec(), before)
+        self.assertEqual(self.backups(), [])
+
+    def test_lock_blocks_edit_and_regenerate(self):
+        self.ed.update_scene(self.d, 'b', {'locked': True})
+        with self.assertRaises(self.ed.EditError):
+            self.ed.update_scene(self.d, 'b', {'layout': 'top'})
+        with self.assertRaises(self.ed.EditError):
+            self.ed.regenerate_scene(self.d, 'b')
+        self.ed.update_scene(self.d, 'b', {'locked': None})
+        self.ed.update_scene(self.d, 'b', {'layout': 'top'})
+
+    def test_regenerate_uses_heard_numbers_only(self):
+        r = self.ed.regenerate_scene(self.d, 'a')
+        self.assertEqual(r['problems'], [])
+        vals = [e.get('value') for e in self.spec()['scenes'][0]['elements'] if e.get('type') == 'statcard']
+        self.assertTrue(all(v in (100000, 25000) for v in vals), vals)
+        self.assertEqual(self.spec()['scenes'][1]['elements'], [{'type': 'text', 'text': 'x', 'y': 100}])
+
+    def test_merge_with_locks_keeps_locked_scene(self):
+        spec = self.spec(); spec['scenes'][1]['locked'] = True
+        cur = [{'start': 0.0, 'end': 2.0}, {'start': 2.0, 'end': 7.0}]
+        draft = {'scenes': [{'id': 'd1', 'elements': []}, {'id': 'd2', 'start': 'x', 'elements': []},
+                            {'id': 'd3', 'start': 'y', 'elements': []}]}
+        m = self.ed.merge_with_locks(spec, cur, draft, [0.0, 1.0, 3.0])
+        self.assertEqual([s['id'] for s in m['scenes']], ['d1', 'd2', 'b'])
+        m = self.ed.merge_with_locks(spec, cur, {'scenes': [{'id': 'd9', 'start': 'z', 'elements': []}]}, [0.5])
+        self.assertNotIn('start', m['scenes'][0])
+
+    def test_transcript_spelling_only(self):
+        r = self.ed.edit_words(self.d, {'1': 'ميت'})
+        self.assertEqual(r['changed'], 1)
+        w = json.load(open(os.path.join(self.d, 'words.json'), encoding='utf-8'))
+        self.assertEqual((w[1]['text'], w[1]['start'], len(w)), ('ميت', 0.5, len(self.TEXT.split())))
+        for bad in ({'1': 'مية ألف'}, {'1': ''}, {'99': 'x'}):
+            with self.assertRaises(self.ed.EditError):
+                self.ed.edit_words(self.d, bad)
+        self.assertEqual(json.load(open(os.path.join(self.d, 'transcript_edits.json')))[0]['from'], 'مية')
+        self.assertEqual(len(self.backups('words')), 1)
+
+    def test_transcript_fix_updates_anchor_spelling(self):
+        r = self.ed.edit_words(self.d, {'4': 'والدعاية'})          # the word scene b starts on
+        self.assertEqual((r['anchors_fixed'], r['problems']), (1, []))
+        self.assertEqual(self.spec()['scenes'][1]['start'], 'والدعاية')
+
+    def test_keyword_toggle(self):
+        self.assertEqual(self.ed.toggle_keyword(self.d, 'الربح')['caption_keywords'], ['الربح'])
+        self.assertEqual(self.ed.toggle_keyword(self.d, 'الربح')['caption_keywords'], [])
+
+    def test_variants_never_overwritten_and_names_cleaned(self):
+        self.ed.save_variant(self.d, 'calm')
+        with self.assertRaises(self.ed.EditError):
+            self.ed.save_variant(self.d, 'calm')
+        self.ed.update_scene(self.d, 'b', {'layout': 'top'})
+        self.ed.use_variant(self.d, '../calm')            # cleaned to "calm", stays inside variants/
+        self.assertNotIn('layout', self.spec()['scenes'][1])
+        with self.assertRaises(self.ed.EditError):
+            self.ed.use_variant(self.d, '../../scenes')
+
+    def test_scene_diff(self):
+        a = {'brand': 'x', 'scenes': [{'id': 'a', 'layout': 'top', 'elements': [{'type': 'text'}]}]}
+        b = {'brand': 'y', 'scenes': [{'id': 'a', 'layout': 'full', 'elements': [{'type': 'statcard'}]}, {'id': 'n'}]}
+        d = {x['scene']: x for x in self.ed.scene_diff(a, b)}
+        self.assertEqual(d['a']['keys'], ['layout']); self.assertEqual(d['a']['elements'], [['text'], ['statcard']])
+        self.assertEqual(d['n']['change'], 'added'); self.assertEqual(d['(reel)']['keys'], ['brand'])
+
+
 class ChartCheckTests(unittest.TestCase):
     def check(self, el):
         import charts
@@ -454,6 +556,27 @@ class PlanCommandTests(Tmp):
             self.assertTrue(os.path.exists(os.path.join(d, 'plan.md')))
         finally:
             shutil.rmtree(d, ignore_errors=True)
+
+    def test_apply_keeps_locked_scene(self):
+        import subprocess as sp
+        slug = '_test-plan-lock'
+        d = os.path.join(ROOT, 'projects', slug)
+        shutil.rmtree(d, ignore_errors=True)
+        try:
+            sp.run([sys.executable, 'reel.py', 'new', slug, '--mode', 'B'], cwd=ROOT, check=True, capture_output=True)
+            with open(os.path.join(d, 'words.json'), 'w', encoding='utf-8') as f:
+                json.dump(W('بص لو عندك 50 ألف جنيه ميزانية ما تحرقهمش. اكتبلي BUDGET'), f, ensure_ascii=False)
+            mine = {'id': 'mine', 'locked': True, 'layout': 'hero', 'elements': [{'type': 'text', 'text': 'كما هو'}]}
+            with open(os.path.join(d, 'scenes.json'), 'w', encoding='utf-8') as f:
+                json.dump({'mode': 'B', 'duration': 6.0, 'scenes': [mine]}, f, ensure_ascii=False)
+            out = json.loads(sp.run([sys.executable, 'reel.py', 'plan', slug, '--apply'], cwd=ROOT, check=True,
+                                    capture_output=True, text=True).stdout.strip().splitlines()[-1])
+            self.assertEqual(out['kept_locked'], ['mine'])
+            new = json.load(open(os.path.join(d, 'scenes.json'), encoding='utf-8'))
+            self.assertEqual(new['scenes'], [mine])           # the whole reel was one locked scene: nothing replaced
+        finally:
+            shutil.rmtree(d, ignore_errors=True)
+
 
 
 class GradeTests(unittest.TestCase):

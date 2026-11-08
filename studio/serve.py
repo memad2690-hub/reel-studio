@@ -10,13 +10,27 @@ POST /api/project/<slug>/notes            {version, t, text}
 POST /api/project/<slug>/notes/<id>       {status} or {text}
 POST /api/project/<slug>/approve          {stage, version}
 POST /api/library/references              {url, title, creator, notes, techniques}
+
+Editing (milestone 8; every write backs up the previous file and is logged in edits.json):
+GET  /api/project/<slug>/edit             scenes.json + build check + words + pipeline + variants + options
+GET  /api/project/<slug>/diff?a=v1&b=v2   what changed between two rendered versions' scenes
+POST /api/project/<slug>/edit/scene       {id, patch}
+POST /api/project/<slug>/edit/regenerate  {id, intensity}
+POST /api/project/<slug>/edit/words       {changes: {index: text}}   spelling fixes only
+POST /api/project/<slug>/edit/keyword     {word}
+POST /api/project/<slug>/edit/variant     {name}  (save)  ·  /edit/variant/use {name}
+POST /api/project/<slug>/run              {cmd, intensity?, confirm_cost?}  allowlisted reel.py jobs, one at a time
+GET  /api/jobs/<id>  ·  POST /api/jobs/<id>/cancel
 """
 import argparse
 import json
 import mimetypes
 import os
 import socket
+import subprocess
 import sys
+import threading
+import time
 import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import unquote, urlparse
@@ -24,6 +38,8 @@ from urllib.parse import unquote, urlparse
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 import reel  # noqa: E402
+import editor  # noqa: E402  (reel puts engine/ on sys.path)
+import build as builder  # noqa: E402
 
 STATIC = os.path.join(ROOT, 'studio', 'static')
 PROJECTS = reel.PROJECTS
@@ -52,6 +68,101 @@ def project_detail(slug):
     return {'project': read('project.json', {}), 'versions': vs, 'approvals': read('approvals.json', {}),
             'notes': read('feedback.json', []), 'scenes': meta.get('scenes', []), 'text': txt,
             'stages': reel.STAGES.get(read('project.json', {}).get('mode', 'A'), [])}
+
+
+def pipeline(d):
+    """Import → Transcribe → Rough cut → Script → Analyze → Style → Generate → Review → Export (done = file/approval)."""
+    ex = lambda f: os.path.exists(os.path.join(d, f))  # noqa: E731
+    proj = reel.rj(os.path.join(d, 'project.json'), {})
+    ap = reel.rj(os.path.join(d, 'approvals.json'), {})
+    vs = reel.rj(os.path.join(d, 'versions.json'), [])
+    spec = reel.rj(os.path.join(d, 'scenes.json'), {}) or {}
+    raw = os.path.isdir(os.path.join(d, 'raw')) and any(not f.startswith('.') for f in os.listdir(os.path.join(d, 'raw')))
+    if proj.get('mode') == 'A':
+        steps = [('import', 'Script / voice', ex('audio/vo.mp3'), None),
+                 ('transcribe', 'Transcribe', ex('words.json'), 'stt')]
+    else:
+        steps = [('import', 'Import', raw, None), ('transcribe', 'Transcribe', ex('words_raw.json'), 'stt'),
+                 ('roughcut', 'Rough cut', bool(ap.get('roughcut')), 'roughcut'),
+                 ('script', 'Script + timing', ex('words.json') and bool(ap.get('script')), 'finalize-cut')]
+    steps += [('analyze', 'Analyze', ex('plan.md'), 'plan'),
+              ('style', 'Style', bool(spec.get('scenes')), None),
+              ('generate', 'Storyboard', bool(ap.get('storyboard')) or any(v['kind'] == 'storyboard' for v in vs), 'storyboard'),
+              ('review', 'Review', any(v['kind'] == 'render' for v in vs), 'render-draft'),
+              ('export', 'Export', bool(ap.get('final')), 'render')]
+    return [{'id': a, 'label': b, 'done': bool(c), 'run': r} for a, b, c, r in steps]
+
+
+def edit_state(slug):
+    d = os.path.join(PROJECTS, slug)
+    spec = reel.rj(os.path.join(d, 'scenes.json'), None)
+    out = {'spec': spec, 'pipeline': pipeline(d), 'variants': editor.list_variants(d),
+           'words': editor.words(d), 'edits': (reel.rj(os.path.join(d, 'edits.json'), []) or [])[-12:],
+           'options': {'layouts': list(builder.LAYOUTS), 'styles': builder.STYLE_IDS, 'transitions': list(builder.TRANSITIONS),
+                       'captions': list(builder.CAPTION_STYLES)},
+           'versions': [v['id'] for v in reel.rj(os.path.join(d, 'versions.json'), []) if v['kind'] == 'render'
+                        and os.path.exists(os.path.join(d, 'versions', v['id'] + '.scenes.json'))],
+           'plan': [{'t0': x.get('start'), 't1': x.get('end'), 'role': x.get('role'), 'confidence': x.get('confidence')}
+                    for x in (reel.rj(os.path.join(d, 'plan.json'), {}) or {}).get('segments', [])]}
+    if spec:
+        try:
+            out['check'] = editor.check(d)
+        except Exception as e:
+            out['check'] = {'problems': [{'problem': f'build failed: {e}'}], 'notes': [], 'scenes': []}
+    return out
+
+
+# ---- jobs: allowlisted reel.py commands, one at a time (renders use every core) ----
+JOBS, JOB_LOCK = {}, threading.Lock()
+COST = {'stt': 'uses ElevenLabs speech-to-text credits'}
+
+
+def job_args(cmd, slug, data, mode):
+    I = data.get('intensity') if data.get('intensity') in ('low', 'medium', 'high') else 'medium'
+    table = {'build': ['build', slug], 'storyboard': ['storyboard', slug], 'plan': ['plan', slug, '--intensity', I],
+             'render-draft': ['render', slug, '--draft'], 'render': ['render', slug], 'segment': ['segment', slug],
+             'grade-preview': ['grade-preview', slug], 'finalize-cut': ['finalize-cut', slug, '--full-frame'],
+             'roughcut': ['roughcut', slug], 'stt': ['stt', slug, 'audio/vo.mp3' if mode == 'A' else 'raw/raw.mp4']}
+    return table.get(cmd)
+
+
+def start_job(slug, cmd, data):
+    d = os.path.join(PROJECTS, slug)
+    mode = reel.rj(os.path.join(d, 'project.json'), {}).get('mode', 'B')
+    args = job_args(cmd, slug, data, mode)
+    if not args:
+        raise ValueError(f'unknown job {cmd!r}')
+    if cmd in COST and not data.get('confirm_cost'):
+        raise ValueError(f'{cmd} {COST[cmd]}: confirm first')
+    with JOB_LOCK:
+        if any(j['status'] == 'running' for j in JOBS.values()):
+            raise ValueError('another job is running; wait for it or cancel it')
+        jid = uuid.uuid4().hex[:8]
+        os.makedirs(os.path.join(d, 'build', 'jobs'), exist_ok=True)
+        log = os.path.join(d, 'build', 'jobs', f'{jid}.log')
+        f = open(log, 'w', encoding='utf-8')
+        proc = subprocess.Popen([sys.executable, os.path.join(ROOT, 'reel.py')] + args, cwd=ROOT, stdout=f,
+                                stderr=subprocess.STDOUT, env=dict(os.environ, PYTHONUNBUFFERED='1', PYTHONIOENCODING='utf-8'))
+        JOBS[jid] = {'id': jid, 'slug': slug, 'cmd': cmd, 'args': args, 'status': 'running', 'started': time.time(),
+                     'log': log, 'proc': proc, 'fh': f}
+
+    def wait():
+        rc = proc.wait(); f.close()
+        j = JOBS[jid]
+        j.update(status='done' if rc == 0 else ('cancelled' if j.get('cancel') else 'failed'), rc=rc,
+                 seconds=round(time.time() - j['started'], 1))
+    threading.Thread(target=wait, daemon=True).start()
+    return job_view(JOBS[jid])
+
+
+def job_view(j):
+    try:
+        with open(j['log'], encoding='utf-8', errors='replace') as f:
+            tail = f.read()[-4000:]
+    except OSError:
+        tail = ''
+    return {k: v for k, v in j.items() if k not in ('proc', 'fh', 'log')} | {'tail': tail,
+            'elapsed': round(time.time() - j['started'], 1)}
 
 
 class H(BaseHTTPRequestHandler):
@@ -146,6 +257,22 @@ class H(BaseHTTPRequestHandler):
                             'latest': vs[-1]['id'] if vs else None, 'updated': vs[-1]['created'] if vs else p.get('created')})
             out.sort(key=lambda x: x.get('updated') or '', reverse=True)
             return self.send_json(out)
+        if path.startswith('/api/jobs/'):
+            j = JOBS.get(path.split('/')[3])
+            return self.send_json(job_view(j)) if j else self.send_json({'error': 'no job'}, 404)
+        if path == '/api/jobs':
+            return self.send_json([job_view(j) for j in JOBS.values()])
+        if path.startswith('/api/project/') and len(path.split('/')) == 5 and path.split('/')[4] in ('edit', 'diff'):
+            slug = safe_slug(path.split('/')[3])
+            if not slug:
+                return self.send_json({'error': 'no project'}, 404)
+            if path.endswith('/edit'):
+                return self.send_json(edit_state(slug))
+            from urllib.parse import parse_qs
+            q = parse_qs(urlparse(self.path).query)
+            snap = lambda v: reel.rj(os.path.join(PROJECTS, slug, 'versions', f'{v}.scenes.json'), None) if reel.valid_slug(v) else None  # noqa: E731
+            a, b = (q.get('a') or [''])[0], (q.get('b') or [''])[0]
+            return self.send_json({'a': a, 'b': b, 'diff': editor.scene_diff(snap(a), snap(b))})
         if path.startswith('/api/project/'):
             raw = path.split('/')[3]
             slug = safe_slug(raw)
@@ -172,7 +299,7 @@ class H(BaseHTTPRequestHandler):
         if self.headers.get('Content-Type', '').split(';')[0] != 'application/json':
             raise ValueError('JSON only')
         n = int(self.headers.get('Content-Length', 0))
-        if n > 200_000:
+        if n > 2_000_000:
             raise ValueError('too large')
         return json.loads(self.rfile.read(n) or b'{}')
 
@@ -196,6 +323,37 @@ class H(BaseHTTPRequestHandler):
             refs.append(ref)
             reel.wj(os.path.join(reel.LIB, 'references.json'), refs)
             return self.send_json(ref)
+        if len(parts) == 4 and parts[:2] == ['api', 'jobs'] and parts[3] == 'cancel':
+            j = JOBS.get(parts[2])
+            if not j:
+                return self.send_json({'error': 'no job'}, 404)
+            if j['status'] == 'running':
+                j['cancel'] = True; j['proc'].terminate()
+            return self.send_json(job_view(j))
+        if len(parts) >= 4 and parts[:2] == ['api', 'project'] and parts[3] in ('edit', 'run'):
+            slug = safe_slug(parts[2])
+            if not slug:
+                return self.send_json({'error': 'no project'}, 404)
+            d = os.path.join(PROJECTS, slug)
+            try:
+                if parts[3] == 'run':
+                    return self.send_json(start_job(slug, str(data.get('cmd', '')), data))
+                what = '/'.join(parts[4:])
+                if what == 'scene':
+                    return self.send_json(editor.update_scene(d, data.get('id'), data.get('patch') or {}))
+                if what == 'regenerate':
+                    return self.send_json(editor.regenerate_scene(d, data.get('id'), data.get('intensity') or 'medium'))
+                if what == 'words':
+                    return self.send_json(editor.edit_words(d, data.get('changes') or {}))
+                if what == 'keyword':
+                    return self.send_json(editor.toggle_keyword(d, data.get('word', '')))
+                if what == 'variant':
+                    return self.send_json(editor.save_variant(d, data.get('name', '')))
+                if what == 'variant/use':
+                    return self.send_json(editor.use_variant(d, data.get('name', '')))
+            except (editor.EditError, ValueError) as e:
+                return self.send_json({'error': str(e)}, 400)
+            return self.send_json({'error': 'not found'}, 404)
         if len(parts) >= 4 and parts[:2] == ['api', 'project']:
             slug = safe_slug(parts[2])
             if not slug:

@@ -225,3 +225,17 @@ Regression: 11 projects render pixel-identical storyboard stills vs milestone 5 
 the approved reels' card frames had been deleted, so their footage layer was checked through `_demo-b`).
 Known limit: `zoom` scales the whole layer, so a small PiP layout can touch the frame edge during a layout change.
 Tests: 61 in tests/test_pipeline.py (6 new).
+
+### Milestone 8 — Editing UX in the existing studio (2026-11-08)
+Built `engine/editor.py` (validated scene patches, backups + edits.json, rollback on build failure, locks,
+regenerate-one-scene, plan --apply keeps locked scenes, transcript spelling fixes with anchor follow-up, caption
+keyword toggle, variants, version scene diff) and studio tabs Edit / Transcript / Compare with an allowlisted job
+runner (live log, cancel, one at a time, cost confirmation for STT). Docs: `docs/STUDIO.md`.
+Verified in a headless browser on a copy of `_demo-b`: pipeline + plan job, scene save, lock, regenerate, variant,
+transcript fix (anchor updated), two draft renders through the job runner (514 frames in 55 s and 56 s), compare view;
+no page errors. Guards checked over HTTP: locked scene, second job, STT without confirmation, foreign Origin, unknown job.
+Bugs found by the tests and fixed: regenerate could keep draft graphics timed after the scene ends; a spelling fix on an
+anchor word broke timing; regenerate with no proposal wiped the scene.
+Not built (future): drag-to-retime on the timeline, caption line-break editing, a frame-accurate preview of grade
+changes inside the editor (grade-preview job covers it), undo button (backups exist; restore is manual for now).
+Tests: 72 in tests/test_pipeline.py (11 new).
