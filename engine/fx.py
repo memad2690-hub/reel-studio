@@ -164,15 +164,24 @@ def kinetic(el, times):
     inten = el.get('intensity', 'medium')
     color = col(el.get('color', 'ink'))
     hl = kits.B['yellow']
-    out = f'<g class="kin" data-w="{el.get("w", 920)}" data-size="{size}" data-lh="{el.get("line_height", 1.25)}">'
+    room = f' data-room="{el["_room"]:.0f}"' if el.get('_room') else ''
+    out = f'<g class="kin" data-w="{el.get("w", 920)}" data-size="{size}" data-lh="{el.get("line_height", 1.25)}"{room}>'
     for i, w in enumerate(words):
         e = any(k and k in kits_norm(w['text']) for k in emph)
         s = size * (1.35 if e else 1)
         out += (f'<g class="kw" data-t0="{max(w["start"], times[0] if times else 0):.3f}" data-int="{inten}" data-emph="{int(e)}">'
                 + (f'<rect class="kwbg" fill="{hl}" rx="10"/>' if e else '')
                 + f'<text font-size="{s:.0f}" font-weight="900" fill="{color}" text-anchor="middle" '
-                  f'dominant-baseline="central" direction="rtl">{esc(w["text"].rstrip(".،,؛!؟?") or w["text"])}</text></g>')
+                  f'dominant-baseline="central" direction="rtl">{esc(kin_word(w["text"]))}</text></g>')
     return out + '</g>'
+
+
+def kin_word(t):
+    """A word as shown in kinetic text: no trailing punctuation; look 2 also drops quote marks (they read as noise)."""
+    if kits.LOOK[0] >= 2:
+        t2 = t.strip('"«»“”\'').rstrip('.،,؛!؟?').strip('"«»“”\'')
+        return t2 or t
+    return t.rstrip('.،,؛!؟?') or t
 
 
 def kits_norm(s):

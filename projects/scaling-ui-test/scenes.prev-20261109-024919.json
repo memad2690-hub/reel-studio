@@ -1,0 +1,184 @@
+{
+  "look": 2,
+  "mode": "B",
+  "brand": "media-buying",
+  "director": {
+    "mode": "auto",
+    "style": null
+  },
+  "words": "words.json",
+  "audio": "build/cut_audio.m4a",
+  "captions": true,
+  "caption_style": "highlight",
+  "caption_keywords": [
+    "ads",
+    "brand",
+    "budget",
+    "business",
+    "contribution",
+    "creatives",
+    "e-commerce",
+    "limited"
+  ],
+  "scenes": [
+    {
+      "id": "hook-1",
+      "title": "hook (0.75)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "ممكن",
+          "count": 10,
+          "intensity": "medium",
+          "emphasis": [
+            "ads.\""
+          ],
+          "x": 540,
+          "y": 410,
+          "size": 96,
+          "w": 920,
+          "focus": true
+        }
+      ],
+      "style": "kinetic",
+      "layout": "top"
+    },
+    {
+      "id": "setup-2",
+      "title": "setup (0.35)",
+      "elements": [],
+      "start": {
+        "at": "لإن",
+        "after": 4.81
+      },
+      "style": "editorial",
+      "layout": "full"
+    },
+    {
+      "id": "example-3",
+      "title": "example (0.6)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "تخيل",
+          "count": 7,
+          "intensity": "medium",
+          "emphasis": [
+            "margins"
+          ],
+          "x": 540,
+          "y": 380,
+          "size": 96,
+          "w": 920,
+          "focus": true
+        },
+        {
+          "type": "pill",
+          "text": "مثال",
+          "color": "blue",
+          "x": 540,
+          "y": 60,
+          "size": 36,
+          "in": {
+            "rel": 0.05
+          }
+        }
+      ],
+      "start": {
+        "at": "تخيل",
+        "after": 9.42
+      },
+      "style": "editorial"
+    },
+    {
+      "id": "process-4",
+      "title": "process (0.8)",
+      "elements": [
+        {
+          "type": "numbered",
+          "x": 540,
+          "y": 150,
+          "gap": 150,
+          "steps": [
+            {
+              "text": "المخزون يستحمل",
+              "in": "هل"
+            },
+            {
+              "text": "الـ contribution",
+              "in": {
+                "at": "هل",
+                "nth": 2
+              }
+            },
+            {
+              "text": "الـ tracking validated",
+              "in": {
+                "at": "هل",
+                "nth": 5
+              }
+            },
+            {
+              "text": "creatives",
+              "in": "وهل"
+            }
+          ],
+          "focus": true
+        }
+      ],
+      "start": {
+        "at": "فقبل",
+        "after": 16.32
+      },
+      "style": "whiteboard"
+    },
+    {
+      "id": "conclusion-5",
+      "title": "conclusion (0.6)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "الـ",
+          "count": 8,
+          "intensity": "medium",
+          "emphasis": [
+            "مش"
+          ],
+          "x": 540,
+          "y": 410,
+          "size": 96,
+          "w": 920,
+          "focus": true
+        }
+      ],
+      "start": {
+        "at": "الـ",
+        "after": 32.27
+      },
+      "style": "kinetic",
+      "layout": "top"
+    },
+    {
+      "id": "cta-6",
+      "title": "cta (0.95)",
+      "elements": [
+        {
+          "type": "cta",
+          "keyword": "SCALE",
+          "x": 540,
+          "y": 160,
+          "in": "لي",
+          "anim": "spring",
+          "prompt": "ابعت لي",
+          "focus": true
+        }
+      ],
+      "start": {
+        "at": "لو",
+        "after": 38.61
+      },
+      "style": "editorial",
+      "layout": "hero"
+    }
+  ]
+}

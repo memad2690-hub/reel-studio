@@ -1,0 +1,23 @@
+{
+  "slug": "scaling-ui-test",
+  "title": "جاهز تعمل scale؟",
+  "mode": "B",
+  "reel_id": "",
+  "cta_keyword": "SCALE",
+  "stage": "script",
+  "created": "2026-11-09T02:16:40+02:00",
+  "length_target_s": [
+    45,
+    60
+  ],
+  "elevenlabs": {
+    "flow_id": "",
+    "voice_id": "",
+    "generation_id": "",
+    "chosen_take": ""
+  },
+  "notes": "",
+  "look": 2,
+  "raw": "raw/raw.mp4",
+  "source_name": "A4610DD3-5BD2-4FAD-9948-883180C92970.mp4"
+}

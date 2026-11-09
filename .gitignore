@@ -19,3 +19,5 @@ projects/_demo-*/
 projects/*/acceptance/inspect*.json
 # comparison exports are regenerated with scripts/compare_exports.sh
 exports/
+# fast previews are regenerated (reel.py preview)
+projects/*/exports/previews/

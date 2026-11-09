@@ -175,6 +175,11 @@ def expand(el, mode, anchors, s_start, s_end, idx, ins=None, floor=None):
             anchors.misses.append({'anchor': None, 'element': 'photo', 'problem': f'missing asset {el.get("src")!r} (put it in assets/)'})
             return ''
         PROJECT['n'] += 1
+        g = PROJECT.get('grade')
+        if g and el.get('grade', True):                     # photos get the footage grade; graphics never do
+            import grade as grading
+            src = grading.grade_image(src, os.path.join(PROJECT['out'], 'graded', os.path.splitext(
+                os.path.basename(src))[0] + '.jpg'), g)
         href = os.path.relpath(src, PROJECT['out']).replace(os.sep, '/')
         return anim_group(kits.photo_svg(el, href, PROJECT['n']), t_in, t_out, kind, x, y, rot, sc, exit=ex)
     if t in charts.TYPES or t in fx.TYPES:
@@ -363,7 +368,10 @@ def build(project_dir, out_dir=None):
     words_path = os.path.join(pdir, spec.get('words', 'words.json'))
     words = load_words(words_path) if os.path.exists(words_path) else []
     fx.WORDS = words
-    PROJECT.update(dir=pdir, out=out_dir or os.path.join(pdir, 'build'), n=0)
+    PROJECT.update(dir=pdir, out=out_dir or os.path.join(pdir, 'build'), n=0, grade=None)
+    if mode == 'B' and look >= 2:
+        import grade as grading
+        PROJECT['grade'] = grading.project_grade(pdir)
     anchors = Anchors(words)
     if brand_problem:
         anchors.misses.append({'anchor': None, 'element': 'brand', 'problem': brand_problem})
@@ -413,6 +421,9 @@ def build(project_dir, out_dir=None):
         first_ins = []
         for j, el in enumerate(s.get('elements', [])):
             ins = []
+            if LOOK2[0] and mode == 'B' and el.get('type') == 'kinetic' and el.get('space') != 'canvas':
+                rh = LAYOUTS[card_pos].get('rh', 800)          # room in its region: the runtime shrinks a long phrase to fit
+                el['_room'] = max(0, 2 * min(el.get('y', 0), rh - el.get('y', 0)) - 40)
             svg = expand(el, mode, anchors, st, en, j, ins,
                          floor=None if el.get('space') == 'canvas' else floor)
             if mode == 'B' and el.get('space') != 'canvas':

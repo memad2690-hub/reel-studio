@@ -158,8 +158,11 @@ INTENSITY = {   # pacing presets: min scene length (s), max graphic scenes per m
 }
 
 
-def classify(seg, idx, n):
+def classify(seg, idx, n, cta_keyword=None):
     text = seg['text']
+    if cta_keyword and re.search(r'(?<![A-Za-z])' + re.escape(cta_keyword) + r'(?![A-Za-z])', text, re.I) \
+            and has(text, CUES['cta']) and idx >= n * 0.5:
+        return 'cta', 0.95, f'the reel\'s comment keyword ({cta_keyword}) + call-to-action verb'
     nums = seg['numbers']
     money = [x for x in nums if x['kind'] == 'money']
     roles, reasons = [], []
@@ -176,8 +179,11 @@ def classify(seg, idx, n):
         roles.append(('process', 0.75, f'sequence cues: {", ".join(p[:3])}'))
     if has(text, ['الأولاني', 'الاولاني', 'الأول ولا', 'قبل وبعد']):
         roles.append(('comparison', 0.55, 'first/second option cue'))
-    if has(text, [' ولا ']) and ('؟' in text or '?' in text):
-        roles.append(('comparison', 0.6, 'either/or question'))
+    q = question_list(text.split())
+    if len(q) >= 2:                                        # "هل …؟ هل …؟" = a checklist, not a comparison
+        roles.append(('process', 0.8, f'{len(q)} checklist questions'))
+    elif has(text, [' ولا ']) and ('؟' in text or '?' in text) and not re.search(r'ولا (لأ|لا)\b', text):
+        roles.append(('comparison', 0.6, 'either/or question'))           # "… ولا لأ؟" is yes/no, not A vs B
     elif has(text, ['أحسن من', 'مقابل', 'vs']):
         roles.append(('comparison', 0.55, 'comparison cue'))
     c = has(text, CUES['contrast'])
@@ -211,7 +217,7 @@ TREATMENT = {   # role → (style, component, reason)
 }
 
 
-def plan(words, intensity='medium'):
+def plan(words, intensity='medium', cta_keyword=None):
     P = INTENSITY[intensity]
     sents = sentences_of(words)
     segs = []
@@ -223,7 +229,7 @@ def plan(words, intensity='medium'):
         seg = {'start': round(ws[0]['start'], 2), 'end': round(ws[-1]['end'], 2), 'text': text, 'w0': idx[0], 'w1': idx[-1],
                'lang': 'mixed' if lat else 'ar', 'numbers': nums,
                'keywords': sorted(set(lat + has(text, FINANCE['metric'] + FINANCE['negative'] + FINANCE['positive'])))[:6]}
-        role, conf, why = classify(seg, k, len(sents))
+        role, conf, why = classify(seg, k, len(sents), cta_keyword)
         seg.update(role=role, confidence=round(conf, 2), reason=why)
         segs.append(seg)
     # pacing: merge short neighbours with the same role; protect breathing room
@@ -238,6 +244,17 @@ def plan(words, intensity='medium'):
         if sg['role'] not in ('cta', 'data') and has(sg['text'], ['أول حاجة', 'أول واحدة', 'أولا']):
             if any(has(o['text'], CUES['process']) for o in segs[k + 1:k + 5] if o['start'] - sg['end'] < 15):
                 sg.update(role='process', confidence=0.75, reason='ordinal list (first + later ordinals)')
+    # consecutive "هل …؟" questions are one checklist (a process scene), however the sentences were split
+    isq = [bool(re.search(r'(^|\s)و?هل\s', sg['text'])) and sg['role'] not in ('cta', 'data') for sg in segs]
+    k = 0
+    while k < len(segs):
+        j = k
+        while j < len(segs) and isq[j]:
+            j += 1
+        if j - k >= 2 and len(question_list(' '.join(sg['text'] for sg in segs[k:j]).split())) >= 2:
+            for sg in segs[k:j]:
+                sg.update(role='process', confidence=0.8, reason='checklist of questions')
+        k = max(j, k + 1)
     ORDINALS = [c for c in CUES['process'] if c.split()[0] in ('أول', 'تاني', 'تالت', 'رابع') or c in ('أولا', 'تانيا', 'تالتا')]
     CONT = {'process': ORDINALS, 'comparison': ['تاني', 'التاني', 'التانية']}
     merged = []
@@ -346,6 +363,38 @@ FILLERS = {'هي', 'هو', 'الـ', 'ال', 'ان', 'إن', 'انه', 'إنه',
            'لو', 'فيه', 'في', 'عارف', 'إنه', 'إنك', 'انك', 'أصلًا', 'اصلا', 'بتاعك'}
 
 
+def cta_prompt(ws):
+    """The call-to-action verb as the speaker said it, when it is not the default "write in the comments"."""
+    t = [w['text'].strip('،,.:') for w in ws]
+    if any(x.startswith(('اكتب', 'كومنت')) or x.lower() == 'comment' for x in t):
+        return None
+    for i, x in enumerate(t):
+        if x.startswith('ابعت'):
+            return x + (' ' + t[i + 1] if x == 'ابعت' and i + 1 < len(t) and t[i + 1] in ('لي', 'لى') else '')
+    return None
+
+
+def question_list(ws):
+    """Checklist questions in the speaker's words: each "هل/وهل … ؟" → (index of هل, words up to the ؟).
+    A question restated with "يعني هل …" and an immediate retake ("هل الـ tracking هل الـ tracking …") are skipped."""
+    out = []
+    for i, w in enumerate(ws):
+        if w.strip('،,') not in ('هل', 'وهل'):
+            continue
+        if i and ws[i - 1].strip('،,') == 'يعني':
+            continue
+        body = []
+        for x in ws[i + 1:i + 9]:
+            if x.strip('،,') in ('هل', 'وهل'):
+                body = None; break                          # a retake started before the question ended
+            body.append(x)
+            if '؟' in x or '?' in x:
+                break
+        if body and ('؟' in body[-1] or '?' in body[-1]):
+            out.append((i, [b.rstrip('؟?') for b in body]))
+    return out
+
+
 def step_name(ws):
     """Name a list step with the speaker's own words: first English term (with الـ if he said it), else the first
     two non-filler words. Never invents text."""
@@ -363,17 +412,55 @@ def step_name(ws):
 def phrase_len(ws, lo=4, hi=10):
     """Words for a kinetic line: up to the first natural break (punctuation) between lo and hi words."""
     for k in range(min(hi, len(ws))):
-        if k + 1 >= lo and re.search(r'[.،,؛؟?!]$', ws[k]['text']):
+        if k + 1 >= lo and re.search(r'[.،,؛؟?!]["»”’\')]*$', ws[k]['text']):   # a closing quote after the stop
             return k + 1
     return min(hi if len(ws) > hi else len(ws), len(ws))
 
 
 def anchor_for(words, i):
-    """A short exact anchor for word i (single token is enough for build's anchor search after the scene start)."""
-    return words[i]['text']
+    """An exact anchor for word i of the scene: the word itself, plus "nth" when the same word was already said earlier
+    in the scene (build's anchor search starts at the scene start and would otherwise stop at the first one)."""
+    from timing import norm
+    tok = norm(words[i]['text'])
+    if not tok:
+        return words[i]['text']
+    same = lambda w: (norm(w['text']) == tok) if len(tok) <= 2 else (tok in norm(w['text']))  # noqa: E731
+    nth = sum(1 for w in words[:i + 1] if same(w))
+    return words[i]['text'] if nth <= 1 else {'at': words[i]['text'], 'nth': nth}
 
 
-def draft_scenes(pl, words, brand='media-buying', cta_keyword=None):
+# ---- director modes ---------------------------------------------------------------------------------------------
+# auto: a style per scene from its role (no styles that need speaker segmentation, so it never blocks on that step)
+# single: one style for every scene · hybrid: one main style, with data → 04 and comparisons → 07 where content needs it
+AUTO_STYLE = {'hook': 'cinematic', 'data': 'data', 'comparison': 'battle', 'contrast': 'kinetic', 'process': 'whiteboard',
+              'emphasis': 'kinetic', 'example': 'editorial', 'setup': 'editorial', 'conclusion': 'kinetic',
+              'cta': 'editorial', 'editorial': 'editorial'}
+HYBRID_OVERRIDE = {'data': 'data', 'comparison': 'battle'}
+NEEDS_SEGMENTATION = ('collage', 'parallax')
+DIRECTOR_MODES = ('auto', 'single', 'hybrid')
+
+
+AUTO_MAX_STYLES = 3                                  # the art check flags more than 3 styles as noise
+AUTO_KEEP = ('editorial', 'data', 'battle', 'kinetic', 'whiteboard', 'cinematic')   # which survive the cap first
+
+
+def auto_styles(roles):
+    """Auto Director: a style per role, at most AUTO_MAX_STYLES in one reel (extra ones become kinetic/editorial)."""
+    st = [AUTO_STYLE.get(r, 'editorial') for r in roles]
+    keep = [k for k in AUTO_KEEP if k in st][:AUTO_MAX_STYLES]
+    fallback = 'kinetic' if 'kinetic' in keep else 'editorial'
+    return [x if x in keep else fallback for x in st]
+
+
+def style_for(role, director='auto', style=None):
+    if director == 'single' and style:
+        return style
+    if director == 'hybrid' and style:
+        return HYBRID_OVERRIDE.get(role, style)
+    return AUTO_STYLE.get(role, 'editorial')
+
+
+def draft_scenes(pl, words, brand='media-buying', cta_keyword=None, director='auto', style=None):
     P = INTENSITY[pl['intensity']]
     layouts = P['layouts']
     scenes, li = [], 0
@@ -389,8 +476,12 @@ def draft_scenes(pl, words, brand='media-buying', cta_keyword=None):
         elif s['role'] == 'cta':
             sc['layout'] = 'top'
             kw = keyword_of(s['text']) or cta_keyword or 'AUDIT'
-            kw_i = next((i for i, w in enumerate(ws) if kw in w['text']), 0)
-            sc['elements'].append({'type': 'cta', 'keyword': kw, 'x': 540, 'y': 160, 'in': anchor_for(ws, max(0, kw_i - 1)), 'anim': P['anim']})
+            kw_i = next((i for i, w in enumerate(ws) if kw.lower() in w['text'].lower()), 0)
+            cta = {'type': 'cta', 'keyword': kw, 'x': 540, 'y': 160, 'in': anchor_for(ws, max(0, kw_i - 1)), 'anim': P['anim']}
+            said = cta_prompt(ws)
+            if said:
+                cta['prompt'] = said                   # his own verb ("ابعت لي"), not the default "اكتب في الكومنتات"
+            sc['elements'].append(cta)
         elif st == 'data':
             sc['layout'] = 'pip-right'
             money = [nb for nb in s['numbers'] if nb['kind'] in ('money', 'ratio', 'percent')][:4]
@@ -405,7 +496,10 @@ def draft_scenes(pl, words, brand='media-buying', cta_keyword=None):
             sc['layout'] = layouts[li % len(layouts)]; li += 1
             steps, cur = [], None
             skip = 0
-            for i, w in enumerate(ws):
+            qs = question_list([w['text'] for w in ws])
+            if len(qs) >= 2:                               # checklist questions: one step per question, his words
+                steps = [{'i': i, 'words': body} for i, body in qs]
+            for i, w in enumerate(ws if len(qs) < 2 else []):
                 if skip:
                     skip -= 1; continue
                 pair = w['text'] + ' ' + (ws[i + 1]['text'] if i + 1 < len(ws) else '')
@@ -421,7 +515,8 @@ def draft_scenes(pl, words, brand='media-buying', cta_keyword=None):
                 steps.append(cur)
             steps = [x for x in steps if x['words']][:5]
             if steps:
-                sc['elements'].append({'type': 'numbered', 'x': 540, 'y': 150, 'gap': 150,
+                gap = min(165, 600 // max(1, len(steps) - 1))     # steps fill the region instead of a corner of it
+                sc['elements'].append({'type': 'numbered', 'x': 540, 'y': 110, 'gap': gap, 'size': 68,
                                        'steps': [{'text': step_name(x['words']), 'in': anchor_for(ws, x['i'])} for x in steps]})
             else:
                 st = 'kinetic'
@@ -453,9 +548,16 @@ def draft_scenes(pl, words, brand='media-buying', cta_keyword=None):
         scenes.append(sc)
     if scenes:
         scenes[0].setdefault('layout', 'full' if pl['intensity'] == 'high' else 'top')
-    for sc, seg in zip(scenes, pl['segments']):
+    autos = auto_styles([seg['role'] for seg in pl['segments']])
+    for i, (sc, seg) in enumerate(zip(scenes, pl['segments'])):
+        sty = autos[i] if director == 'auto' else style_for(seg['role'], director, style)
+        if sty:
+            sc['style'] = sty
+            sc.pop('layout', None)                     # the style decides the layout; art direction may refine it
+            if sty in ('kinetic',) and not any(e['type'] == 'kinetic' for e in sc['elements']) and len(ws_of(seg, words)) >= 3:
+                sc['elements'].insert(0, kinetic_for(seg, words))
         art_direct(sc, seg, words[seg['w0']:seg['w1'] + 1])
-    return {'look': 2, 'mode': 'B', 'brand': brand, 'words': 'words.json', 'audio': 'build/cut_audio.m4a', 'captions': True,
+    return {'look': 2, 'mode': 'B', 'brand': brand, 'director': {'mode': director, 'style': style}, 'words': 'words.json', 'audio': 'build/cut_audio.m4a', 'captions': True,
             'caption_style': P['captions'],
             'caption_keywords': sorted({k for s in pl['segments'] for k in s['keywords'] if len(k) > 2})[:8],
             'scenes': scenes}
@@ -479,6 +581,18 @@ def el_words(e):
     if e.get('type') in ('statcard',):
         parts.append('0')
     return sum(len(str(p).split()) for p in parts if p)
+
+
+def ws_of(seg, words):
+    return words[seg['w0']:seg['w1'] + 1]
+
+
+def kinetic_for(seg, words):
+    """Kinetic typography of the scene's key phrase: its first 3-5 spoken words (never rewritten)."""
+    ws = ws_of(seg, words)
+    n = min(5, max(3, len(ws) // 3))
+    return {'type': 'kinetic', 'from': ws[0]['text'], 'count': n, 'intensity': 'medium', 'size': 96, 'w': 920,
+            'x': 540, 'y': 320, 'in': ws[0]['text']}
 
 
 def art_direct(sc, seg, ws):
@@ -513,9 +627,24 @@ def art_direct(sc, seg, ws):
         elif e['type'] == 'statcard':
             e['size'] = min(e.get('size', 76), 64)
     # 3) speaker prominence and room for the graphic
-    if role in SPEAKER_FIRST_ROLES and len(els) <= 1 and sc.get('layout') in ('top', 'bottom', 'pip-right', 'pip-left', None):
-        sc['layout'] = 'hero' if els else 'full'
-        notes.append('personal moment: speaker big, one element at most')
+    if sc.get('style') == 'cinematic':
+        pass                                           # Style 09 stays full-frame
+    elif role == 'cta':
+        sc['layout'] = 'top'                           # hero's strip is where the app's caption and buttons sit
+        for e in els:
+            if e['type'] == 'cta':
+                e['y'] = 300
+    elif role in SPEAKER_FIRST_ROLES and len(els) <= 1 and sc.get('layout') in ('top', 'bottom', 'pip-right', 'pip-left', None):
+        long_kin = bool(els) and els[0]['type'] == 'kinetic' and els[0].get('count', 0) > 5
+        if long_kin:                                   # a long phrase needs more than hero's 420 px strip
+            sc['layout'] = 'top'
+            els[0]['y'] = 410                          # centre of the top layout's 820 px region
+            notes.append('long phrase: speaker on top, kinetic words centred below')
+        else:
+            sc['layout'] = 'hero' if els else 'full'
+            if els and els[0]['type'] == 'kinetic':
+                els[0]['y'] = 210                      # centre of hero's region
+            notes.append('personal moment: speaker big, one element at most')
     elif sc.get('layout') in ('pip-right', 'pip-left') or (focus and focus['type'] in ('bars', 'numbered', 'waterfall')
                                                            and sc.get('layout') in ('top', 'bottom')):
         sc['layout'] = 'split'

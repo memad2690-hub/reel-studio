@@ -9,6 +9,7 @@ import datetime as dt
 import json
 import os
 import re
+import time
 import shutil
 import subprocess
 import sys
@@ -117,10 +118,11 @@ def cmd_new(a):
         os.makedirs(os.path.join(d, sub), exist_ok=True)
     proj = rj(os.path.join(d, 'project.json'))
     proj.update({'slug': a.slug, 'title': a.title or a.slug, 'mode': a.mode, 'reel_id': a.reel_id or '',
-                 'cta_keyword': a.cta or '', 'created': now(), 'stage': 'brief'})
+                 'cta_keyword': a.cta or '', 'created': now(), 'stage': 'brief', 'look': 2})
     wj(os.path.join(d, 'project.json'), proj)
     sc = rj(os.path.join(d, 'scenes.json'))
     sc['mode'] = a.mode
+    sc['look'] = 2                                         # new projects use the visual-quality look
     if a.mode == 'B':
         sc['audio'] = 'build/cut_audio.m4a'
     wj(os.path.join(d, 'scenes.json'), sc)
@@ -238,6 +240,32 @@ def qa(path, mode=None):
         problems.append('low bitrate for footage')
     res['problems'] = problems
     return res
+
+
+def cmd_preview(a):
+    """Fast draft preview (half size, 15 fps, fast encode) of the whole reel or one scene. Not a version: it goes to
+    exports/previews/ and never replaces or counts as a render."""
+    d = pdir(a.slug)
+    m = builder.build(d)
+    frm, to, label = 0.0, m['duration'], 'reel'
+    if a.scene:
+        sc = next((s for s in m['scenes'] if s['id'] == a.scene), None)
+        if not sc:
+            sys.exit(f'no scene {a.scene!r} (scenes: {", ".join(s["id"] for s in m["scenes"])})')
+        frm, to, label = sc['start'], sc['end'], 'scene-' + re.sub(r'[^A-Za-z0-9_-]+', '_', a.scene)
+    os.makedirs(os.path.join(d, 'exports', 'previews'), exist_ok=True)
+    out = os.path.join(d, 'exports', 'previews', f'{label}.mp4')
+    cmd = [node(), os.path.join(ROOT, 'engine', 'render.js'), '--build', os.path.join(d, 'build'), '--out', out,
+           '--from', f'{frm:.3f}', '--to', f'{to:.3f}', '--scale', str(a.scale), '--fps', str(a.fps), '--fastshot',
+           '--preset', 'ultrafast', '--crf', '28']
+    if m['audio']:
+        cmd += ['--audio', os.path.join(d, m['audio'])]
+    t0 = time.time()
+    subprocess.run(cmd, check=True)
+    info = {'preview': os.path.relpath(out, d).replace(os.sep, '/'), 'from': round(frm, 2), 'to': round(to, 2),
+            'seconds': round(time.time() - t0, 1), 'problems': m['anchor_misses']}
+    wj(os.path.join(d, 'exports', 'previews', f'{label}.json'), dict(info, created=now()))
+    print(json.dumps(info, ensure_ascii=False))
 
 
 def cmd_render(a):
@@ -478,6 +506,10 @@ def cmd_finalize_cut(a):
     import grade as grading
     g = grading.project_grade(d)
     gvfs = grading.segment_vfs(g, os.path.join(d, 'build', 'grade'), len(footage.snap(segs))) if g else None
+    cfd = os.path.join(d, 'build', 'cf')
+    os.makedirs(cfd, exist_ok=True)
+    partial = os.path.join(cfd, '.partial')            # removed only when every card frame is written
+    open(partial, 'w').close()
     if a.full_frame:
         # V2 layouts: keep the whole 9:16 frame; the runtime crops/zooms per layout around the face focus
         n = footage.card_frames(raw, segs, os.path.join(d, 'build', 'cf'), crop=None, size=(1080, 1920), grade_vfs=gvfs)
@@ -486,6 +518,7 @@ def cmd_finalize_cut(a):
         n = footage.card_frames(raw, segs, os.path.join(d, 'build', 'cf'), crop=a.crop or cuts.get('crop'), grade_vfs=gvfs)
         cuts.pop('card_frames', None)
     cuts['graded'] = {'preset': g['preset'], 'intensity': g.get('intensity', 1.0)} if g else None
+    os.remove(partial)
     if a.crop:
         cuts['crop'] = a.crop
     wj(os.path.join(d, 'cuts.json'), cuts)
@@ -520,9 +553,13 @@ def cmd_plan(a):
     if not words:
         sys.exit('no words.json yet (run stt/finalize-cut/align first)')
     proj = project(a.slug)
-    pl = planner.plan(words, a.intensity)
+    pl = planner.plan(words, a.intensity, cta_keyword=proj.get('cta_keyword') or None)
     wj(os.path.join(d, 'plan.json'), pl)
-    draft = planner.draft_scenes(pl, words, brand=a.brand, cta_keyword=proj.get('cta_keyword'))
+    style = builder.style_name(a.style) if a.style else None
+    if a.director in ('single', 'hybrid') and style not in builder.STYLES:
+        sys.exit(f'--director {a.director} needs --style (one of {", ".join(builder.STYLES)} or 01-09; 05 is not available)')
+    draft = planner.draft_scenes(pl, words, brand=a.brand, cta_keyword=proj.get('cta_keyword'),
+                                 director=a.director, style=style)
     with open(os.path.join(d, 'plan.md'), 'w', encoding='utf-8') as f:
         f.write(planner.plan_markdown(pl, f'— {proj.get("title", a.slug)}') + planner.art_markdown(draft))
     wj(os.path.join(d, 'scenes.draft.json'), draft)
@@ -694,7 +731,8 @@ def cmd_library(a):
 
 
 def cmd_studio(a):
-    cmd = [sys.executable, os.path.join(ROOT, 'studio', 'serve.py')] + (['--port', str(a.port)] if a.port else [])
+    cmd = [sys.executable, os.path.join(ROOT, 'studio', 'serve.py')] + (['--port', str(a.port)] if a.port else []) + \
+          (['--open'] if getattr(a, 'open', False) else [])
     if os.name == 'nt':  # exec on Windows detaches the server from the console; run it in the foreground instead
         try:
             sys.exit(subprocess.call(cmd))
@@ -784,14 +822,20 @@ def main():
     s = sp.add_parser('grade-preview', help='before/after frames, clipping/skin/neutral checks, optional test MP4')
     s.add_argument('slug'); s.add_argument('--times'); s.add_argument('--preset'); s.add_argument('--intensity', type=float)
     s.add_argument('--mp4', action='store_true'); s.set_defaults(f=cmd_grade_preview)
+    s = sp.add_parser('preview', help='fast draft preview (half size, 15 fps) of the reel or one scene; not a version')
+    s.add_argument('slug'); s.add_argument('--scene'); s.add_argument('--scale', type=float, default=0.5)
+    s.add_argument('--fps', type=int, default=15); s.set_defaults(f=cmd_preview)
     s = sp.add_parser('plan', help='AI director first pass: plan.md + scenes.draft.json from words.json')
     s.add_argument('slug'); s.add_argument('--intensity', choices=['low', 'medium', 'high'], default='medium')
     s.add_argument('--brand', default='media-buying'); s.add_argument('--apply', action='store_true')
+    s.add_argument('--director', choices=['auto', 'single', 'hybrid'], default='auto',
+                   help='auto: style per scene from its role · single: --style everywhere · hybrid: --style + data/comparison styles')
+    s.add_argument('--style', help='main style for single/hybrid (name or 01-09)')
     s.set_defaults(f=cmd_plan)
     s = sp.add_parser('library', help='techniques and references'); s.add_argument('action', choices=['list', 'show', 'add-ref'])
     s.add_argument('--id'); s.add_argument('--url'); s.add_argument('--title'); s.add_argument('--creator')
     s.add_argument('--notes'); s.add_argument('--tech'); s.set_defaults(f=cmd_library)
-    s = sp.add_parser('studio', help='open the local review studio'); s.add_argument('--port', type=int); s.set_defaults(f=cmd_studio)
+    s = sp.add_parser('studio', help='open the local review studio'); s.add_argument('--port', type=int); s.add_argument('--open', action='store_true'); s.set_defaults(f=cmd_studio)
     s = sp.add_parser('check', help='check prerequisites'); s.set_defaults(f=cmd_check)
     a = p.parse_args()
     a.f(a)

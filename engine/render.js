@@ -21,12 +21,13 @@ for (let i = 2; i < process.argv.length; i++) {
 }
 const build = path.resolve(args.build);
 const meta = JSON.parse(fs.readFileSync(path.join(build, 'meta.json'), 'utf8'));
-const fps = meta.fps;
-const lossless = meta.mode === 'B' || !!args.lossless;
+const fps = meta.fps;                                   // frame clock of the card frames and animations
+const outFps = +(args.fps || fps);                      // output rate (previews use 15)
+const lossless = !args.fastshot && (meta.mode === 'B' || !!args.lossless);
 
 (async () => {
   const browser = await chromium.launch({ args: process.env.REEL_RASTER === 'multi' ? [] : ['--num-raster-threads=1', '--disable-partial-raster'] });
-  const page = await browser.newPage({ viewport: { width: meta.W, height: meta.H }, deviceScaleFactor: meta.scale });
+  const page = await browser.newPage({ viewport: { width: meta.W, height: meta.H }, deviceScaleFactor: +(args.scale || meta.scale) });
   page.on('pageerror', e => console.error('page error:', e.message));
   await page.goto(pathToFileURL(path.join(build, 'page.html')).href);  // works on Windows paths too
   await page.evaluate(() => window.ready);
@@ -55,7 +56,7 @@ const lossless = meta.mode === 'B' || !!args.lossless;
     }
     await page.evaluate(t => window.setTime(t), t);
   }
-  const shot = () => page.screenshot(lossless ? { type: 'png' } : { type: 'jpeg', quality: 95 });
+  const shot = () => page.screenshot(lossless ? { type: 'png' } : { type: 'jpeg', quality: args.fastshot ? 85 : 95 });
 
   if (args.stills) {
     fs.mkdirSync(args.stills, { recursive: true });
@@ -71,8 +72,8 @@ const lossless = meta.mode === 'B' || !!args.lossless;
 
   const from = +(args.from || 0);
   const to = Math.min(+(args.to || meta.duration), meta.duration);
-  const f0 = Math.round(from * fps), f1 = Math.round(to * fps);
-  const ff = ['-y', '-hide_banner', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(fps),
+  const f0 = Math.round(from * outFps), f1 = Math.round(to * outFps);
+  const ff = ['-y', '-hide_banner', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(outFps),
     '-c:v', lossless ? 'png' : 'mjpeg', '-i', '-'];
   if (args.audio) ff.push('-ss', String(from), '-t', String(to - from), '-i', args.audio);
   ff.push('-map', '0:v');
@@ -82,15 +83,15 @@ const lossless = meta.mode === 'B' || !!args.lossless;
     ff.push('-c:a', 'aac', '-b:a', '192k', '-ar', '48000');
   }
   ff.push('-c:v', 'libx264', '-preset', args.preset || 'slow', '-crf', String(args.crf || (meta.mode === 'A' ? 16 : 15)),
-    '-profile:v', 'high', '-pix_fmt', 'yuv420p', '-r', String(fps), '-movflags', '+faststart', '-shortest', args.out);
+    '-profile:v', 'high', '-pix_fmt', 'yuv420p', '-r', String(outFps), '-movflags', '+faststart', '-shortest', args.out);
   const proc = spawn('ffmpeg', ff, { stdio: ['pipe', 'inherit', 'inherit'] });
   const done = new Promise((res, rej) => proc.on('close', c => c === 0 ? res() : rej(new Error('ffmpeg exit ' + c))));
   const t0 = Date.now();
   for (let f = f0; f < f1; f++) {
-    await draw(f / fps);
+    await draw(f / outFps);
     const buf = await shot();
     if (!proc.stdin.write(buf)) await new Promise(r => proc.stdin.once('drain', r));
-    if ((f - f0) % (fps * 5) === 0) process.stderr.write(`\r${((f - f0) / fps).toFixed(0)}s / ${(to - from).toFixed(0)}s`);
+    if ((f - f0) % (outFps * 5) === 0) process.stderr.write(`\r${((f - f0) / outFps).toFixed(0)}s / ${(to - from).toFixed(0)}s`);
   }
   proc.stdin.end();
   await done;

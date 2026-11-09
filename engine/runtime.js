@@ -82,6 +82,15 @@
           kws.push({ g: o.g, inner: o.t, bg, t0: +o.g.dataset.t0, int: o.g.dataset.int, emph: o.g.dataset.emph === '1' });
         });
       });
+      // look 2: a long phrase must not run off its region or the frame. Shrink the block around its centre line to the
+      // region's room (data-room) and keep it inside 90…1770 px of the frame; never under the 46 px readable floor.
+      if ((D.look || 1) >= 2 && lines.length > 1) {
+        const need = (lines.length - 1) * size * lh + size * 1.5;
+        let f = k.dataset.room ? +k.dataset.room / need : 1;
+        const m = k.getCTM(); if (m) { const half = need / 2 * (m.d || 1); f = Math.min(f, (1770 - m.f) / half, (m.f - 90) / half); }
+        f = Math.max(Math.min(1, f), 46 / size);
+        if (f < 0.999) k.setAttribute('transform', `scale(${f.toFixed(3)})`);
+      }
     });
     dims = [...document.querySelectorAll('.dim')].map(el => ({ el, t0: +el.dataset.t0 }));
     kbs = [...document.querySelectorAll('.kb')].map(el => ({ el, z: +el.dataset.z, d: +el.dataset.d,

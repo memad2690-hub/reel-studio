@@ -1,0 +1,152 @@
+{
+  "source": "raw/raw.mp4",
+  "segments": [
+    [
+      1.66,
+      6.68
+    ],
+    [
+      7.16,
+      11.78
+    ],
+    [
+      12.3,
+      19.2
+    ],
+    [
+      19.7,
+      23.5
+    ],
+    [
+      23.78,
+      29.72
+    ],
+    [
+      29.86,
+      30.76
+    ],
+    [
+      35.72,
+      38.12
+    ],
+    [
+      38.5,
+      41.38
+    ],
+    [
+      48.78,
+      55.12
+    ],
+    [
+      55.52,
+      66.3
+    ]
+  ],
+  "report": [
+    {
+      "start": 1.78,
+      "end": 6.5,
+      "text": "ممكن brand يقول لي: \"معايا budget كبيرة للـ ads.\" وبرضو ما نبقاش مناسبين نشتغل مع بعض.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 7.28,
+      "end": 11.6,
+      "text": "لإن حجم الـ budget مش هو اللي بيحدد إذا كان الـ business جاهز للـ scaling أصلًا ولا لأ.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 12.42,
+      "end": 19.02,
+      "text": "تخيل brand عنده stock أصلًا هو limited، ومش عارف الـ margins بتاعته إيه، ولسه مفيش tracking واضح للـ، للـ e-commerce بتاعه.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 19.82,
+      "end": 23.32,
+      "text": "فقبل ما نزود الصرف محتاجين نجاوب على أصلًا هل المخزون يستحمل؟",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 23.9,
+      "end": 26.14,
+      "text": "هل الـ contribution أصلًا is positive؟",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 26.22,
+      "end": 29.54,
+      "text": "يعني هل إحنا في الأول وفي الآخر لما نطلع إعلانات بنطلع عليها ربح ولا لأ؟",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 29.98,
+      "end": 30.58,
+      "text": "هل الـ tracking",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 31.24,
+      "end": 32.06,
+      "text": "مـ-validated؟",
+      "kept": false,
+      "reason": "false start"
+    },
+    {
+      "start": 35.84,
+      "end": 37.94,
+      "text": "هل الـ tracking validated أو موثوق فيه؟",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 38.62,
+      "end": 41.2,
+      "text": "وهل فيه creatives جديدة جاهزة إن إحنا نعملها testing؟",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 42.08,
+      "end": 44.06,
+      "text": "الـ scaling الحقيقي مش إنك تصرف...",
+      "kept": false,
+      "reason": "retake (similar to next, 0.86)"
+    },
+    {
+      "start": 48.9,
+      "end": 51.12,
+      "text": "الـ scaling الحقيقي مش إنك تصرف فلوس أكتر.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 51.18,
+      "end": 54.94,
+      "text": "الـ scaling إنك تعرف امتى زيادة الصرف ممكن تبقى قرار منطقي.",
+      "kept": true,
+      "reason": ""
+    },
+    {
+      "start": 55.64,
+      "end": 66.12,
+      "text": "لو عندك brand وبتفكر تزود الـ ads budget، ابعت لي scale مع نوع المنتج بتاعك والميزانية الحالية بتاعتك عاملة ازاي، الـ ads budget عاملة ازاي، ونقدر نتكلم نشوف نقدر أصلًا نعمل scaling ولا لأ.",
+      "kept": true,
+      "reason": ""
+    }
+  ],
+  "created": "2026-11-09T02:18:33+02:00",
+  "note": "Edit segments by hand if needed, then run: reel.py roughcut <slug> --reuse",
+  "card_frames": "full",
+  "graded": {
+    "preset": "RC_Warm_Cinematic_v1",
+    "intensity": 1.0
+  }
+}

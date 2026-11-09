@@ -1,0 +1,195 @@
+{
+  "look": 2,
+  "mode": "B",
+  "brand": "media-buying",
+  "director": {
+    "mode": "auto",
+    "style": null
+  },
+  "words": "words.json",
+  "audio": "build/cut_audio.m4a",
+  "captions": true,
+  "caption_style": "highlight",
+  "caption_keywords": [
+    "ads",
+    "brand",
+    "budget",
+    "business",
+    "contribution",
+    "creatives",
+    "e-commerce",
+    "limited"
+  ],
+  "scenes": [
+    {
+      "id": "hook-1",
+      "title": "hook (0.75)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "ممكن",
+          "count": 10,
+          "intensity": "medium",
+          "emphasis": [
+            "ads.\""
+          ],
+          "x": 540,
+          "y": 380,
+          "size": 96,
+          "w": 920,
+          "focus": true
+        }
+      ],
+      "style": "kinetic",
+      "layout": "hero"
+    },
+    {
+      "id": "setup-2",
+      "title": "setup (0.35)",
+      "elements": [],
+      "start": {
+        "at": "لإن",
+        "after": 4.81
+      },
+      "style": "editorial",
+      "layout": "full"
+    },
+    {
+      "id": "example-3",
+      "title": "example (0.6)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "تخيل",
+          "count": 7,
+          "intensity": "medium",
+          "emphasis": [
+            "margins"
+          ],
+          "x": 540,
+          "y": 380,
+          "size": 96,
+          "w": 920,
+          "focus": true
+        },
+        {
+          "type": "pill",
+          "text": "مثال",
+          "color": "blue",
+          "x": 540,
+          "y": 60,
+          "size": 36,
+          "in": {
+            "rel": 0.05
+          }
+        }
+      ],
+      "start": {
+        "at": "تخيل",
+        "after": 9.42
+      },
+      "style": "editorial"
+    },
+    {
+      "id": "setup-4",
+      "title": "setup (0.35)",
+      "elements": [],
+      "start": {
+        "at": "فقبل",
+        "after": 16.32
+      },
+      "style": "editorial",
+      "layout": "full"
+    },
+    {
+      "id": "comparison-5",
+      "title": "comparison (0.6)",
+      "elements": [
+        {
+          "type": "versus",
+          "x": 540,
+          "y": 420,
+          "h": 520,
+          "a": {
+            "title": "عليها ربح",
+            "color": "blue",
+            "in": "عليها"
+          },
+          "b": {
+            "title": "لأ؟ هل",
+            "color": "red",
+            "in": "لأ؟"
+          },
+          "focus": true
+        }
+      ],
+      "start": {
+        "at": "أصلًا",
+        "after": 21.11
+      },
+      "style": "battle"
+    },
+    {
+      "id": "conclusion-6",
+      "title": "conclusion (0.6)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "creatives",
+          "count": 7,
+          "intensity": "medium",
+          "emphasis": [
+            "مش"
+          ],
+          "x": 540,
+          "y": 380,
+          "size": 96,
+          "w": 920,
+          "focus": true
+        }
+      ],
+      "start": {
+        "at": "creatives",
+        "after": 29.77
+      },
+      "style": "kinetic",
+      "layout": "hero"
+    },
+    {
+      "id": "example-7",
+      "title": "example (0.6)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "لو",
+          "count": 8,
+          "intensity": "medium",
+          "emphasis": [
+            "ads"
+          ],
+          "x": 540,
+          "y": 380,
+          "size": 96,
+          "w": 920,
+          "focus": true
+        },
+        {
+          "type": "pill",
+          "text": "مثال",
+          "color": "blue",
+          "x": 540,
+          "y": 60,
+          "size": 36,
+          "in": {
+            "rel": 0.05
+          }
+        }
+      ],
+      "start": {
+        "at": "لو",
+        "after": 38.61
+      },
+      "style": "editorial"
+    }
+  ]
+}

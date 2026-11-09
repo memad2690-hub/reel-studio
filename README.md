@@ -24,7 +24,8 @@ Each ✔ is your approval. Nothing expensive (voiceover credits, full renders) h
 ## Quick start
 
 - **In Claude:** attach this repo and say e.g. "make MB-007 as a cut-out explainer".
-- **On your computer:** see [SETUP.md](SETUP.md), then `python3 reel.py studio`.
+- **On your computer:** see [SETUP.md](SETUP.md), then double-click `Start Reel Studio.bat` (Windows) or run
+  `python3 reel.py studio --open`. The studio is at http://127.0.0.1:8765, on this computer only.
 
 ## Docs
 

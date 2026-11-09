@@ -30,18 +30,43 @@ def load_preset(pid):
 
 
 def project_grade(pdir):
-    """grade.json if present; else the Style 09 default when scenes.json says style "cinematic"; else None."""
+    """grade.json if present (intensity 0 = off); else RC Warm Cinematic for look-2 projects (every style);
+    else the Style 09 default when scenes.json says style "cinematic"; else None."""
     p = os.path.join(pdir, 'grade.json')
     if os.path.exists(p):
         with open(p, encoding='utf-8') as f:
             g = json.load(f)
         return g if g.get('preset') and g.get('intensity', 1) > 0 else None
-    sp = os.path.join(pdir, 'scenes.json')
-    if os.path.exists(sp):
-        with open(sp, encoding='utf-8') as f:
-            if json.load(f).get('style') == 'cinematic':
-                return {'preset': DEFAULT_STYLE09, 'intensity': 1.0, 'default_for': 'style 09'}
+    spec, proj = {}, {}
+    for name, ref in (('scenes.json', spec), ('project.json', proj)):
+        q = os.path.join(pdir, name)
+        if os.path.exists(q):
+            with open(q, encoding='utf-8') as f:
+                ref.update(json.load(f) or {})
+    if int(spec.get('look', proj.get('look', 1)) or 1) >= 2:
+        return {'preset': DEFAULT_STYLE09, 'intensity': 1.0, 'default_for': 'look 2 (all styles)'}
+    if spec.get('style') == 'cinematic':
+        return {'preset': DEFAULT_STYLE09, 'intensity': 1.0, 'default_for': 'style 09'}
     return None
+
+
+def grade_image(src, dst, g):
+    """Graded copy of a photo (same preset/intensity as the footage). Cached: redone only when src or grade change."""
+    from PIL import Image
+    key = json.dumps(g, sort_keys=True)
+    stamp = dst + '.grade'
+    if os.path.exists(dst) and os.path.exists(stamp) and os.path.getmtime(dst) >= os.path.getmtime(src):
+        with open(stamp, encoding='utf-8') as f:
+            if f.read() == key:
+                return dst
+    im = Image.open(src).convert('RGB')
+    rgb = np.asarray(im, dtype=np.float64) / 255.0
+    out = apply(rgb, load_preset(g['preset']), float(g.get('intensity', 1.0)), g.get('correction'))
+    os.makedirs(os.path.dirname(dst), exist_ok=True)
+    Image.fromarray(np.uint8(np.round(out * 255))).save(dst, quality=94)
+    with open(stamp, 'w', encoding='utf-8') as f:
+        f.write(key)
+    return dst
 
 
 # ------------------------------------------------------------------ colour math (all on 0..1 gamma-encoded RGB)

@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Reel Studio</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%23c8423a%22/%3E%3C/svg%3E">
 <style>
 @font-face{font-family:Cairo;src:url("/fonts/Cairo-Variable.ttf") format("truetype");font-weight:200 1000}
 :root{--paper:#f4eddd;--card:#fffdf7;--ink:#1f1d1a;--muted:#7a7366;--line:#e2d9c4;--red:#c8423a;--blue:#2f5d8a;--yellow:#f2cf4a;--green:#3f7a5a}
@@ -74,23 +75,40 @@ const $ = s => document.querySelector(s);
 const h = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt = t => t == null ? '' : `${Math.floor(t/60)}:${(t%60).toFixed(1).padStart(4,'0')}`;
 const api = (p, body) => fetch(p, body ? {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)} : {}).then(r => r.json());
-let cur = null, data = null, tab = 'review', noteFilter = 'open';
+let cur = null, data = null, tab = null, noteFilter = 'open';
 
 async function loadList(){
   const ps = await api('/api/projects');
-  $('#list').innerHTML = ps.length ? ps.map(p => `<div class="proj ${p.slug===cur?'on':''}" data-s="${h(p.slug)}">
+  const newBtn = `<button class="btn" id="newreel" style="width:100%;margin-bottom:10px">+ New reel</button><div id="newform"></div>`;
+  $('#list').innerHTML = newBtn + (ps.length ? ps.map(p => `<div class="proj ${p.slug===cur?'on':''}" data-s="${h(p.slug)}">
     <b dir="auto">${h(p.title || p.slug)}</b>
     <span class="tag ${p.mode==='A'?'blue':'red'}">${p.mode==='A'?'Cut-out':'Doodle'}</span>
     <span class="tag">${h(p.stage||'')}</span>${p.reel_id?`<span class="tag">${h(p.reel_id)}</span>`:''}
     ${p.open_notes?`<span class="tag red">${p.open_notes} open</span>`:''}</div>`).join('')
-    : '<p class="muted">No projects yet. Run <code>python3 reel.py new my-reel --mode A</code>.</p>';
+    : '<p class="muted">No projects yet.</p>');
   document.querySelectorAll('.proj').forEach(el => el.onclick = () => open(el.dataset.s));
+  $('#newreel').onclick = () => {
+    $('#newform').innerHTML = `<div class="panel" style="margin-bottom:12px">
+      <label style="font-weight:700;font-size:13px">Name (English, for the folder)</label><input id="nslug" placeholder="e.g. scaling-test" dir="ltr">
+      <label style="font-weight:700;font-size:13px">Title</label><input id="ntitle" dir="auto" placeholder="عنوان الريل">
+      <label style="font-weight:700;font-size:13px">CTA keyword (optional)</label><input id="ncta" dir="ltr" placeholder="e.g. BUDGET">
+      <div style="margin-top:8px;display:flex;gap:6px"><button class="btn" id="ncreate">Create</button><button class="btn ghost" id="ncancel">Cancel</button></div>
+      <div id="nmsg" class="prob" style="font-size:13px"></div></div>`;
+    $('#ncancel').onclick = () => $('#newform').innerHTML = '';
+    $('#ncreate').onclick = async () => {
+      const r = await api('/api/projects', {slug: $('#nslug').value.trim(), title: $('#ntitle').value.trim(), cta: $('#ncta').value.trim()});
+      if (r.error){ $('#nmsg').textContent = r.error; return; }
+      tab = null; open(r.slug);
+    };
+  };
 }
 
 async function open(slug){
   cur = slug; const d = await api('/api/project/' + encodeURIComponent(slug)); loadList();
   if (d.error || !d.project){ data = null; $('#detail').innerHTML = `<p class="muted">Can't open ${h(slug)}: ${h(d.error || 'unknown error')}.</p>`; return; }
-  data = d; render();
+  data = d;
+  if (!tab || slug !== open.last) tab = (d.approvals || {}).final ? 'review' : 'edit';   // unfinished reels open on Edit
+  open.last = slug; render();
 }
 
 function stagesHtml(){
@@ -100,7 +118,7 @@ function stagesHtml(){
 
 function render(){
   const p = data.project;
-  const tabs = ['review','edit','transcript','compare','storyboards','script','status'];
+  const tabs = ['edit','review','transcript','compare','storyboards','script','status'];
   $('#detail').innerHTML = `<h2 dir="auto" style="margin:0">${h(p.title)}</h2>
    <div class="muted">${h(p.slug)} · mode ${p.mode} ${p.reel_id?'· '+h(p.reel_id):''} ${p.cta_keyword?'· CTA '+h(p.cta_keyword):''}</div>
    ${stagesHtml()}
@@ -210,16 +228,53 @@ function say(res, okMsg){
 }
 async function loadEdit(){ ed = await api(`/api/project/${cur}/edit`); }
 
+const STYLE_LABEL = {editorial:'01 Editorial explainer', kinetic:'02 Kinetic typography', collage:'03 Paper cut-out collage', data:'04 Data storytelling',
+  parallax:'06 Parallax depth', battle:'07 Split-screen battle', whiteboard:'08 Whiteboard', cinematic:'09 Cinematic documentary'};
 function pipelineHtml(){
-  return `<div class="pipe">${ed.pipeline.map((p,i) => `<span class="st ${p.done?'done':''}">${i+1}. ${h(p.label)}${p.run?` <button data-run="${p.run}" title="python3 reel.py ${h(p.run)}">run</button>`:''}</span>`).join('<span style="align-self:center">→</span>')}</div>
+  const next = ed.pipeline.find(p => !p.done);
+  const g = ed.grade;
+  return `<div class="muted" style="font-size:13px;margin-bottom:4px">Look ${ed.look}${ed.look>=2?' (readable text, big speaker, art direction)':' (as approved)'} ·
+     Grade: ${g ? `${h(g.preset)} ${Math.round((g.intensity??1)*100)}% — footage &amp; photos only` : 'none'}
+     ${ed.keys && !ed.keys.elevenlabs ? ' · <b class="prob">ElevenLabs key not set</b>' : ''}</div>
+   <div class="pipe">${ed.pipeline.map((p,i) => `<span class="st ${p.done?'done':''}" title="${h(p.hint)}">${i+1}. ${h(p.label)}${p.run && p.run!=='direct'?` <button data-run="${p.run}" title="${h(p.hint)}">${p.done?'redo':'run'}</button>`:''}</span>`).join('<span style="align-self:center">→</span>')}</div>
+   ${next ? `<div class="panel" style="margin-bottom:10px;border-color:var(--blue)"><b>Next: ${h(next.label)}</b> — <span dir="auto">${h(next.hint)}</span></div>` : ''}
    <div id="job"></div>`;
+}
+function keyHtml(){
+  if (!ed.keys || ed.keys.elevenlabs) return '';
+  return `<div class="panel" style="margin-bottom:10px"><b>ElevenLabs key</b> <span class="muted" style="font-size:13px">needed to transcribe; saved on this computer in ${h(ed.keys.key_file)}, never shown again</span>
+    <div style="display:flex;gap:6px;margin-top:6px"><input id="elkey" type="password" autocomplete="off" placeholder="sk_..." style="width:360px" dir="ltr"><button class="btn" id="elsave">Save key</button></div></div>`;
+}
+function uploadHtml(){
+  if (ed.raw || (data.project.mode === 'A')) return '';
+  return `<div class="panel" style="margin-bottom:10px;border-color:var(--blue)"><b>Upload the talking-head video</b>
+    <span class="muted" style="font-size:13px">.mp4 / .mov / .m4v · copied into this project (your original file is not changed)</span>
+    <div style="display:flex;gap:8px;align-items:center;margin-top:8px"><input type="file" id="upf" accept=".mp4,.mov,.m4v,video/*" style="width:auto">
+    <button class="btn" id="upgo">Upload</button></div>
+    <div style="height:10px;background:#eee;border-radius:6px;margin-top:8px;overflow:hidden"><div id="upbar" style="height:100%;width:0;background:var(--green)"></div></div>
+    <div id="upmsg" class="muted" style="font-size:13px"></div></div>`;
+}
+function directorHtml(){
+  const dr = ed.director || {};
+  const styles = Object.entries(STYLE_LABEL);
+  return `<div class="panel" style="margin-top:12px"><b>Director</b> <span class="muted" style="font-size:13px">generates the whole edit from the transcript (numbers only as spoken; your current scenes are backed up; locked scenes are kept)</span>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin:8px 0">
+      ${[['auto','Auto Director','a style per scene, chosen from what is said'],['single','Single Style','one style for the whole reel'],['hybrid','Hybrid Style','your style + data/comparison scenes in their own styles']]
+        .map(([v,l,t]) => `<label title="${t}" style="font-weight:700"><input type="radio" name="dmode" value="${v}" style="width:auto" ${ (dr.mode||'auto')===v?'checked':''}> ${l}</label>`).join('')}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <select id="dstyle" style="width:auto" ${(dr.mode||'auto')==='auto'?'disabled title="Auto Director picks the styles"':''}>${styles.map(([k,l]) => `<option value="${k}" ${dr.style===k?'selected':''}>${l}</option>`).join('')}</select>
+      <select id="intens" style="width:auto"><option value="low">calm</option><option value="medium" selected>medium</option><option value="high">energetic</option></select>
+      <button class="btn" id="dgo">Generate edit</button></div>
+    <div class="muted" style="font-size:12px;margin-top:4px">05 Floating UI needs real CEOS screens; 03 collage and 06 parallax need the speaker cut-out step (run <i>segment</i>) or they fall back to framed video.</div></div>`;
 }
 function bindRun(){
   document.querySelectorAll('[data-run]').forEach(b => b.onclick = async () => {
     const cmd = b.dataset.run; const body = {cmd};
     if (cmd === 'plan') body.intensity = ($('#intens')||{}).value || 'medium';
+    if (cmd === 'export' && !confirm('Full-quality export (1080×1920): about 10–14 s per second of video. Start?')) return;
     if (cmd === 'stt'){ if (!confirm('Transcribing uses ElevenLabs speech-to-text credits. Continue?')) return; body.confirm_cost = true; }
     if (cmd === 'render' && !confirm('Full-quality render: this can take a long time (≈10–22 s per second of video). Start?')) return;
+    if (b.dataset.scene) body.scene = b.dataset.scene;
     const r = await post('run', body); if (r.error){ $('#job').innerHTML = `<p class="prob">${h(r.error)}</p>`; return; }
     watchJob(r.id);
   });
@@ -244,11 +299,17 @@ async function renderEdit(){
 }
 function drawEditBody(keepJob){
   const jobHtml = keepJob && $('#job') ? $('#job').innerHTML : '';
-  if (!ed.spec){ $('#tab').innerHTML = pipelineHtml() + `<p class="muted">No scenes.json yet: run <b>Analyze</b>, then ask Claude to turn plan.md into scenes (or apply the draft).</p>`; bindRun(); return; }
+  const noEdit = !ed.spec || !(ed.spec.scenes||[]).some(sc => (sc.elements||[]).length);
+  if (noEdit){
+    const ready = ed.pipeline.find(p => p.id === 'prepare'); 
+    $('#tab').innerHTML = pipelineHtml() + keyHtml() + uploadHtml() + (ready && !ready.done ? `<p class="muted">Upload → Transcribe → Rough cut (approve it in Review) → Prepare footage, then the Director builds the edit.</p>` : '') + directorHtml();
+    if (jobHtml) $('#job').innerHTML = jobHtml;
+    bindRun(); bindProduction(); return; }
   const ck = ed.check || {problems:[], notes:[], scenes:[]}, sc = ck.scenes, dur = ck.duration || (sc.length ? sc[sc.length-1].end : 1);
   const specSc = ed.spec.scenes || [];
   if (selScene == null || !sc.find(x => x.id === selScene)) selScene = sc.length ? sc[0].id : null;
   $('#tab').innerHTML = pipelineHtml() + `
+   ${keyHtml()}
    <div id="edmsg" style="min-height:22px;margin-bottom:6px"></div>
    ${ck.problems.length?`<div class="panel" style="margin-bottom:12px;border-color:var(--red)"><b class="prob">Blocks render</b>${ck.problems.map(p => `<div dir="auto">• ${h(p.element ?? '')} ${h(p.problem)}</div>`).join('')}</div>`:''}
    ${ck.notes.length?`<div class="notes" style="margin-bottom:10px">${ck.notes.map(n => `<div dir="auto">ℹ ${h(n)}</div>`).join('')}</div>`:''}
@@ -268,17 +329,44 @@ function drawEditBody(keepJob){
      <div class="panel" style="margin-top:12px"><b>Variants</b> <span class="muted" style="font-size:13px">snapshots of scenes.json; never overwritten</span>
        <div style="display:flex;gap:6px;margin:6px 0"><input id="vn" placeholder="e.g. high-energy" style="width:200px"><button class="btn" id="vs">Save current</button></div>
        ${ed.variants.map(v => `<span class="tag">${h(v)} <a href="#" data-uv="${h(v)}">use</a></span>`).join('') || '<span class="muted">none yet</span>'}
-       <div style="margin-top:10px;display:flex;gap:6px;align-items:center"><b>Director</b><select id="intens" style="width:auto"><option>low</option><option selected>medium</option><option>high</option></select>
-       <button class="btn ghost" data-run="plan">Re-analyze (draft only)</button></div></div>
+       </div>
+     ${directorHtml()}
+     ${(() => { const pv = (ed.previews||[]).find(p => p.preview.endsWith('/reel.mp4')); return pv ? `<div class="panel" style="margin-top:12px"><b>Latest full preview</b> <span class="muted" style="font-size:12px">half size · 15 fps · ${h(pv.created.slice(0,16).replace('T',' '))} · made in ${pv.seconds}s</span>
+        <video controls playsinline src="/media/${cur}/${pv.preview}?${Date.parse(pv.created)}" style="max-width:300px;display:block;margin-top:6px"></video></div>` : ''; })()}
      ${ed.edits.length?`<div class="notes" style="margin-top:10px"><b>Recent edits</b>${ed.edits.slice().reverse().map(e => `<div>${h(e.at.replace('T',' '))} · ${h(e.action)} ${h(e.scene||e.name||'')} ${e.keys?h(e.keys.join(',')):''}</div>`).join('')}</div>`:''}
     </div></div>`;
   if (jobHtml) $('#job').innerHTML = jobHtml;
-  bindRun(); drawInspector(); bindPreview(sc);
+  bindRun(); drawInspector(); bindPreview(sc); bindProduction();
   document.querySelectorAll('[data-sc]').forEach(el => el.onclick = () => { selScene = el.dataset.sc; document.querySelectorAll('[data-sc]').forEach(e => e.classList.toggle('on', e.dataset.sc === selScene));
     drawInspector(); const x = sc.find(q => q.id === selScene); if (x) seekPreview(x.storyboard_t ?? x.start); });
   $('#vs').onclick = async () => { const r = await post('edit/variant', {name: $('#vn').value}); if (!r.error){ await loadEdit(); drawEditBody(); } say(r, 'variant saved: ' + (r.variant || '')); };
   document.querySelectorAll('[data-uv]').forEach(a => a.onclick = async e => { e.preventDefault(); if (!confirm(`Replace scenes.json with variant "${a.dataset.uv}"? (current one is backed up)`)) return;
     const r = await post('edit/variant/use', {name: a.dataset.uv}); await loadEdit(); drawEditBody(); say(r, 'variant applied'); });
+}
+
+function bindProduction(){
+  if ($('#elsave')) $('#elsave').onclick = async () => { const r = await api('/api/settings/elevenlabs', {key: $('#elkey').value}); if (r.error){ alert(r.error); return; } await loadEdit(); drawEditBody(); };
+  if ($('#upgo')) $('#upgo').onclick = () => {
+    const f = $('#upf').files[0]; if (!f){ $('#upmsg').textContent = 'Choose a video first.'; return; }
+    const x = new XMLHttpRequest();
+    x.open('PUT', `/api/project/${encodeURIComponent(cur)}/upload?name=${encodeURIComponent(f.name)}`);
+    x.setRequestHeader('X-Reel-Upload', '1');
+    x.upload.onprogress = e => { if (e.lengthComputable){ $('#upbar').style.width = (e.loaded / e.total * 100).toFixed(1) + '%'; $('#upmsg').textContent = `${(e.loaded/1e6).toFixed(0)} / ${(e.total/1e6).toFixed(0)} MB`; } };
+    x.onload = async () => { let r = {}; try { r = JSON.parse(x.responseText); } catch (e) {}
+      if (x.status !== 200){ $('#upmsg').innerHTML = `<span class="prob">${h(r.error || 'upload failed')}</span>`; return; }
+      $('#upmsg').textContent = `Uploaded: ${r.width}×${r.height}, ${r.duration}s. Next: Transcribe.`; await loadEdit(); drawEditBody(); };
+    x.onerror = () => $('#upmsg').innerHTML = '<span class="prob">upload failed (is the studio still running?)</span>';
+    $('#upgo').disabled = true; x.send(f);
+  };
+  document.querySelectorAll('input[name=dmode]').forEach(r => r.onchange = () => { $('#dstyle').disabled = r.value === 'auto' && r.checked; });
+  if ($('#dgo')) $('#dgo').onclick = async () => {
+    const mode = (document.querySelector('input[name=dmode]:checked') || {}).value || 'auto';
+    const has = ed.spec && (ed.spec.scenes||[]).some(sc => (sc.elements||[]).length);
+    if (has && !confirm('Replace the current edit with a new one from the Director? (Your current scenes are backed up; locked scenes are kept.)')) return;
+    const r = await post('run', {cmd: 'direct', director: mode, style: $('#dstyle').value, intensity: $('#intens').value});
+    if (r.error){ $('#job').innerHTML = `<p class="prob">${h(r.error)}</p>`; return; }
+    watchJob(r.id);
+  };
 }
 
 function drawInspector(){
@@ -301,10 +389,13 @@ function drawInspector(){
    <details style="margin-top:8px"><summary><b>Elements</b> (${(s.elements||[]).length}: ${h((s.elements||[]).map(e => e.type).join(', '))})</summary>
      <textarea id="f-elements" dir="ltr" ${dis} style="min-height:200px;font:12px ui-monospace,monospace">${h(JSON.stringify(s.elements||[], null, 1))}</textarea></details>
    ${overl.length?`<div class="notes" style="margin-top:6px">Director: ${overl.map(p => `${h(p.role)} (${p.confidence})`).join(' · ')}</div>`:''}
+   ${(() => { const pv = (ed.previews||[]).find(p => p.preview.endsWith('/scene-' + String(s.id).replace(/[^A-Za-z0-9_-]+/g,'_') + '.mp4')); return pv ? `<video controls playsinline src="/media/${cur}/${pv.preview}?${Date.parse(pv.created)}" style="max-width:240px;display:block;margin-top:8px"></video><div class="muted" style="font-size:12px">scene preview · ${h(pv.created.slice(11,16))}</div>` : ''; })()}
    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn" id="sv" ${dis}>Save scene</button>
      <button class="btn ghost" id="rg" ${dis} title="Replace this scene's graphics with the director's draft for the same speech">Regenerate this scene</button>
+     <button class="btn ghost" data-run="preview" data-scene="${h(s.id)}" title="Fast half-size preview of just this scene">▶ Preview scene</button>
      ${lock?'<span class="muted">Locked: unlock to edit. Locked scenes are kept by Regenerate and by re-planning.</span>':''}</div>`;
   $('#lk').onchange = async e => { const r = await post('edit/scene', {id: s.id, patch: {locked: e.target.checked || null}}); await loadEdit(); drawEditBody(); say(r, e.target.checked?'locked':'unlocked'); };
+  bindRun();                                          // the inspector's ▶ Preview scene button
   if (lock) return;
   $('#sv').onclick = async () => {
     let els; try { els = JSON.parse($('#f-elements').value); } catch (e) { say({error: 'elements: not valid JSON — ' + e.message}); return; }

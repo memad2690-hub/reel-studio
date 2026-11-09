@@ -1,0 +1,113 @@
+[
+  {
+    "id": "rc001",
+    "kind": "roughcut",
+    "file": "exports/rc001.mp4",
+    "created": "2026-11-09T02:20:09+02:00",
+    "segments": [
+      [
+        1.66,
+        6.68
+      ],
+      [
+        7.16,
+        11.78
+      ],
+      [
+        12.3,
+        19.2
+      ],
+      [
+        19.7,
+        23.5
+      ],
+      [
+        23.78,
+        29.72
+      ],
+      [
+        29.86,
+        30.76
+      ],
+      [
+        35.72,
+        38.12
+      ],
+      [
+        38.5,
+        41.38
+      ],
+      [
+        48.78,
+        55.12
+      ],
+      [
+        55.52,
+        66.3
+      ]
+    ],
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 49.57,
+      "mbps": 8.48,
+      "audio": true,
+      "problems": []
+    }
+  },
+  {
+    "id": "v001",
+    "kind": "render",
+    "file": "exports/v001.mp4",
+    "sheet": "exports/v001_sheet.png",
+    "created": "2026-11-09T02:47:32+02:00",
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 49.57,
+      "mbps": 7.22,
+      "audio": true,
+      "problems": []
+    },
+    "draft": false,
+    "note": "final export from the studio"
+  },
+  {
+    "id": "v002",
+    "kind": "render",
+    "file": "exports/v002.mp4",
+    "sheet": "exports/v002_sheet.png",
+    "created": "2026-11-09T03:02:17+02:00",
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 49.57,
+      "mbps": 6.57,
+      "audio": true,
+      "problems": []
+    },
+    "draft": false,
+    "note": "final export from the studio"
+  },
+  {
+    "id": "v003",
+    "kind": "render",
+    "file": "exports/v003.mp4",
+    "sheet": "exports/v003_sheet.png",
+    "created": "2026-11-09T03:16:27+02:00",
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 49.57,
+      "mbps": 6.1,
+      "audio": true,
+      "problems": []
+    },
+    "draft": false,
+    "note": "final export from the studio"
+  }
+]
