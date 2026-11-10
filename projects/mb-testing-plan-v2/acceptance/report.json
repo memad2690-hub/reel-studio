@@ -1,0 +1,263 @@
+{
+ "project": "mb-testing-plan-v2",
+ "video": "exports/v001.mp4",
+ "verdict": "warn",
+ "checks": [
+  {
+   "id": "finance",
+   "name": "No incorrect financial calculations",
+   "status": "pass",
+   "detail": "1 financial component(s) checked by the build (totals, results, tones, chart sums)",
+   "evidence": []
+  },
+  {
+   "id": "assets",
+   "name": "No missing assets",
+   "status": "pass",
+   "detail": "audio present; 1523 card frames for 50.8s; fonts bundled",
+   "evidence": []
+  },
+  {
+   "id": "timing",
+   "name": "Graphics timed to speech",
+   "status": "pass",
+   "detail": "every anchor found; nothing timed after its scene ends",
+   "evidence": []
+  },
+  {
+   "id": "captions",
+   "name": "Caption timing",
+   "status": "pass",
+   "detail": "55 captions, 145 words; each caption starts on its first spoken word (±1 frame)",
+   "evidence": []
+  },
+  {
+   "id": "clip",
+   "name": "No clipped text",
+   "status": "pass",
+   "detail": "65 moments checked; every visible text box inside the 1080×1920 frame",
+   "evidence": []
+  },
+  {
+   "id": "overlap-caption",
+   "name": "Graphics clear of captions",
+   "status": "pass",
+   "detail": "no text graphic covers more than 20% of a caption",
+   "evidence": []
+  },
+  {
+   "id": "overlap-face",
+   "name": "Graphics clear of the face",
+   "status": "pass",
+   "detail": "face found at 65/65 moments; no front graphic covers more than 30% of it",
+   "evidence": []
+  },
+  {
+   "id": "safe-zone",
+   "name": "Text clear of platform UI (heuristic)",
+   "status": "pass",
+   "detail": "no text in the bottom 220 px or the lower right 100 px column",
+   "evidence": []
+  },
+  {
+   "id": "readable",
+   "name": "Text readable on a phone (≥ 44 px)",
+   "status": "pass",
+   "detail": "every text ≥ 44 px (captions included)",
+   "evidence": []
+  },
+  {
+   "id": "art",
+   "name": "Art direction (focus, density, speaker, empty page)",
+   "status": "warn",
+   "detail": "3 note(s) to review",
+   "evidence": [
+    "hook: page mostly empty at 2 sampled moments",
+    "suspects: two elements of equal weight compete for first look",
+    "rules: two elements of equal weight compete for first look"
+   ]
+  },
+  {
+   "id": "shaping",
+   "name": "Correct Arabic shaping",
+   "status": "pass",
+   "detail": "77 distinct texts; Cairo loaded; letters join (each word drawn shaped differs from its letters drawn apart)",
+   "evidence": []
+  },
+  {
+   "id": "rtl",
+   "name": "No broken RTL",
+   "status": "pass",
+   "detail": "every line with Arabic runs right→left (also when it starts with a Latin word); numbers read left→right",
+   "evidence": []
+  },
+  {
+   "id": "stable",
+   "name": "Page runs without errors",
+   "status": "pass",
+   "detail": "no page or console errors",
+   "evidence": []
+  },
+  {
+   "id": "export",
+   "name": "Export format (1080×1920 · 9:16 · 30 fps · H.264 · MP4)",
+   "status": "pass",
+   "detail": "1080×1920, 30/1, h264 High yuv420p, faststart yes, 50.77s, 6525 kb/s, 41.4 MB",
+   "evidence": []
+  },
+  {
+   "id": "audio",
+   "name": "Consistent audio",
+   "status": "pass",
+   "detail": "aac 48000 Hz 2ch 192 kb/s; integrated -17.5 LUFS, LRA 4.2 LU, true peak -1.5 dBTP; audio length = video length ±0.1 s",
+   "evidence": []
+  },
+  {
+   "id": "stable-render",
+   "name": "Stable rendering (decodes cleanly, no black frames)",
+   "status": "pass",
+   "detail": "whole file decodes without errors; no black frames ≥ 0.1 s",
+   "evidence": []
+  },
+  {
+   "id": "transitions",
+   "name": "Smooth transitions",
+   "status": "pass",
+   "detail": "1 designed transition(s) (plan:blur); no frozen picture ≥ 1.5 s",
+   "evidence": []
+  },
+  {
+   "id": "determinism",
+   "name": "Deterministic rerenders",
+   "status": "pass",
+   "detail": "4 frames rendered twice: byte-identical PNGs",
+   "evidence": []
+  }
+ ],
+ "flagged_sheet": null,
+ "scenes": [
+  {
+   "id": "hook",
+   "style": "editorial",
+   "layout": "top",
+   "tr": null
+  },
+  {
+   "id": "mistake",
+   "style": "editorial",
+   "layout": "pip-right",
+   "tr": null
+  },
+  {
+   "id": "suspects",
+   "style": "editorial",
+   "layout": "bottom",
+   "tr": null
+  },
+  {
+   "id": "decide",
+   "style": "editorial",
+   "layout": "hero",
+   "tr": null
+  },
+  {
+   "id": "plan",
+   "style": "editorial",
+   "layout": "top",
+   "tr": "blur"
+  },
+  {
+   "id": "rules",
+   "style": "editorial",
+   "layout": "pip-left",
+   "tr": null
+  },
+  {
+   "id": "payoff",
+   "style": "editorial",
+   "layout": "bottom",
+   "tr": null
+  },
+  {
+   "id": "cta",
+   "style": "editorial",
+   "layout": "top",
+   "tr": null
+  }
+ ],
+ "duration": 50.767,
+ "art": [
+  {
+   "scene": "hook",
+   "look_first": "ads budget 50,000 ج",
+   "focal_px": 130,
+   "max_elements": 2,
+   "max_words": 5,
+   "speaker_share": 0.44,
+   "empty_moments": 2
+  },
+  {
+   "scene": "mistake",
+   "look_first": "أكتر خطأ بشوفه",
+   "focal_px": 98,
+   "max_elements": 3,
+   "max_words": 7,
+   "speaker_share": 0.14,
+   "empty_moments": 0
+  },
+  {
+   "scene": "suspects",
+   "look_first": "مفيش اختبار بيفصل بينهم",
+   "focal_px": 105,
+   "max_elements": 3,
+   "max_words": 4,
+   "speaker_share": 0.44,
+   "empty_moments": 0
+  },
+  {
+   "scene": "decide",
+   "look_first": "هتحدد بناءً على إيه؟",
+   "focal_px": 84,
+   "max_elements": 1,
+   "max_words": 4,
+   "speaker_share": 0.63,
+   "empty_moments": 0
+  },
+  {
+   "scene": "plan",
+   "look_first": "اعمل testing plan",
+   "focal_px": 92,
+   "max_elements": 2,
+   "max_words": 7,
+   "speaker_share": 0.44,
+   "empty_moments": 1
+  },
+  {
+   "scene": "rules",
+   "look_first": "ثبت المتغيرات",
+   "focal_px": 74,
+   "max_elements": 3,
+   "max_words": 6,
+   "speaker_share": 0.14,
+   "empty_moments": 0
+  },
+  {
+   "scene": "payoff",
+   "look_first": "بتشتريلك معلومات",
+   "focal_px": 101,
+   "max_elements": 3,
+   "max_words": 4,
+   "speaker_share": 0.44,
+   "empty_moments": 0
+  },
+  {
+   "scene": "cta",
+   "look_first": "اكتبلي BUDGET مثال testing pla",
+   "focal_px": 120,
+   "max_elements": 1,
+   "max_words": 7,
+   "speaker_share": 0.44,
+   "empty_moments": 0
+  }
+ ]
+}

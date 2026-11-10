@@ -1,0 +1,23 @@
+{
+  "slug": "mb-testing-plan-v2",
+  "title": "ما تحرقش الـ 50 ألف على إعلان واحد (V2 Editorial)",
+  "mode": "B",
+  "reel_id": "",
+  "cta_keyword": "BUDGET",
+  "stage": "review",
+  "created": "2026-11-10T13:27:31+02:00",
+  "length_target_s": [
+    45,
+    60
+  ],
+  "elevenlabs": {
+    "flow_id": "",
+    "voice_id": "",
+    "generation_id": "",
+    "chosen_take": ""
+  },
+  "notes": "V2 Style 01 (Editorial) edit of the approved mb-testing-plan cut + script, look 2, RC Warm Cinematic",
+  "look": 2,
+  "raw": "raw/raw.mp4",
+  "source_name": "F5726C1E-EF8D-497A-8C19-9B8AF3436F94.mp4"
+}

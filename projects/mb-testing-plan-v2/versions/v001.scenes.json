@@ -1,0 +1,319 @@
+{
+ "look": 2,
+ "mode": "B",
+ "brand": "media-buying",
+ "director": {
+  "mode": "single",
+  "style": "editorial",
+  "by": "Claude (hand-directed from the Single Style 01 draft)"
+ },
+ "words": "words.json",
+ "audio": "build/cut_audio.m4a",
+ "captions": true,
+ "caption_style": "highlight",
+ "caption_keywords": [
+  "BUDGET",
+  "testing",
+  "plan",
+  "creative",
+  "KPIs",
+  "stop",
+  "rules",
+  "معلومات",
+  "اختبار"
+ ],
+ "style": "editorial",
+ "scenes": [
+  {
+   "id": "hook",
+   "start": 0,
+   "layout": "top",
+   "elements": [
+    {
+     "type": "statcard",
+     "label": "ads budget",
+     "value": 50000,
+     "tone": "neutral",
+     "x": 540,
+     "y": 210,
+     "size": 130,
+     "in": "50",
+     "anim": "spring"
+    },
+    {
+     "type": "headline",
+     "pre": "ما تحرقهمش على",
+     "hl": "إعلان واحد",
+     "post": "",
+     "x": 540,
+     "y": 520,
+     "size": 68,
+     "in": "تحرقهمش",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "mistake",
+   "start": 3.85,
+   "layout": "pip-right",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "أكتر",
+     "hl": "خطأ",
+     "post": "بشوفه",
+     "x": 540,
+     "y": 110,
+     "size": 92,
+     "in": "خطأ",
+     "anim": "stamp"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "معظم الميزانية",
+      "على creative واحد"
+     ],
+     "x": 540,
+     "y": 400,
+     "size": 70,
+     "in": "معظم",
+     "anim": "slide-left"
+    },
+    {
+     "type": "pill",
+     "text": "لأنه عاجبه · أو ما عندوش غيره",
+     "color": "red",
+     "x": 540,
+     "y": 660,
+     "size": 48,
+     "in": "عاجبه",
+     "anim": "spring"
+    }
+   ]
+  },
+  {
+   "id": "suspects",
+   "start": 11.05,
+   "layout": "bottom",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "لو فشل…",
+     "hl": "المشكلة فين؟",
+     "post": "",
+     "x": 540,
+     "y": 110,
+     "size": 84,
+     "in": "فشل",
+     "anim": "wipe",
+     "out": {
+      "at": "audience",
+      "offset": -0.15
+     },
+     "exit": "fade"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "Audience؟"
+     ],
+     "x": 540,
+     "y": 250,
+     "size": 78,
+     "in": "audience",
+     "anim": "slide-left",
+     "out": "بيفصل"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "Offer؟"
+     ],
+     "x": 540,
+     "y": 440,
+     "size": 78,
+     "in": "offer",
+     "anim": "slide-left",
+     "out": "بيفصل"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "Creative angle؟"
+     ],
+     "x": 540,
+     "y": 630,
+     "size": 78,
+     "in": "angle",
+     "anim": "slide-left",
+     "out": "بيفصل"
+    },
+    {
+     "type": "headline",
+     "pre": "مفيش",
+     "hl": "اختبار",
+     "post": "بيفصل بينهم",
+     "x": 540,
+     "y": 380,
+     "size": 86,
+     "in": "بيفصل",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "decide",
+   "start": 19.35,
+   "layout": "hero",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "هتحدد",
+     "hl": "بناءً على إيه؟",
+     "post": "",
+     "x": 540,
+     "y": 210,
+     "size": 84,
+     "in": "تحدد",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "plan",
+   "start": 22.95,
+   "layout": "top",
+   "transition": "blur",
+   "elements": [
+    {
+     "type": "headline",
+     "pre": "اعمل",
+     "hl": "testing plan",
+     "post": "",
+     "x": 540,
+     "y": 120,
+     "size": 92,
+     "in": "testing",
+     "anim": "stamp"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "حملة مستقرة بالفعل",
+      "جزء محدود من الميزانية"
+     ],
+     "x": 540,
+     "y": 420,
+     "size": 66,
+     "in": "مستقرة",
+     "anim": "slide-left",
+     "out": {
+      "at": "three",
+      "offset": -0.25
+     }
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "three angles مختلفين"
+     ],
+     "x": 540,
+     "y": 420,
+     "size": 80,
+     "in": "three",
+     "anim": "spring"
+    }
+   ]
+  },
+  {
+   "id": "rules",
+   "start": 32.05,
+   "layout": "pip-left",
+   "elements": [
+    {
+     "type": "steps",
+     "x": 540,
+     "y": 180,
+     "gap": 250,
+     "size": 72,
+     "items": [
+      {
+       "type": "wcard",
+       "text": "ثبت المتغيرات",
+       "in": "ثبت"
+      },
+      {
+       "type": "wcard",
+       "text": "حدد KPIs",
+       "in": "KPIs"
+      },
+      {
+       "type": "wcard",
+       "text": "Stop rules قبل التشغيل",
+       "text_color": "red",
+       "in": "stop"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "payoff",
+   "start": 36.95,
+   "layout": "bottom",
+   "elements": [
+    {
+     "type": "wcard",
+     "lines": [
+      "مش بس بتجيب مبيعات"
+     ],
+     "x": 540,
+     "y": 120,
+     "size": 68,
+     "in": "الميزانية",
+     "anim": "fade"
+    },
+    {
+     "type": "headline",
+     "pre": "بتشتريلك",
+     "hl": "معلومات",
+     "post": "",
+     "x": 540,
+     "y": 380,
+     "size": 100,
+     "in": "بتشتريلك",
+     "anim": "stamp"
+    },
+    {
+     "type": "pill",
+     "text": "للقرار اللي بعده",
+     "color": "blue",
+     "x": 540,
+     "y": 620,
+     "size": 50,
+     "in": "القرار",
+     "anim": "spring"
+    }
+   ]
+  },
+  {
+   "id": "cta",
+   "start": 43.25,
+   "layout": "top",
+   "elements": [
+    {
+     "type": "cta",
+     "prompt": "اكتبلي",
+     "keyword": "BUDGET",
+     "magnet": "مثال testing plan تشتغل عليه",
+     "x": 540,
+     "y": 300,
+     "in": "اكتبلي",
+     "anim": "spring"
+    }
+   ]
+  }
+ ]
+}
