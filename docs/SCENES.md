@@ -178,6 +178,17 @@ Brand `whiteboard` (white board, marker colours). Strokes draw on with determini
 word highlighted) · `editorial` (black-and-white, square) · `energy` (highlighter box, current word on red) · `minimal` (small,
 cinematic). Light presets switch to dark text when the caption sits on the page instead of the video.
 
+Animated presets (word-level motion timed to each spoken word, one key word per line):
+- `editorial-highlight`: Amiri serif, the key word lands on a deep-red paper strip, small line counter (03 / 15) above.
+- `pop-sticker`: every word on its own colour block (black outline, hard shadow) that pops in when spoken; key word purple;
+  two little stickers pop around the line. Loud: use for hooks/CTAs or high-energy reels, not a whole calm explainer.
+- `paper-plane`: a paper plane in the highlight colour flies across (right→left on Arabic lines) and reveals the line; key
+  word in the highlight colour.
+- `rolodex-flip`: the line builds word by word, each word flips down like a rolodex card; key word on a highlight chip.
+Key word = the first `caption_keywords` match on the line, else the word with a number or an English term (ROAS, 5%),
+else none. Words move as whole words, so Arabic letters keep joining. Adapted from the MIT "claude-caption-styles" pack
+(@vibha.in.progress), rebuilt for RTL; fonts are bundled (Amiri, OFL) so renders work offline.
+
 ## V2 — Editing director (`reel.py plan`)
 Pacing presets: `low` (min scene 6 s, ≤4 graphic scenes/min, captions `clean`), `medium` (4 s, ≤8/min, `highlight`),
 `high` (2.5 s, ≤14/min, `kinetic`, opens full-frame). Draft scenes keep a `_plan` note (role, confidence, reason) that
@@ -268,7 +279,7 @@ They move the footage and graphics only; captions, film grain and the page backg
 
 ### Scene `caption_style`
 Overrides the reel's caption preset for that scene's captions (presets: box, highlight, clean, kinetic, editorial,
-energy, minimal).
+energy, minimal, editorial-highlight, pop-sticker, paper-plane, rolodex-flip).
 
 ### New element entrances / exit
 `"anim": "blur-in"` (fade in from a 14 px blur, slight scale), `"anim": "rise"` (rises 44 px with fade, blur and scale) ·

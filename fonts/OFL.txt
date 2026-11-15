@@ -1,3 +1,6 @@
+Amiri-Bold-arabic.woff2, Amiri-Bold-latin.woff2: Copyright 2010-2022 The Amiri Project Authors (https://github.com/aliftype/amiri),
+licensed under the SIL Open Font License 1.1 (same licence text as below).
+
 Copyright 2009 The Cairo Project Authors (https://github.com/Gue3bara/Cairo)
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.

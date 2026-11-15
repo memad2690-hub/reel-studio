@@ -226,6 +226,74 @@
     minimal:   { box: (D.look >= 2 ? 'background:none;color:#fff;font-size:56px;font-weight:800;text-shadow:0 2px 3px rgba(0,0,0,.9),0 0 14px rgba(0,0,0,.75)'
                                      : 'background:none;color:#fff;font-size:42px;font-weight:700;text-shadow:0 2px 6px rgba(0,0,0,.85)'), act: null },
   };
+  // Animated presets: every word is its own inline-block (Arabic letters keep joining), motion is driven by the word's
+  // spoken time so preview and render match; c.k = the line's key word (build.py key_word), RTL lines move right→left.
+  const AR = /[؀-ۿ]/;
+  const pad2 = n => String(n).padStart(2, '0');
+  const SHADOW = 'text-shadow:0 3px 4px rgba(0,0,0,.85),0 0 16px rgba(0,0,0,.55)';
+  const STICK = ['★', '✦', '♥', '✸'], POP_BG = [['#c6f432', '#111'], ['#ff8fc7', '#111'], ['#ffffff', '#111'], ['#7cc4ff', '#111']];
+  const ANIM = {
+    'editorial-highlight': {
+      box: `background:none;padding:0;color:#fff;font:700 66px/1.25 Amiri,Cairo,serif;${SHADOW}`,
+      html(c, t, e, w) {
+        const ci = D.captions.indexOf(c), n = D.captions.length;
+        const num = `<div style="font:700 20px Cairo;letter-spacing:3px;opacity:.75;direction:ltr;margin-bottom:6px">${pad2(ci + 1)} / ${pad2(n)}</div>`;
+        return num + w.map((x, j) => {
+          const q = clamp((t - c.wt[j] + 0.06) / 0.28, 0, 1), y = 16 * (1 - easeOut(q));
+          let st = `display:inline-block;opacity:${q.toFixed(3)};transform:translateY(${y.toFixed(1)}px)`;
+          if (j === c.k) {
+            const g = easeOut(clamp((t - c.wt[j] - 0.05) / 0.32, 0, 1));
+            st += `;padding:0 12px;transform:translateY(${y.toFixed(1)}px) rotate(-1.5deg);background:linear-gradient(#b3261e,#b3261e) no-repeat ${c.rtl ? 'right' : 'left'} 58%/${(g * 100).toFixed(1)}% 78%`;
+          }
+          return `<span style="${st}">${e(x)}</span>`;
+        }).join(' ');
+      },
+    },
+    'pop-sticker': {
+      box: 'background:none;padding:0;color:#111;font:900 54px/1.15 Cairo;text-shadow:none;white-space:normal;width:max-content;max-width:900px;text-align:center',
+      html(c, t, e, w) {
+        const ci = D.captions.indexOf(c);
+        let out = w.map((x, j) => {
+          const q = clamp((t - c.wt[j] + 0.04) / 0.34, 0, 1);
+          const sc = q <= 0 ? 0 : spring(q), rot = ((ci + j) % 2 ? 2.5 : -2.5) * (j === c.k ? 1.6 : 1);
+          const [bg, fg] = j === c.k ? ['#7c3aed', '#fff'] : POP_BG[(ci * 3 + j) % POP_BG.length];
+          return `<span style="display:inline-block;margin:6px 5px;padding:0 18px 8px;background:${bg};color:${fg};border:4px solid #111;`
+            + `border-radius:14px;box-shadow:6px 6px 0 #111;opacity:${q > 0 ? 1 : 0};transform:rotate(${rot}deg) scale(${sc.toFixed(3)})">${e(x)}</span>`;
+        }).join('');
+        [[-34, 8], [-18, 88]].forEach(([top, left], s) => {         // two stickers pop just after the line starts
+          const q = clamp((t - c.start - 0.15 - 0.12 * s) / 0.3, 0, 1);
+          out += `<span style="position:absolute;top:${s ? 'auto' : top + 'px'};bottom:${s ? top + 'px' : 'auto'};left:${left}%;`
+            + `font:900 ${s ? 34 : 42}px Cairo;color:${s ? '#ff4f9a' : D.hlColor};-webkit-text-stroke:2px #111;`
+            + `transform:scale(${(q > 0 ? spring(q) : 0).toFixed(3)}) rotate(${s ? 14 : -12}deg)">${STICK[(ci + s) % STICK.length]}</span>`;
+        });
+        return out;
+      },
+    },
+    'paper-plane': {
+      box: `background:none;padding:0 20px;color:#fff;font:800 58px/1.3 Cairo;${SHADOW}`,
+      html(c, t, e, w) {
+        const p = easeInOut(clamp((t - c.start + 0.05) / 0.55, 0, 1));
+        const fly = clamp((t - c.start + 0.05) / 0.75, 0, 1.4), px = c.rtl ? 100 - fly * 100 : fly * 100;
+        const clip = c.rtl ? `inset(-40px 0 -40px ${((1 - p) * 100).toFixed(1)}%)` : `inset(-40px ${((1 - p) * 100).toFixed(1)}% -40px 0)`;
+        const words = w.map((x, j) => `<span style="display:inline-block${j === c.k ? ';color:' + D.hlColor : ''}">${e(x)}</span>`).join(' ');
+        const plane = fly >= 1.4 ? '' : `<svg width="70" height="70" viewBox="0 0 24 24" style="position:absolute;top:50%;left:${px.toFixed(1)}%;`
+          + `transform:translate(-50%,-62%) scaleX(${c.rtl ? -1 : 1}) rotate(-8deg);opacity:${(1 - clamp((fly - 1.1) / 0.3, 0, 1)).toFixed(3)};`
+          + `filter:drop-shadow(0 3px 3px rgba(0,0,0,.6))"><path d="M2 12 22 3 15 21 11 13Z" fill="${D.hlColor}" stroke="#111" stroke-width="1.3" `
+          + `stroke-linejoin="round"/><path d="M11 13 22 3" stroke="#111" stroke-width="1.3"/></svg>`;
+        return `<span style="display:inline-block;clip-path:${clip}">${words}</span>${plane}`;
+      },
+    },
+    'rolodex-flip': {
+      box: `background:none;padding:0;color:#fff;font:900 60px/1.25 Cairo;${SHADOW};perspective:600px`,
+      html(c, t, e, w) {
+        return w.map((x, j) => {
+          const q = clamp((t - c.wt[j] + 0.03) / 0.3, 0, 1), r = -95 * (1 - easeOut(q));
+          const key = j === c.k ? `;background:${D.hlColor};color:#111;text-shadow:none;padding:0 12px 6px;border-radius:10px` : '';
+          return `<span style="display:inline-block;transform-origin:50% 0;transform:rotateX(${r.toFixed(1)}deg);opacity:${q > 0 ? Math.min(1, q * 3).toFixed(3) : 0}${key}">${e(x)}</span>`;
+        }).join(' ');
+      },
+    },
+  };
   let capBase = null;
   const sceneAt = t => D.scenes.find(s => t >= s.start && t < s.end);
   function showCaption(c, rc, t) {
@@ -233,14 +301,21 @@
     const style = (sc0 && sc0.cap) || D.capStyle || 'box';
     const P = CAPS[style];
     if (capBase === null) capBase = cap.getAttribute('style') || '';
-    if (P) cap.setAttribute('style', capBase + ';' + P.box.replace(/HL/g, D.hlColor));
+    const AN = ANIM[style];
+    if (AN) cap.setAttribute('style', capBase + ';' + AN.box);
+    else if (P) cap.setAttribute('style', capBase + ';' + P.box.replace(/HL/g, D.hlColor));
     else if (cap.dataset.st && cap.dataset.st !== style) cap.setAttribute('style', capBase);   // back from a styled preset
     cap.dataset.st = style;
     const esc = s => s.replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
     const tg0 = (rc && (rc.target || rc)) || {}, onPage = card && !(tg0.h >= 600);
     let act = -1;
     if (P && P.act && c.wt) c.wt.forEach((s0, j) => { if (t >= s0) act = j; });
-    if (style === 'box' && !(c.hl && c.hl.length)) cap.textContent = c.text;
+    if (AN) {
+      if (c.rtl === undefined) c.rtl = AR.test(c.text);
+      cap.style.direction = c.rtl ? 'rtl' : 'ltr';
+      cap.innerHTML = AN.html(c, t, esc, c.text.split(' '));
+      cap.style.opacity = clamp((c.end - t) / 0.12, 0, 1).toFixed(3);     // quick fade at the end of the line
+    } else if (style === 'box' && !(c.hl && c.hl.length)) cap.textContent = c.text;
     else {
       cap.innerHTML = c.text.split(' ').map((w, j) => (c.hl || []).includes(j) && !(P && P.act)
         ? `<span style="background:${D.hlColor};color:#111;padding:0 10px;border-radius:8px">${esc(w)}</span>`
@@ -261,10 +336,12 @@
     const mb = (D.cap && D.cap.max_bottom) || 0;                // keep captions above platform buttons/captions
     let top = big ? rc.y + rc.h - 110 : 1560;
     if (mb && big) top = Math.min(top, mb - 120);
+    if (AN && big) top = Math.min(top, rc.y + rc.h - cap.offsetHeight - 34);   // taller animated lines stay inside the card
     cap.style.top = top + 'px';
     if (style === 'clean') { cap.style.background = 'none'; cap.style.textShadow = '0 3px 0 #000, 0 0 14px rgba(0,0,0,.7)'; }
     // light-on-dark presets sitting on the page (not on the video card) switch to dark text for contrast
-    if (!big && (style === 'kinetic' || style === 'minimal' || style === 'clean')) { cap.style.color = '#111'; cap.style.textShadow = 'none'; }
+    if (!big && (style === 'kinetic' || style === 'minimal' || style === 'clean' || style === 'editorial-highlight'
+                 || style === 'paper-plane' || style === 'rolodex-flip')) { cap.style.color = '#111'; cap.style.textShadow = 'none'; }
   }
 
   // scene transitions on the main layer (footage + graphics; captions, film and page background stay put)
@@ -338,6 +415,6 @@
   };
 
   window.cardFrame = t => Math.floor(t * D.fps + 1e-6) + 1;
-  window.ready = (document.fonts ? Promise.all([document.fonts.load('900 60px Cairo'), document.fonts.load('800 40px Cairo')]).then(() => document.fonts.ready) : Promise.resolve())
+  window.ready = (document.fonts ? Promise.all([document.fonts.load('900 60px Cairo'), document.fonts.load('800 40px Cairo'), document.fonts.load('700 60px Amiri', 'ب'), document.fonts.load('700 60px Amiri', 'A')]).then(() => document.fonts.ready) : Promise.resolve())
     .then(() => { init(); window.setTime(0); return true; });
 })();

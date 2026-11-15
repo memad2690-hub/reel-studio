@@ -1,6 +1,7 @@
 """Build a deterministic HTML page (window.setTime(t)) from a project's scenes.json."""
 import json
 import os
+import re
 import subprocess
 import sys
 
@@ -71,7 +72,11 @@ STYLES = {
 STYLE_IDS = {'01': 'editorial', '02': 'kinetic', '03': 'collage', '04': 'data', '05': 'floating-ui', '06': 'parallax',
              '07': 'battle', '08': 'whiteboard', '09': 'cinematic'}
 TRANSITIONS = {'cut': 0, 'blur': 0.18, 'whip': 0.16, 'flash': 0.25, 'zoom': 0.35}   # half-width / length in seconds
-CAPTION_STYLES = ('box', 'highlight', 'clean', 'kinetic', 'editorial', 'energy', 'minimal')
+CAPTION_STYLES = ('box', 'highlight', 'clean', 'kinetic', 'editorial', 'energy', 'minimal',
+                  # animated presets (word-level motion, one key word per line); adapted from the MIT
+                  # claude-caption-styles pack by @vibha.in.progress, rebuilt for Arabic (whole-word motion, RTL)
+                  'editorial-highlight', 'pop-sticker', 'paper-plane', 'rolodex-flip')
+LATIN_OR_NUM = re.compile(r'[A-Za-z0-9\u0660-\u0669%$]')
 
 
 LOOK2 = [False]
@@ -337,6 +342,15 @@ def card_frame_info(out_dir):
     return {'full': (w, h) == (1080, 1920), 'w': w, 'h': h}
 
 
+def key_word(ws, hl):
+    """One key word per caption line for the animated presets: a caption_keywords match first, else the word that
+    carries a number or an English business term (ROAS, 5%, 1000), longest first; -1 = no key word on this line."""
+    if hl:
+        return hl[0]
+    cand = [j for j, w in enumerate(ws) if LATIN_OR_NUM.search(w)]
+    return max(cand, key=lambda j: len(ws[j])) if cand else -1
+
+
 def build(project_dir, out_dir=None):
     cfg = load_config()
     pdir = os.path.abspath(project_dir)
@@ -399,6 +413,8 @@ def build(project_dir, out_dir=None):
     out_dir = out_dir or os.path.join(pdir, 'build')
     os.makedirs(out_dir, exist_ok=True)
     font = os.path.relpath(os.path.join(ROOT, 'fonts', 'Cairo-Variable.ttf'), out_dir).replace(os.sep, '/')
+    amiri_ar, amiri_la = (os.path.relpath(os.path.join(ROOT, 'fonts', f'Amiri-Bold-{x}.woff2'), out_dir).replace(os.sep, '/')
+                          for x in ('arabic', 'latin'))
 
     scene_meta, scene_svg, behind_svg = [], [], []
     cut_dir = os.path.join(out_dir, 'cut')
@@ -501,6 +517,7 @@ def build(project_dir, out_dir=None):
         kw = [norm(k) for k in spec.get('caption_keywords', []) if norm(k)]
         for c in captions:
             c['hl'] = [j for j, wd in enumerate(c['text'].split()) if kw and any(k in norm(wd) for k in kw)]
+            c['k'] = key_word(c['text'].split(), c['hl'])
 
     brand = spec.get('brand', proj.get('brand', cfg.get('brand', '')))
     show_badge = spec.get('badge', mode == 'A') and brand
@@ -579,6 +596,8 @@ def build(project_dir, out_dir=None):
 
     page = f'''<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
 <style>@font-face{{font-family:Cairo;src:url("{font}") format("truetype");font-weight:200 1000}}
+@font-face{{font-family:Amiri;src:url("{amiri_ar}") format("woff2");font-weight:700;unicode-range:U+0600-06FF,U+0750-077F,U+08A0-08FF,U+200C-200E,U+FB50-FDFF,U+FE70-FEFC}}
+@font-face{{font-family:Amiri;src:url("{amiri_la}") format("woff2");font-weight:700;unicode-range:U+0000-00FF,U+2000-206F,U+20AC,U+2212}}
 html,body{{margin:0;background:#000}} #stage{{position:relative;width:{W}px;height:{H}px;overflow:hidden}}
 .a{{transform-box:fill-box;transform-origin:center;opacity:0}} text{{font-family:Cairo}}</style></head>
 <body><div id="stage">{bg}{main_html}{film_html}{badge}<div id="cap" style="{cap_style}"></div></div>

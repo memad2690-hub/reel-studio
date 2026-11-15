@@ -63,3 +63,21 @@ class CutTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class AnimatedCaptionTests(unittest.TestCase):
+    def test_key_word_prefers_keyword_then_number_or_english_term(self):
+        import build
+        self.assertEqual(build.key_word('فاضلك خمستاشر ألف'.split(), [2]), 2)          # caption_keywords match wins
+        self.assertEqual(build.key_word('الـROAS بتاعك عالي'.split(), []), 0)          # English business term
+        self.assertEqual(build.key_word('بعت 1000 أوردر'.split(), []), 1)              # number
+        self.assertEqual(build.key_word('السؤال الحقيقي'.split(), []), -1)             # nothing to highlight
+
+    def test_animated_presets_registered(self):
+        import build
+        for s in ('editorial-highlight', 'pop-sticker', 'paper-plane', 'rolodex-flip'):
+            self.assertIn(s, build.CAPTION_STYLES)
+        with open(os.path.join(os.path.dirname(build.__file__), 'runtime.js'), encoding='utf-8') as f:
+            rt = f.read()
+        for s in ('editorial-highlight', 'pop-sticker', 'paper-plane', 'rolodex-flip'):
+            self.assertIn(f"'{s}'", rt)
