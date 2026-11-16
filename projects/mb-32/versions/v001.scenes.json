@@ -1,0 +1,404 @@
+{
+ "look": 2,
+ "mode": "B",
+ "brand": "media-buying",
+ "director": {
+  "mode": "auto",
+  "styles": [
+   "data",
+   "battle",
+   "kinetic"
+  ],
+  "by": "Claude (hand-directed; Auto draft missed the CPM numbers and the funnel)"
+ },
+ "words": "words.json",
+ "audio": "build/cut_audio.m4a",
+ "captions": true,
+ "caption_style": "highlight",
+ "caption_keywords": [
+  "CPM",
+  "CTR",
+  "funnel",
+  "landing",
+  "conversion",
+  "contribution",
+  "apples",
+  "oranges",
+  "FUNNEL"
+ ],
+ "scenes": [
+  {
+   "id": "hook",
+   "start": 0,
+   "style": "data",
+   "layout": "split",
+   "elements": [
+    {
+     "type": "bars",
+     "x": 540,
+     "y": 440,
+     "w": 900,
+     "h": 540,
+     "unit": "",
+     "items": [
+      {
+       "label": "حملة 1",
+       "value": 40,
+       "tone": "blue",
+       "in": "40"
+      },
+      {
+       "label": "حملة 2",
+       "value": 80,
+       "tone": "yellow",
+       "in": {
+        "at": "بتاعها",
+        "nth": 2
+       }
+      }
+     ]
+    },
+    {
+     "type": "pill",
+     "text": "مثال",
+     "color": "ink",
+     "x": 170,
+     "y": 80,
+     "size": 44,
+     "in": "واحدة"
+    },
+    {
+     "type": "headline",
+     "pre": "الـ",
+     "hl": "CPM",
+     "post": "",
+     "x": 600,
+     "y": 80,
+     "size": 80,
+     "in": "CPM",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "question",
+   "start": 5.7,
+   "style": "kinetic",
+   "layout": "top",
+   "elements": [
+    {
+     "type": "kinetic",
+     "from": "إيه",
+     "count": 5,
+     "emphasis": [
+      "نعرفش"
+     ],
+     "intensity": "medium",
+     "x": 540,
+     "y": 410,
+     "size": 96,
+     "w": 920
+    }
+   ]
+  },
+  {
+   "id": "cpm-means",
+   "start": 7.6,
+   "style": "kinetic",
+   "layout": "top",
+   "elements": [
+    {
+     "type": "kinetic",
+     "from": "الـ",
+     "count": 9,
+     "emphasis": [
+      "بكام",
+      "مين"
+     ],
+     "intensity": "medium",
+     "x": 540,
+     "y": 410,
+     "size": 96,
+     "w": 920
+    }
+   ]
+  },
+  {
+   "id": "battle",
+   "start": 10.55,
+   "style": "battle",
+   "layout": "half-top",
+   "elements": [
+    {
+     "type": "versus",
+     "x": 540,
+     "y": 430,
+     "a": {
+      "title": "campaign رخيصة",
+      "color": "blue",
+      "in": "رخيصة",
+      "items": [
+       {
+        "text": "مش هتشتري",
+        "good": false,
+        "in": "هتشتري"
+       },
+       {
+        "text": "10 طلبات",
+        "good": false,
+        "in": "عشر"
+       }
+      ]
+     },
+     "b": {
+      "title": "campaign غالية",
+      "color": "yellow",
+      "in": "الغالية",
+      "items": [
+       {
+        "text": "جاهزة تدفع",
+        "good": true,
+        "in": "جاهزة"
+       },
+       {
+        "text": "30 طلب",
+        "good": true,
+        "in": "تلاتين"
+       }
+      ],
+      "winner_label": "بنفس الصرف"
+     },
+     "winner": "b",
+     "in_winner": "الصرف",
+     "in": "رخيصة",
+     "ratio": 0.54
+    },
+    {
+     "type": "pill",
+     "text": "مثال",
+     "color": "ink",
+     "x": 540,
+     "y": 60,
+     "size": 44,
+     "in": "رخيصة"
+    }
+   ]
+  },
+  {
+   "id": "order",
+   "start": 20.3,
+   "style": "data",
+   "layout": "top",
+   "elements": [
+    {
+     "type": "flow",
+     "direction": "down",
+     "x": 540,
+     "y": 80,
+     "box_w": 640,
+     "box_h": 124,
+     "gap": 66,
+     "nodes": [
+      {
+       "label": "CTR",
+       "color": "blue",
+       "in": "CTR"
+      },
+      {
+       "label": "Landing page views",
+       "color": "blue",
+       "in": "landing"
+      },
+      {
+       "label": "Conversion rate",
+       "color": "blue",
+       "in": "conversion"
+      },
+      {
+       "label": "Contribution margin",
+       "color": "green",
+       "in": "contribution"
+      }
+     ],
+     "size": 60
+    }
+   ]
+  },
+  {
+   "id": "stage",
+   "start": 35.6,
+   "style": "kinetic",
+   "layout": "top",
+   "elements": [
+    {
+     "type": "kinetic",
+     "from": "تشوف",
+     "count": 8,
+     "emphasis": [
+      "مرحلة"
+     ],
+     "intensity": "medium",
+     "x": 540,
+     "y": 410,
+     "size": 96,
+     "w": 920
+    }
+   ]
+  },
+  {
+   "id": "when",
+   "start": 38.4,
+   "style": "kinetic",
+   "layout": "top",
+   "elements": [
+    {
+     "type": "kinetic",
+     "from": "امتى",
+     "count": 5,
+     "emphasis": [
+      "مهم"
+     ],
+     "intensity": "medium",
+     "x": 540,
+     "y": 410,
+     "size": 96,
+     "w": 920
+    }
+   ]
+  },
+  {
+   "id": "same",
+   "start": 39.9,
+   "style": "data",
+   "layout": "split",
+   "elements": [
+    {
+     "type": "steps",
+     "x": 540,
+     "y": 130,
+     "gap": 170,
+     "size": 64,
+     "out": "عِلي",
+     "items": [
+      {
+       "type": "wcard",
+       "text": "نفس الإعلان",
+       "in": "نفس"
+      },
+      {
+       "type": "wcard",
+       "text": "نفس الجمهور",
+       "in": "لنفس"
+      },
+      {
+       "type": "wcard",
+       "text": "وقتين مختلفين",
+       "in": "وقتين"
+      }
+     ]
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "لو عِلي فجأة",
+      "السوق أو الموسم"
+     ],
+     "x": 540,
+     "y": 400,
+     "size": 70,
+     "in": "السوق",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "apples",
+   "start": 46.8,
+   "style": "kinetic",
+   "layout": "top",
+   "elements": [
+    {
+     "type": "kinetic",
+     "from": "مقارنة",
+     "count": 7,
+     "emphasis": [
+      "CPM"
+     ],
+     "intensity": "medium",
+     "x": 540,
+     "y": 410,
+     "size": 96,
+     "w": 920,
+     "out": "كأنك"
+    },
+    {
+     "type": "kinetic",
+     "from": "كأنك",
+     "count": 5,
+     "emphasis": [
+      "apples",
+      "oranges"
+     ],
+     "intensity": "high",
+     "x": 540,
+     "y": 410,
+     "size": 96,
+     "w": 920
+    }
+   ]
+  },
+  {
+   "id": "funnel",
+   "start": 54.2,
+   "style": "kinetic",
+   "layout": "top",
+   "elements": [
+    {
+     "type": "kinetic",
+     "from": "لازم",
+     "count": 5,
+     "emphasis": [
+      "funnel"
+     ],
+     "intensity": "medium",
+     "x": 540,
+     "y": 200,
+     "size": 96,
+     "w": 920,
+     "out": "تكلفة"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "تكلفة الظهور",
+      "أول مرحلة بس في الـ funnel"
+     ],
+     "x": 540,
+     "y": 420,
+     "size": 66,
+     "in": "تكلفة",
+     "anim": "slide-left"
+    }
+   ]
+  },
+  {
+   "id": "cta",
+   "start": 59.0,
+   "style": "kinetic",
+   "layout": "top",
+   "transition": "cut",
+   "elements": [
+    {
+     "type": "cta",
+     "prompt": "اعمل follow واكتب",
+     "keyword": "FUNNEL",
+     "magnet": "dashboard بسيط تتابع بيه الـ ads",
+     "x": 540,
+     "y": 300,
+     "in": "واكتب",
+     "anim": "spring"
+    }
+   ]
+  }
+ ]
+}

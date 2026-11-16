@@ -1,0 +1,341 @@
+{
+  "look": 2,
+  "mode": "B",
+  "brand": "media-buying",
+  "director": {
+    "mode": "auto",
+    "style": null
+  },
+  "words": "words.json",
+  "audio": "build/cut_audio.m4a",
+  "captions": true,
+  "caption_style": "highlight",
+  "caption_keywords": [
+    "CPM",
+    "CTR",
+    "ads",
+    "apples",
+    "campaign",
+    "click",
+    "contribution",
+    "conversion"
+  ],
+  "scenes": [
+    {
+      "id": "data-1",
+      "title": "data (0.65)",
+      "elements": [],
+      "_plan": {
+        "role": "data",
+        "confidence": 0.65,
+        "reason": "metric with a number",
+        "treatment": "financial values → animated stat cards"
+      },
+      "style": "data",
+      "_art": {
+        "look_first": "the speaker",
+        "speaker": "prominent",
+        "elements": 0,
+        "words": 0,
+        "read_s": 0.0,
+        "notes": []
+      }
+    },
+    {
+      "id": "emphasis-2",
+      "title": "emphasis (0.5)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "الـ",
+          "count": 5,
+          "intensity": "medium",
+          "emphasis": [
+            "CPM"
+          ],
+          "x": 540,
+          "y": 210,
+          "size": 96,
+          "w": 920,
+          "focus": true
+        }
+      ],
+      "_plan": {
+        "role": "emphasis",
+        "confidence": 0.5,
+        "reason": "short emphatic line (مش)",
+        "treatment": "strong line → kinetic words"
+      },
+      "start": {
+        "at": "الـ",
+        "after": 7.45
+      },
+      "style": "kinetic",
+      "layout": "hero",
+      "_art": {
+        "look_first": "kinetic",
+        "speaker": "prominent",
+        "elements": 1,
+        "words": 5,
+        "read_s": 1.0,
+        "notes": [
+          "personal moment: speaker big, one element at most"
+        ]
+      }
+    },
+    {
+      "id": "setup-3",
+      "title": "setup (0.35)",
+      "elements": [],
+      "_plan": {
+        "role": "setup",
+        "confidence": 0.35,
+        "reason": "no strong cue",
+        "treatment": "low confidence → clean talking head"
+      },
+      "start": {
+        "at": "تكون",
+        "after": 12.27
+      },
+      "style": "editorial",
+      "layout": "full",
+      "_art": {
+        "look_first": "the speaker",
+        "speaker": "prominent",
+        "elements": 0,
+        "words": 0,
+        "read_s": 0.0,
+        "notes": [
+          "personal moment: speaker big, one element at most"
+        ]
+      }
+    },
+    {
+      "id": "process-4",
+      "title": "process (0.8)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "هل",
+          "count": 5,
+          "intensity": "medium",
+          "size": 96,
+          "w": 920,
+          "x": 540,
+          "y": 320,
+          "in": "هل",
+          "focus": true
+        },
+        {
+          "type": "numbered",
+          "x": 540,
+          "y": 110,
+          "gap": 165,
+          "size": 68,
+          "steps": [
+            {
+              "text": "حد بيدوس",
+              "in": "هل"
+            },
+            {
+              "text": "website",
+              "in": {
+                "at": "هل",
+                "nth": 2
+              }
+            }
+          ]
+        }
+      ],
+      "_plan": {
+        "role": "process",
+        "confidence": 0.8,
+        "reason": "checklist of questions",
+        "treatment": "step-by-step → numbered whiteboard"
+      },
+      "start": {
+        "at": "هل",
+        "after": 23.85
+      },
+      "style": "kinetic",
+      "_art": {
+        "look_first": "kinetic",
+        "speaker": "prominent",
+        "elements": 2,
+        "words": 8,
+        "read_s": 1.6,
+        "notes": []
+      }
+    },
+    {
+      "id": "setup-5",
+      "title": "setup (0.35)",
+      "elements": [],
+      "_plan": {
+        "role": "setup",
+        "confidence": 0.35,
+        "reason": "no strong cue",
+        "treatment": "low confidence → clean talking head"
+      },
+      "start": {
+        "at": "الـ",
+        "after": 28.17
+      },
+      "style": "editorial",
+      "layout": "full",
+      "_art": {
+        "look_first": "the speaker",
+        "speaker": "prominent",
+        "elements": 0,
+        "words": 0,
+        "read_s": 0.0,
+        "notes": [
+          "personal moment: speaker big, one element at most"
+        ]
+      }
+    },
+    {
+      "id": "contrast-6",
+      "title": "contrast (0.6)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "بس",
+          "count": 4,
+          "intensity": "medium",
+          "emphasis": [
+            "CPM"
+          ],
+          "x": 540,
+          "y": 380,
+          "size": 96,
+          "w": 920,
+          "focus": true
+        }
+      ],
+      "_plan": {
+        "role": "contrast",
+        "confidence": 0.6,
+        "reason": "starts with بس",
+        "treatment": "turn in the argument → kinetic words"
+      },
+      "start": {
+        "at": "بس",
+        "after": 46.63
+      },
+      "style": "kinetic",
+      "_art": {
+        "look_first": "kinetic",
+        "speaker": "prominent",
+        "elements": 1,
+        "words": 4,
+        "read_s": 0.8,
+        "notes": []
+      }
+    },
+    {
+      "id": "emphasis-7",
+      "title": "emphasis (0.5)",
+      "elements": [
+        {
+          "type": "kinetic",
+          "from": "لازم",
+          "count": 5,
+          "intensity": "medium",
+          "emphasis": [
+            "لازم"
+          ],
+          "x": 540,
+          "y": 210,
+          "size": 96,
+          "w": 920,
+          "focus": true
+        }
+      ],
+      "_plan": {
+        "role": "emphasis",
+        "confidence": 0.5,
+        "reason": "short emphatic line (لازم)",
+        "treatment": "strong line → kinetic words"
+      },
+      "start": {
+        "at": "لازم",
+        "after": 54.13
+      },
+      "style": "kinetic",
+      "layout": "hero",
+      "_art": {
+        "look_first": "kinetic",
+        "speaker": "prominent",
+        "elements": 1,
+        "words": 5,
+        "read_s": 1.0,
+        "notes": [
+          "personal moment: speaker big, one element at most"
+        ]
+      }
+    },
+    {
+      "id": "cta-8",
+      "title": "cta (0.95)",
+      "elements": [
+        {
+          "type": "cta",
+          "keyword": "FUNNEL",
+          "x": 540,
+          "y": 300,
+          "in": "واكتب",
+          "anim": "spring",
+          "focus": true
+        }
+      ],
+      "_plan": {
+        "role": "cta",
+        "confidence": 0.95,
+        "reason": "the reel's comment keyword (FUNNEL) + call-to-action verb",
+        "treatment": "call to action → high-contrast keyword"
+      },
+      "start": {
+        "at": "اعمل",
+        "after": 58.79
+      },
+      "style": "editorial",
+      "layout": "top",
+      "_art": {
+        "look_first": "cta",
+        "speaker": "secondary",
+        "elements": 1,
+        "words": 1,
+        "read_s": 0.2,
+        "notes": []
+      }
+    },
+    {
+      "id": "setup-9",
+      "title": "setup (0.35)",
+      "elements": [],
+      "_plan": {
+        "role": "setup",
+        "confidence": 0.35,
+        "reason": "no strong cue",
+        "treatment": "low confidence → clean talking head"
+      },
+      "start": {
+        "at": "هبعتلك",
+        "after": 60.19
+      },
+      "style": "editorial",
+      "layout": "full",
+      "_art": {
+        "look_first": "the speaker",
+        "speaker": "prominent",
+        "elements": 0,
+        "words": 0,
+        "read_s": 0.0,
+        "notes": [
+          "personal moment: speaker big, one element at most"
+        ]
+      }
+    }
+  ]
+}

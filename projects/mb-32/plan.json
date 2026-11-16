@@ -1,0 +1,240 @@
+{
+  "intensity": "medium",
+  "budget": {
+    "graphic_scenes": 8,
+    "min_scene": 4.0,
+    "duration": 63.0
+  },
+  "segments": [
+    {
+      "start": 0.13,
+      "end": 7.47,
+      "text": "تعالى نقارن بين حملتين. واحدة الـ CPM بتاعها 40 والتانية الـ CPM بتاعها 80. إيه أحسن؟ أكيد ما نعرفش.",
+      "w0": 0,
+      "w1": 18,
+      "lang": "ar",
+      "numbers": [
+        {
+          "value": 1.0,
+          "i0": 0,
+          "i1": 0,
+          "start": 1.527,
+          "end": 1.867,
+          "text": "واحدة",
+          "kind": "count"
+        },
+        {
+          "value": 40.0,
+          "i0": 4,
+          "i1": 4,
+          "start": 3.147,
+          "end": 3.567,
+          "text": "40",
+          "kind": "count"
+        },
+        {
+          "value": 80.0,
+          "i0": 9,
+          "i1": 9,
+          "start": 5.087,
+          "end": 5.447,
+          "text": "80.",
+          "kind": "count"
+        }
+      ],
+      "keywords": [
+        "CPM",
+        "cpm"
+      ],
+      "role": "data",
+      "confidence": 0.65,
+      "reason": "metric with a number",
+      "style": "data",
+      "component": "statcards/equation",
+      "treatment_reason": "financial values → animated stat cards"
+    },
+    {
+      "start": 7.75,
+      "end": 12.33,
+      "text": "الـ CPM بيقولك الظهور بكام، مش مين اللي شاف. ممكن تكون الـ campaign رخيصة بس",
+      "w0": 19,
+      "w1": 33,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "CPM",
+        "cpm"
+      ],
+      "role": "emphasis",
+      "confidence": 0.5,
+      "reason": "short emphatic line (مش)",
+      "style": "kinetic",
+      "component": "kinetic",
+      "treatment_reason": "strong line → kinetic words"
+    },
+    {
+      "start": 12.57,
+      "end": 23.95,
+      "text": "تكون بتظهر لناس مش هتشتري أبدًا. وتكون الـ campaign الغالية بتظهر لناس جاهزة تدفع. فالأولى تجيب عشر طلبات والتانية تجيب تلاتين بنفس الصرف. قارن بالترتيب ده جنب بعض. الـ click through rate أو الـ CTR.",
+      "w0": 34,
+      "w1": 68,
+      "lang": "mixed",
+      "numbers": [
+        {
+          "value": 10.0,
+          "i0": 2,
+          "i1": 2,
+          "start": 17.627,
+          "end": 17.787,
+          "text": "عشر",
+          "kind": "count"
+        },
+        {
+          "value": 30.0,
+          "i0": 6,
+          "i1": 6,
+          "start": 19.047,
+          "end": 19.347,
+          "text": "تلاتين",
+          "kind": "count"
+        }
+      ],
+      "keywords": [
+        "CTR",
+        "campaign",
+        "click",
+        "ctr",
+        "rate",
+        "through"
+      ],
+      "role": "setup",
+      "confidence": 0.35,
+      "reason": "no strong cue",
+      "style": "talking-head",
+      "component": null,
+      "treatment_reason": "low confidence → clean talking head"
+    },
+    {
+      "start": 24.15,
+      "end": 28.15,
+      "text": "هل حد بيدوس فعلًا على الإعلان؟ طيب الـ landing page views هل بيوصلوا أصلًا للـ website؟",
+      "w0": 69,
+      "w1": 84,
+      "lang": "ar",
+      "numbers": [],
+      "keywords": [
+        "landing",
+        "page",
+        "views",
+        "website"
+      ],
+      "role": "process",
+      "confidence": 0.8,
+      "reason": "checklist of questions",
+      "style": "whiteboard",
+      "component": "numbered",
+      "treatment_reason": "step-by-step → numbered whiteboard"
+    },
+    {
+      "start": 28.47,
+      "end": 46.63,
+      "text": "الـ conversion rate. اشتروا ولا لأ؟ والـ contribution margin. إيه اللي فضل من الفلوس؟ يعني فضل لي ربح قد إيه؟ تشوف ساعتها كل حملة بتقع في أنهي مرحلة. امتى بقى الـ CPM يبقى مهم؟ لما تقارن نفس الإعلان لنفس الجمهور في وقتين مختلفين. لو عِلي فجأة، ده بيقولك حاجة عن السوق أو الموسم.",
+      "w0": 85,
+      "w1": 137,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "CPM",
+        "contribution",
+        "conversion",
+        "cpm",
+        "margin",
+        "rate"
+      ],
+      "role": "setup",
+      "confidence": 0.35,
+      "reason": "no strong cue",
+      "style": "talking-head",
+      "component": null,
+      "treatment_reason": "low confidence → clean talking head"
+    },
+    {
+      "start": 46.93,
+      "end": 54.13,
+      "text": "بس مقارنة حملتين مختلفين، من ناحية الـ CPM بس، ده كأنك بتقارن apples to oranges. ما تعرفش إيه الفرق بينهم.",
+      "w0": 138,
+      "w1": 157,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "CPM",
+        "apples",
+        "cpm",
+        "oranges"
+      ],
+      "role": "contrast",
+      "confidence": 0.6,
+      "reason": "starts with بس",
+      "style": "kinetic",
+      "component": "kinetic",
+      "treatment_reason": "turn in the argument → kinetic words"
+    },
+    {
+      "start": 54.43,
+      "end": 58.78,
+      "text": "لازم تتابع الـ funnel كلها. تكلفة الظهور هي أول سطر بس وأول مرحلة بس في الـ funnel.",
+      "w0": 158,
+      "w1": 174,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "funnel",
+        "تكلفة"
+      ],
+      "role": "emphasis",
+      "confidence": 0.5,
+      "reason": "short emphatic line (لازم)",
+      "style": "kinetic",
+      "component": "kinetic",
+      "treatment_reason": "strong line → kinetic words"
+    },
+    {
+      "start": 59.09,
+      "end": 60.45,
+      "text": "اعمل follow واكتب funnel.",
+      "w0": 175,
+      "w1": 178,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "follow",
+        "funnel"
+      ],
+      "role": "cta",
+      "confidence": 0.95,
+      "reason": "the reel's comment keyword (FUNNEL) + call-to-action verb",
+      "style": "editorial",
+      "component": "cta",
+      "treatment_reason": "call to action → high-contrast keyword"
+    },
+    {
+      "start": 60.49,
+      "end": 63.11,
+      "text": "هبعتلك dashboard بسيط تقدر تتابع بيه الـ ads بتاعتك.",
+      "w0": 179,
+      "w1": 187,
+      "lang": "mixed",
+      "numbers": [],
+      "keywords": [
+        "ads",
+        "dashboard"
+      ],
+      "role": "setup",
+      "confidence": 0.35,
+      "reason": "no strong cue",
+      "style": "talking-head",
+      "component": null,
+      "treatment_reason": "low confidence → clean talking head"
+    }
+  ]
+}

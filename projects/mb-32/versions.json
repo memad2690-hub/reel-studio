@@ -196,5 +196,23 @@
       "audio": true,
       "problems": []
     }
+  },
+  {
+    "id": "v001",
+    "kind": "render",
+    "file": "exports/v001.mp4",
+    "sheet": "exports/v001_sheet.png",
+    "created": "2026-11-16T16:47:53+02:00",
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 63.3,
+      "mbps": 6.35,
+      "audio": true,
+      "problems": []
+    },
+    "draft": false,
+    "note": "Auto styles (data/battle/kinetic), look 2, RC Warm Cinematic"
   }
 ]
