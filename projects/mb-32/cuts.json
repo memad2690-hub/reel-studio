@@ -1,0 +1,289 @@
+{
+ "source": "raw/raw.mp4",
+ "segments": [
+  [
+   0.84,
+   2.22
+  ],
+  [
+   2.54,
+   7.72
+  ],
+  [
+   8.24,
+   9.28
+  ],
+  [
+   9.4,
+   16.14
+  ],
+  [
+   16.34,
+   18.8
+  ],
+  [
+   23.16,
+   26.56
+  ],
+  [
+   26.88,
+   28.94
+  ],
+  [
+   29.44,
+   32.68
+  ],
+  [
+   32.96,
+   35.76
+  ],
+  [
+   36.18,
+   38.98
+  ],
+  [
+   39.48,
+   43.9
+  ],
+  [
+   46.44,
+   49.26
+  ],
+  [
+   49.7,
+   51.18
+  ],
+  [
+   51.5,
+   55.44
+  ],
+  [
+   56.06,
+   59.08
+  ],
+  [
+   59.58,
+   61.96
+  ],
+  [
+   62.74,
+   66.4
+  ],
+  [
+   66.9,
+   68.34
+  ],
+  [
+   68.94,
+   70.26
+  ],
+  [
+   70.74,
+   74.06
+  ],
+  [
+   74.54,
+   78.86000000000001
+  ]
+ ],
+ "report": [
+  {
+   "start": 0.96,
+   "end": 2.04,
+   "text": "تعالى نقارن بين حملتين.",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 2.66,
+   "end": 6.58,
+   "text": "واحدة الـ CPM بتاعها 40 والتانية الـ CPM بتاعها 80.",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 6.9,
+   "end": 7.5,
+   "text": "أيه أحسن؟",
+   "kept": true,
+   "reason": "restored by director: part of the argument"
+  },
+  {
+   "start": 8.36,
+   "end": 9.1,
+   "text": "أكيد ما نعرفش.",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 9.52,
+   "end": 12.08,
+   "text": "الـ CPM بيقولك الظهور بكام، مش مين اللي شاف.",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 12.42,
+   "end": 15.92,
+   "text": "ممكن تكون الـ campaign رخيصة بس تكون بتظهر لناس مش هتشتري أبدًا.",
+   "kept": true,
+   "reason": "restored by director: part of the argument"
+  },
+  {
+   "start": 16.46,
+   "end": 18.62,
+   "text": "وتكون الـ campaign الغالية بتظهر لناس جاهزة تدفع.",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 19.36,
+   "end": 21.32,
+   "text": "فالأولى، فالـ… ماشي.",
+   "kept": false,
+   "reason": "retake (similar to next, 0.53)"
+  },
+  {
+   "start": 23.28,
+   "end": 26.38,
+   "text": "فالأولى تجيب عشر طلبات والتانية تجيب تلاتين بنفس الصرف.",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 27.0,
+   "end": 28.76,
+   "text": "قارن بالترتيب ده جنب بعض.",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 29.56,
+   "end": 31.08,
+   "text": "الـ click through rate أو الـ CTR.",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 31.28,
+   "end": 32.5,
+   "text": "هل حد بيدوس فعلًا على الإعلان؟",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 33.08,
+   "end": 35.58,
+   "text": "طيب الـ landing page views هل بيوصلوا أصلًا للـ website؟",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 36.3,
+   "end": 37.2,
+   "text": "الـ conversion rate.",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 37.48,
+   "end": 38.8,
+   "text": "اشتروا ولا لأ؟",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 39.6,
+   "end": 40.86,
+   "text": "والـ contribution margin.",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 41.14,
+   "end": 42.26,
+   "text": "إيه اللي فضل من الفلوس؟",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 42.34,
+   "end": 43.72,
+   "text": "يعني فضل لي ربح قد إيه؟",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 46.56,
+   "end": 49.08,
+   "text": "تشوف ساعتها كل حملة بتقع في أنهي مرحلة.",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 49.82,
+   "end": 51.0,
+   "text": "امتى بقى الـ CPM يبقى مهم؟",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 51.62,
+   "end": 55.26,
+   "text": "لما تقارن نفس الإعلان لنفس الجمهور في وقتين مختلفين.",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 56.18,
+   "end": 58.9,
+   "text": "لو علي فجأة، ده بيقولك حاجة عن السوق أو الموسم.",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 59.7,
+   "end": 66.22,
+   "text": "بس مقارنة حملتين مختلفين، مم، من ناحية الـ CPM بس، ده كأنك بتقارن apples to oranges.",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 67.02,
+   "end": 68.16,
+   "text": "ما تعرفش إيه الفرق بينهم.",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 69.06,
+   "end": 70.08,
+   "text": "لازم تتابع الـ funnel كلها.",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 70.86,
+   "end": 73.88,
+   "text": "تكلفة الظهور هي أول سطر بس وأول مرحلة بس في الـ funnel.",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 74.66,
+   "end": 76.02,
+   "text": "اعمل follow واكتب funnel.",
+   "kept": true,
+   "reason": ""
+  },
+  {
+   "start": 76.06,
+   "end": 78.68,
+   "text": "هبعتلك dashboard بسيط تقدر تتابع بيه الـ ads بتاعتك.",
+   "kept": true,
+   "reason": ""
+  }
+ ],
+ "created": "2026-11-16T16:05:26+02:00",
+ "note": "Auto cut reviewed: restored 2 sentences, trimmed \"مم\". Backup of the automatic cut: cuts.auto.json"
+}
