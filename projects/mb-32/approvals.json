@@ -4,5 +4,11 @@
     "version": "rc002",
     "at": "2026-11-16T16:17:59+02:00",
     "by": "user"
+  },
+  "final": {
+    "approved": true,
+    "version": "v002",
+    "at": "2026-11-16T20:20:10+02:00",
+    "by": "user"
   }
 }

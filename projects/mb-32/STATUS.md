@@ -8,3 +8,4 @@
 - 2026-11-16T16:25:10+02:00: plan (medium): 9 segments, 6 with graphics — applied to scenes.json
 - 2026-11-16T16:47:53+02:00: render v001 1080x1920 63.3s  QA ok
 - 2026-11-16T17:06:12+02:00: render v002 1080x1920 63.3s  QA ok
+- 2026-11-16T20:20:10+02:00: approved final v002
