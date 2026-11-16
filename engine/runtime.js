@@ -73,7 +73,16 @@
       const y0 = -(lines.length - 1) * size * lh / 2;
       lines.forEach(([ln, lw], li) => {
         let x = lw / 2;                                           // start at the right edge (RTL)
-        ln.forEach(o => {
+        // look 2: a run of English words inside a right-to-left line keeps its English order
+        // ("apples to oranges" must not read "to apples" when placed right to left)
+        let place = ln;
+        if ((D.look || 1) >= 2) {
+          const lat = o => /^[A-Za-z0-9][A-Za-z0-9.%$'&+-]*$/.test((o.t.textContent || '').trim());
+          place = []; let i = 0;
+          while (i < ln.length) { if (lat(ln[i])) { let j = i; while (j < ln.length && lat(ln[j])) j++; place.push(...ln.slice(i, j).reverse()); i = j; }
+            else place.push(ln[i++]); }
+        }
+        place.forEach(o => {
           const cx = x - o.w / 2; x -= o.w + gap;
           o.g.setAttribute('transform', `translate(${cx.toFixed(1)},${(y0 + li * size * lh).toFixed(1)})`);
           const bg = o.g.querySelector('.kwbg');
