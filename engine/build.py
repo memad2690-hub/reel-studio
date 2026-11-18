@@ -10,6 +10,8 @@ from timing import Anchors, chunk_captions, load_words, norm  # noqa: E402
 import kits  # noqa: E402
 import charts  # noqa: E402
 import fx  # noqa: E402
+import ceos_kit  # noqa: E402
+kits.BUILDERS['B'].update(ceos_kit.BUILDERS)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -41,6 +43,8 @@ LAYOUTS_V2 = {
     'pip-left':  {'x': 40,  'y': 130, 'w': 480, 'h': 600, 'r': 40, 'b': 6, 'y0': 760, 'rh': 1000},
     'split':     {'x': 40,  'y': 110, 'w': 1000, 'h': 760, 'r': 44, 'b': 7, 'y0': 900, 'rh': 760},
     'sticker':   {'x': 200, 'y': 620, 'w': 860, 'h': 1300, 'r': 0, 'b': 0, 'y0': 60, 'rh': 700, 'rot': -3, 'sticker': 1},
+    # small presenter, top centre: the speaker stays visible while a full-page graphic (e.g. an ad grid) plays
+    'mini':      {'x': 390, 'y': 110, 'w': 300, 'h': 370, 'r': 30, 'b': 5, 'y0': 0, 'rh': 1920},
 }
 STYLE_V2 = {'data': {'layout': 'split'}, 'whiteboard': {'layout': 'split'}, 'editorial': {}}
 SPEAKER_FIRST_GAP = 2.0          # s without graphics after a scene starts → keep the speaker big until they arrive
@@ -170,6 +174,8 @@ def expand(el, mode, anchors, s_start, s_end, idx, ins=None, floor=None):
     what = el.get('text') or el.get('hl') or el.get('title') or el.get('name') or el['type']
     flag_late(anchors, el.get('in'), t_in, t_out, s_start, what)
     ins.append(t_in)
+    if el.get('mute_captions'):                         # this element already shows the spoken words
+        CAP_MUTE.append([round(t_in - 0.05, 3), round(t_out, 3)])
     if el.get('sfx'):                                   # a sound effect when this element appears
         SFX_CUES.append({'t': round(t_in + float(el.get('sfx_offset', 0)), 3), 'kind': el['sfx'], 'gain': el.get('sfx_gain')})
     kind = el.get('anim', 'pop')
@@ -231,7 +237,11 @@ def expand(el, mode, anchors, s_start, s_end, idx, ins=None, floor=None):
             sub.setdefault('size', el.get('size', 46))
             out += anim_group(kits.build(sub, mode), ti, t_out, item.get('anim', kind), x, y + i * gap, 0, sc)
         return out
-    return anim_group(kits.build(el, mode), t_in, t_out, kind, x, y, rot, sc, exit=ex)
+    extra = ''
+    if kind == 'burst':                                 # flies out of a point (e.g. the one ad) to its own place
+        fx_, fy_ = el.get('from', [540, 960])
+        extra = f'data-fx="{fx_ - x:.1f}" data-fy="{fy_ - y:.1f}"'
+    return anim_group(kits.build(el, mode), t_in, t_out, kind, x, y, rot, sc, extra=extra, exit=ex)
 
 
 def equation_result(el):
@@ -480,6 +490,8 @@ def build(project_dir, out_dir=None):
                 tr = 'cut'
             if i > 0 and tr != 'cut':
                 cam['tr'] = [tr, TRANSITIONS[tr]]
+            if s.get('captions') is False:                   # this scene's graphics carry the words: no captions
+                CAP_MUTE.append([round(st, 3), round(starts[i + 1] if i + 1 < len(starts) else duration, 3)])
             if s.get('caption_style'):
                 if s['caption_style'] not in CAPTION_STYLES:
                     anchors.misses.append({'anchor': None, 'element': s.get('id', i),
@@ -506,6 +518,8 @@ def build(project_dir, out_dir=None):
         behind_svg.append(f'<g class="scene" data-start="{st:.3f}" data-end="{en:.3f}">{"".join(behind)}</g>')
 
     cap_cfg = cfg['captions'][mode]
+    if spec.get('caption_max_bottom'):                  # per reel: the caption's whole box ends above this y (safe zone)
+        cap_cfg = dict(cap_cfg, max_bottom=int(spec['caption_max_bottom']), safe=1)
     film = spec.get('film') or ({'grain': 0.07, 'letterbox': False} if spec.get('style') == 'cinematic' else None)
     film_html = ''
     if film and mode == 'B':

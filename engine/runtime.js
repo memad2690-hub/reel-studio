@@ -54,7 +54,8 @@
   function init() {
     fitBoxes(); layoutHeadlines();
     scenes = [...document.querySelectorAll('.scene')].map(g => ({ g, s: +g.dataset.start, e: +g.dataset.end }));
-    anims = [...document.querySelectorAll('.a')].map(g => ({ g, i: +g.dataset.in, o: +g.dataset.out, k: g.dataset.k, x: g.dataset.x || 'fade' }));
+    anims = [...document.querySelectorAll('.a')].map(g => ({ g, i: +g.dataset.in, o: +g.dataset.out, k: g.dataset.k, x: g.dataset.x || 'fade',
+      fx: +(g.dataset.fx || 0), fy: +(g.dataset.fy || 0) }));
     counts = [...document.querySelectorAll('.count')].map(t => ({ t, from: +t.dataset.from, to: +t.dataset.to, dur: +t.dataset.dur,
       pre: t.dataset.prefix || '', suf: t.dataset.suffix || '', g: t.closest('.a') }));
     cap = document.getElementById('cap'); card = document.getElementById('card');
@@ -209,6 +210,8 @@
     else if (k === 'blur-in') { op = easeOut(p); blur = 14 * (1 - easeOut(p)); sc = 0.96 + 0.04 * easeOut(p); }   // text swap
     else if (k === 'rise') { const q = clamp((t - a.i) / 0.5, 0, 1); ty = 44 * (1 - easeOut(q)); op = Math.min(1, 2.5 * q);
       blur = 6 * (1 - easeOut(q)); sc = 0.94 + 0.06 * easeOut(q); }                                                   // toast rise
+    else if (k === 'burst') { const q = clamp((t - a.i) / 0.55, 0, 1), e = easeOutBack(q);   // out of a point to its place
+      tx = a.fx * (1 - easeOut(q)); ty = a.fy * (1 - easeOut(q)); sc = 0.35 + 0.65 * e; op = Math.min(1, 4 * q); }
     else if (k === 'none') op = 1;
     return { op, sc, rot, tx, ty, clip, blur };
   }
@@ -346,6 +349,11 @@
     let top = big ? rc.y + rc.h - 110 : 1560;
     if (mb && big) top = Math.min(top, mb - 120);
     if (AN && big) top = Math.min(top, rc.y + rc.h - cap.offsetHeight - 34);   // taller animated lines stay inside the card
+    if (D.cap && D.cap.safe && mb) {                            // safe-zone captions: the whole box ends above max_bottom;
+      const hc = cap.offsetHeight;                              // a small card at the top carries its caption right under it
+      if (!big && tg.y + tg.h < 640) { top = tg.y + tg.h + 14; cap.style.left = (tg.x + tg.w / 2) + 'px'; }
+      else top = Math.min(top, mb - hc);
+    }
     cap.style.top = top + 'px';
     if (style === 'clean') { cap.style.background = 'none'; cap.style.textShadow = '0 3px 0 #000, 0 0 14px rgba(0,0,0,.7)'; }
     // light-on-dark presets sitting on the page (not on the video card) switch to dark text for contrast

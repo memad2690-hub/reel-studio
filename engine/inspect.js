@@ -44,7 +44,8 @@ const times = String(args.times).split(',').map(Number);
       document.querySelectorAll('#fg .a, #behind .a').forEach(g => {
         if (!vis(g)) return;
         const r = R(g); if (r[2] - r[0] < 2 || r[3] - r[1] < 2) return;
-        const tx = [...g.querySelectorAll('text')].filter(x => x.textContent.trim());
+        // text inside [data-deco] is part of a picture (e.g. an ad thumbnail), not text to read
+        const tx = [...g.querySelectorAll('text')].filter(x => x.textContent.trim() && !x.closest('[data-deco]'));
         const txt = tx.map(x => x.textContent.trim()).join(' ').slice(0, 80);
         let tb = null;                                           // the text's own box (decorative backdrops excluded)
         tx.forEach(x => { const q = R(x); tb = tb ? [Math.min(tb[0], q[0]), Math.min(tb[1], q[1]), Math.max(tb[2], q[2]), Math.max(tb[3], q[3])] : q; });

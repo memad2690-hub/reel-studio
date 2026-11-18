@@ -1,8 +1,911 @@
 {
-  "mode": "B",
-  "words": "words.json",
-  "audio": "build/cut_audio.m4a",
-  "captions": true,
-  "scenes": [],
-  "look": 2
+ "mode": "B",
+ "words": "words.json",
+ "audio": "build/cut_audio.m4a",
+ "captions": true,
+ "look": 2,
+ "brand": "ceos",
+ "style": "editorial",
+ "transition": "cut",
+ "caption_style": "kinetic",
+ "caption_keywords": [
+  "jacket",
+  "creative",
+  "diversity",
+  "angle",
+  "السعر",
+  "الجودة",
+  "Creative",
+  "Engine",
+  "ANGLES",
+  "angles",
+  "statement",
+  "packaging"
+ ],
+ "audio_clean": true,
+ "director": {
+  "mode": "hand",
+  "style": "CEOS Creative Breakdown",
+  "modes": [
+   "presenter",
+   "breakdown",
+   "explosion"
+  ],
+  "by": "Claude"
+ },
+ "scenes": [
+  {
+   "id": "hook",
+   "start": 0,
+   "layout": "full",
+   "zoom": [
+    1.0,
+    1.03
+   ],
+   "punch": {
+    "at": "jacket",
+    "zoom": 1.07
+   },
+   "elements": [
+    {
+     "type": "product",
+     "r": 150,
+     "x": 540,
+     "y": 60,
+     "in": "jacket",
+     "anim": "spring",
+     "sfx": "pop",
+     "sfx_gain": -21
+    }
+   ]
+  },
+  {
+   "id": "seven",
+   "start": "تخيل",
+   "layout": "top",
+   "elements": [
+    {
+     "type": "kinetic",
+     "from": "بسبع",
+     "count": 3,
+     "emphasis": [
+      "بسبع"
+     ],
+     "intensity": "high",
+     "x": 540,
+     "y": 160,
+     "size": 90,
+     "w": 960
+    },
+    {
+     "type": "admock",
+     "angle": "price",
+     "x": 90,
+     "y": 420,
+     "w": 128,
+     "h": 176,
+     "in": {
+      "at": "مختلفة",
+      "offset": 0.0
+     },
+     "anim": "burst",
+     "from": [
+      540,
+      150
+     ],
+     "sfx": "whoosh2",
+     "sfx_gain": -21
+    },
+    {
+     "type": "admock",
+     "angle": "quality",
+     "x": 240,
+     "y": 420,
+     "w": 128,
+     "h": 176,
+     "in": {
+      "at": "مختلفة",
+      "offset": 0.09
+     },
+     "anim": "burst",
+     "from": [
+      540,
+      150
+     ]
+    },
+    {
+     "type": "admock",
+     "angle": "statement",
+     "x": 390,
+     "y": 420,
+     "w": 128,
+     "h": 176,
+     "in": {
+      "at": "مختلفة",
+      "offset": 0.18
+     },
+     "anim": "burst",
+     "from": [
+      540,
+      150
+     ]
+    },
+    {
+     "type": "admock",
+     "angle": "comfort",
+     "x": 540,
+     "y": 420,
+     "w": 128,
+     "h": 176,
+     "in": {
+      "at": "مختلفة",
+      "offset": 0.27
+     },
+     "anim": "burst",
+     "from": [
+      540,
+      150
+     ]
+    },
+    {
+     "type": "admock",
+     "angle": "value",
+     "x": 690,
+     "y": 420,
+     "w": 128,
+     "h": 176,
+     "in": {
+      "at": "مختلفة",
+      "offset": 0.36
+     },
+     "anim": "burst",
+     "from": [
+      540,
+      150
+     ]
+    },
+    {
+     "type": "admock",
+     "angle": "delivery",
+     "x": 840,
+     "y": 420,
+     "w": 128,
+     "h": 176,
+     "in": {
+      "at": "مختلفة",
+      "offset": 0.45
+     },
+     "anim": "burst",
+     "from": [
+      540,
+      150
+     ]
+    },
+    {
+     "type": "admock",
+     "angle": "gift",
+     "x": 990,
+     "y": 420,
+     "w": 128,
+     "h": 176,
+     "in": {
+      "at": "مختلفة",
+      "offset": 0.54
+     },
+     "anim": "burst",
+     "from": [
+      540,
+      150
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ten",
+   "start": {
+    "at": "تخيل",
+    "nth": 2
+   },
+   "layout": "split",
+   "elements": [
+    {
+     "type": "crowd",
+     "n": 10,
+     "cols": 5,
+     "gap": 170,
+     "x": 540,
+     "y": 230,
+     "in": "عشر",
+     "anim": "pop",
+     "out": "المشكلة",
+     "sfx": "pop",
+     "sfx_gain": -22
+    },
+    {
+     "type": "crowd",
+     "n": 10,
+     "cols": 5,
+     "gap": 170,
+     "ask": true,
+     "x": 540,
+     "y": 230,
+     "in": "المشكلة",
+     "anim": "none"
+    },
+    {
+     "type": "banner",
+     "text": "ولا واحد بيشتريه لنفس السبب",
+     "x": 540,
+     "y": 560,
+     "w": 900,
+     "h": 104,
+     "size": 52,
+     "in": "لنفس",
+     "anim": "stamp"
+    }
+   ]
+  },
+  {
+   "id": "motives",
+   "start": "أول",
+   "layout": "split",
+   "sfx": "whoosh",
+   "punch": {
+    "at": "فارق",
+    "zoom": 1.05
+   },
+   "elements": [
+    {
+     "type": "motive",
+     "text": "السعر",
+     "tag": "PRICE",
+     "icon": "price",
+     "x": 795,
+     "y": 110,
+     "w": 470,
+     "h": 128,
+     "size": 50,
+     "in": "السعر.",
+     "anim": "pop",
+     "sfx": "pop",
+     "sfx_gain": -23
+    },
+    {
+     "type": "motive",
+     "text": "الجودة",
+     "tag": "QUALITY · TEXTURE",
+     "icon": "quality",
+     "x": 285,
+     "y": 110,
+     "w": 470,
+     "h": 128,
+     "size": 50,
+     "in": "quality",
+     "anim": "pop",
+     "sfx": "pop",
+     "sfx_gain": -23
+    },
+    {
+     "type": "motive",
+     "text": "أحسن value",
+     "tag": "VALUE FOR MONEY",
+     "icon": "value",
+     "x": 795,
+     "y": 290,
+     "w": 470,
+     "h": 128,
+     "size": 50,
+     "in": "value",
+     "anim": "pop",
+     "sfx": "pop",
+     "sfx_gain": -23
+    },
+    {
+     "type": "motive",
+     "text": "Statement",
+     "tag": "LUXURY",
+     "icon": "statement",
+     "x": 285,
+     "y": 290,
+     "w": 470,
+     "h": 128,
+     "size": 50,
+     "in": "statement،",
+     "anim": "pop",
+     "sfx": "pop",
+     "sfx_gain": -23
+    },
+    {
+     "type": "motive",
+     "text": "يوصل بكرة",
+     "tag": "DELIVERY",
+     "icon": "delivery",
+     "x": 795,
+     "y": 470,
+     "w": 470,
+     "h": 128,
+     "size": 50,
+     "in": "يوصل",
+     "anim": "pop",
+     "sfx": "pop",
+     "sfx_gain": -23
+    },
+    {
+     "type": "motive",
+     "text": "هدية",
+     "tag": "PACKAGING",
+     "icon": "gift",
+     "x": 285,
+     "y": 470,
+     "w": 470,
+     "h": 128,
+     "size": 50,
+     "in": "packaging",
+     "anim": "pop",
+     "sfx": "pop",
+     "sfx_gain": -23
+    }
+   ]
+  },
+  {
+   "id": "difference",
+   "start": "شايف",
+   "layout": "full",
+   "sfx": "impact",
+   "punch": {
+    "at": "الفرق؟",
+    "zoom": 1.09
+   },
+   "elements": [
+    {
+     "type": "banner",
+     "text": "شايف الفرق؟",
+     "x": 540,
+     "y": 150,
+     "w": 640,
+     "h": 136,
+     "size": 82,
+     "in": "شايف",
+     "anim": "stamp",
+     "out": "هما",
+     "mute_captions": true
+    },
+    {
+     "type": "banner",
+     "text": "نفس الـ jacket · سبب مختلف",
+     "x": 540,
+     "y": 150,
+     "w": 820,
+     "h": 104,
+     "size": 50,
+     "in": "سبب",
+     "anim": "pop",
+     "color": "white"
+    }
+   ]
+  },
+  {
+   "id": "same",
+   "start": "فلو",
+   "layout": "split",
+   "elements": [
+    {
+     "type": "admock",
+     "angle": "price",
+     "x": 860,
+     "y": 440,
+     "w": 300,
+     "h": 410,
+     "in": {
+      "at": "أحسن",
+      "offset": 0.0
+     },
+     "anim": "pop",
+     "lines": [
+      "بسعر يناسبك"
+     ],
+     "chip": "السعر",
+     "sfx": "pop2",
+     "sfx_gain": -22,
+     "size": 40,
+     "deco": true
+    },
+    {
+     "type": "admock",
+     "angle": "price",
+     "x": 540,
+     "y": 440,
+     "w": 300,
+     "h": 410,
+     "in": {
+      "at": "أحسن",
+      "offset": 0.15
+     },
+     "anim": "pop",
+     "lines": [
+      "بسعر يناسبك"
+     ],
+     "chip": "السعر",
+     "size": 40,
+     "deco": true
+    },
+    {
+     "type": "admock",
+     "angle": "price",
+     "x": 220,
+     "y": 440,
+     "w": 300,
+     "h": 410,
+     "in": {
+      "at": "أحسن",
+      "offset": 0.3
+     },
+     "anim": "pop",
+     "lines": [
+      "بسعر يناسبك"
+     ],
+     "chip": "السعر",
+     "size": 40,
+     "deco": true
+    },
+    {
+     "type": "banner",
+     "text": "كله بيقول نفس الحاجة",
+     "x": 540,
+     "y": 130,
+     "w": 720,
+     "h": 100,
+     "size": 50,
+     "in": "نفس",
+     "anim": "stamp",
+     "out": "نوع"
+    },
+    {
+     "type": "banner",
+     "text": "نوع واحد بس من العملا",
+     "x": 540,
+     "y": 130,
+     "w": 720,
+     "h": 100,
+     "size": 50,
+     "in": "نوع",
+     "anim": "stamp",
+     "color": "white"
+    }
+   ]
+  },
+  {
+   "id": "diversity",
+   "start": "هنا",
+   "layout": "mini",
+   "transition": "zoom",
+   "sfx": "whoosh",
+   "elements": [
+    {
+     "type": "banner",
+     "text": "creative diversity",
+     "x": 540,
+     "y": 1460,
+     "w": 620,
+     "h": 96,
+     "size": 54,
+     "in": "diversity،",
+     "anim": "stamp",
+     "space": "canvas"
+    },
+    {
+     "type": "admock",
+     "angle": "base",
+     "x": 540,
+     "y": 1050,
+     "w": 480,
+     "h": 650,
+     "in": {
+      "at": "هنا",
+      "offset": 0.3
+     },
+     "anim": "spring",
+     "space": "canvas",
+     "lines": [
+      "jacket واحد"
+     ],
+     "chip": "إعلان واحد",
+     "exit": "shrink",
+     "size": 50
+    },
+    {
+     "type": "admock",
+     "angle": "value",
+     "x": 180,
+     "y": 300,
+     "w": 230,
+     "h": 320,
+     "in": "angle",
+     "anim": "burst",
+     "space": "canvas",
+     "chip": "Value",
+     "from": [
+      540,
+      1050
+     ],
+     "sfx": "whoosh2",
+     "sfx_gain": -22
+    },
+    {
+     "type": "admock",
+     "angle": "gift",
+     "x": 900,
+     "y": 300,
+     "w": 230,
+     "h": 320,
+     "in": "مختلف،",
+     "anim": "burst",
+     "space": "canvas",
+     "chip": "هدية",
+     "from": [
+      540,
+      1050
+     ]
+    }
+   ]
+  },
+  {
+   "id": "explosion",
+   "start": "فهتلاقي",
+   "layout": "mini",
+   "captions": false,
+   "elements": [
+    {
+     "type": "admock",
+     "angle": "value",
+     "x": 180,
+     "y": 300,
+     "w": 230,
+     "h": 320,
+     "in": "فهتلاقي",
+     "anim": "none",
+     "space": "canvas",
+     "chip": "Value",
+     "sfx_gain": -22
+    },
+    {
+     "type": "admock",
+     "angle": "gift",
+     "x": 900,
+     "y": 300,
+     "w": 230,
+     "h": 320,
+     "in": "فهتلاقي",
+     "anim": "none",
+     "space": "canvas",
+     "chip": "هدية"
+    },
+    {
+     "type": "admock",
+     "angle": "price",
+     "x": 790,
+     "y": 760,
+     "w": 430,
+     "h": 500,
+     "in": "للسعر،",
+     "anim": "burst",
+     "space": "canvas",
+     "lines": [
+      "jacket يكمّل لبسك",
+      "بسعر يناسبك"
+     ],
+     "chip": "السعر",
+     "from": [
+      540,
+      1050
+     ],
+     "sfx": "whoosh2",
+     "sfx_gain": -20,
+     "size": 47
+    },
+    {
+     "type": "admock",
+     "angle": "quality",
+     "x": 290,
+     "y": 760,
+     "w": 430,
+     "h": 500,
+     "in": "الجودة،",
+     "anim": "burst",
+     "space": "canvas",
+     "lines": [
+      "خامة تحسها",
+      "من أول لمسة"
+     ],
+     "chip": "الجودة",
+     "from": [
+      540,
+      1050
+     ],
+     "sfx": "whoosh2",
+     "sfx_gain": -20,
+     "size": 47
+    },
+    {
+     "type": "admock",
+     "angle": "statement",
+     "x": 790,
+     "y": 1290,
+     "w": 430,
+     "h": 500,
+     "in": "مفيش",
+     "anim": "burst",
+     "space": "canvas",
+     "lines": [
+      "مش هتلاقي زيه",
+      "في الشارع"
+     ],
+     "chip": "مفيش زيه",
+     "from": [
+      540,
+      1050
+     ],
+     "sfx": "whoosh2",
+     "sfx_gain": -20,
+     "size": 47
+    },
+    {
+     "type": "admock",
+     "angle": "comfort",
+     "x": 290,
+     "y": 1290,
+     "w": 430,
+     "h": 500,
+     "in": "comfort",
+     "anim": "burst",
+     "space": "canvas",
+     "lines": [
+      "مريح طول اليوم"
+     ],
+     "chip": "الراحة",
+     "from": [
+      540,
+      1050
+     ],
+     "sfx": "whoosh2",
+     "sfx_gain": -20,
+     "size": 47
+    }
+   ]
+  },
+  {
+   "id": "test",
+   "start": "هتقدر",
+   "layout": "full",
+   "zoom": [
+    1.0,
+    1.03
+   ],
+   "elements": [
+    {
+     "type": "banner",
+     "text": "اختبر إيه اللي بيجيب عملا أكتر",
+     "x": 540,
+     "y": 150,
+     "w": 900,
+     "h": 110,
+     "size": 54,
+     "in": "عملا",
+     "anim": "pop"
+    }
+   ]
+  },
+  {
+   "id": "ceos",
+   "start": "وعشان",
+   "layout": "top",
+   "elements": [
+    {
+     "type": "banner",
+     "text": "بنبني دلوقتي",
+     "x": 540,
+     "y": 70,
+     "w": 420,
+     "h": 86,
+     "size": 46,
+     "in": "بنبني",
+     "anim": "fade",
+     "color": "white"
+    },
+    {
+     "type": "banner",
+     "text": "Creative Engine OS",
+     "x": 540,
+     "y": 240,
+     "w": 860,
+     "h": 150,
+     "size": 78,
+     "in": "Creative",
+     "anim": "stamp",
+     "sfx": "impact",
+     "sfx_gain": -17,
+     "mute_captions": true,
+     "out": "ده"
+    }
+   ]
+  },
+  {
+   "id": "how",
+   "start": "ده",
+   "layout": "split",
+   "elements": [
+    {
+     "type": "banner",
+     "text": "ده بيعمل إيه؟",
+     "x": 540,
+     "y": 70,
+     "w": 520,
+     "h": 100,
+     "size": 50,
+     "in": "ده",
+     "anim": "pop",
+     "out": "بدل"
+    },
+    {
+     "type": "wcard",
+     "lines": [
+      "أعمل النهاردة",
+      "إعلان عن إيه؟"
+     ],
+     "x": 540,
+     "y": 240,
+     "size": 58,
+     "in": "أعمل",
+     "anim": "pop",
+     "out": "المنتج"
+    },
+    {
+     "type": "product",
+     "r": 120,
+     "x": 830,
+     "y": 260,
+     "in": "المنتج",
+     "anim": "spring",
+     "sfx": "pop",
+     "sfx_gain": -22
+    },
+    {
+     "type": "banner",
+     "text": "فكرة: السعر",
+     "x": 330,
+     "y": 90,
+     "w": 470,
+     "h": 94,
+     "size": 44,
+     "in": {
+      "at": "لأفكار",
+      "offset": 0.0
+     },
+     "anim": "burst",
+     "color": "white",
+     "from": [
+      830,
+      260
+     ]
+    },
+    {
+     "type": "banner",
+     "text": "فكرة: الجودة",
+     "x": 330,
+     "y": 202,
+     "w": 470,
+     "h": 94,
+     "size": 44,
+     "in": {
+      "at": "لأفكار",
+      "offset": 0.25
+     },
+     "anim": "burst",
+     "color": "white",
+     "from": [
+      830,
+      260
+     ]
+    },
+    {
+     "type": "banner",
+     "text": "فكرة: مفيش زيه",
+     "x": 330,
+     "y": 314,
+     "w": 470,
+     "h": 94,
+     "size": 44,
+     "in": {
+      "at": "لأفكار",
+      "offset": 0.5
+     },
+     "anim": "burst",
+     "color": "white",
+     "from": [
+      830,
+      260
+     ]
+    },
+    {
+     "type": "banner",
+     "text": "فكرة: الراحة",
+     "x": 330,
+     "y": 426,
+     "w": 470,
+     "h": 94,
+     "size": 44,
+     "in": {
+      "at": "لأفكار",
+      "offset": 0.75
+     },
+     "anim": "burst",
+     "color": "white",
+     "from": [
+      830,
+      260
+     ]
+    },
+    {
+     "type": "banner",
+     "text": "دوافع شرا مختلفة",
+     "x": 830,
+     "y": 470,
+     "w": 420,
+     "h": 86,
+     "size": 44,
+     "in": "دوافع",
+     "anim": "pop"
+    },
+    {
+     "type": "banner",
+     "text": "جاهزة تبدأ تختبرها",
+     "x": 540,
+     "y": 600,
+     "w": 700,
+     "h": 110,
+     "size": 56,
+     "in": "وجاهزة",
+     "anim": "stamp",
+     "sfx": "pop2",
+     "sfx_gain": -21
+    }
+   ]
+  },
+  {
+   "id": "founder",
+   "start": "الفكرة",
+   "layout": "full",
+   "zoom": [
+    1.0,
+    1.04
+   ],
+   "elements": []
+  },
+  {
+   "id": "cta",
+   "start": {
+    "at": "فلو",
+    "nth": 1
+   },
+   "layout": "top",
+   "elements": [
+    {
+     "type": "cta",
+     "prompt": "اعمل follow واكتب",
+     "keyword": "ANGLES",
+     "magnet": "كام angle تطلعه من منتجك",
+     "x": 540,
+     "y": 280,
+     "in": "تعرف",
+     "anim": "spring",
+     "sfx": "pop",
+     "sfx_gain": -20,
+     "keyword_bg": "yellow",
+     "magnet_color": "ink",
+     "size": 110
+    }
+   ]
+  }
+ ],
+ "caption_max_bottom": 1500
 }

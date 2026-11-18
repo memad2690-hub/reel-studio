@@ -294,9 +294,14 @@ def b_headline(e):
 def b_cta(e):
     kw = e.get('keyword', 'AUDIT')
     out = b_wcard({'lines': [e.get('prompt', 'اكتب في الكومنتات')], 'size': 50})
-    out += f'<g transform="translate(0,150)">' + text(kw, e.get('size', 120), B['red'], 900) + '</g>'
+    if e.get('keyword_bg'):                       # brand block: ink keyword on a coloured box (e.g. CEOS lime)
+        bg = col(e['keyword_bg'], B)
+        out += (f'<g transform="translate(0,178)"><g data-fit="26"><rect class="fitbox" rx="24" fill="{bg}" '
+                f'stroke="{B["ink"]}" stroke-width="6"/>' + text(kw, e.get('size', 120), B['ink'], 900) + '</g></g>')
+    else:
+        out += f'<g transform="translate(0,150)">' + text(kw, e.get('size', 120), B['red'], 900) + '</g>'
     if e.get('magnet'):
-        out += f'<g transform="translate(0,290)">' + b_pill({'text': e['magnet'], 'color': 'blue', 'size': 38}) + '</g>'
+        out += f'<g transform="translate(0,{345 if e.get("keyword_bg") else 290})">' + b_pill({'text': e['magnet'], 'color': e.get('magnet_color', 'blue'), 'size': 38}) + '</g>'
     return out
 
 

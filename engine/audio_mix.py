@@ -41,7 +41,7 @@ def mix(pdir, voice, cues, clean=True, out_rel='build/mix_audio.m4a'):
         fc.append(f'[{i}:a]aresample=48000,volume={g}dB,adelay={ms}|{ms}[s{i}]')
         labels.append(f'[s{i}]')
     if len(labels) > 1:
-        fc.append(f'{"".join(labels)}amix=inputs={len(labels)}:duration=first:normalize=0,alimiter=limit=0.89[a]')
+        fc.append(f'{"".join(labels)}amix=inputs={len(labels)}:duration=first:normalize=0,alimiter=limit=0.84[a]')
     else:
         fc.append('[v]anull[a]')
     subprocess.run(cmd + ['-filter_complex', ';'.join(fc), '-map', '[a]', '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', out],

@@ -326,3 +326,28 @@ Projects without `look` keep look 1 (exactly as approved). New planner drafts an
 - Art direction: `reel.py plan` adds an art-direction table to plan.md (look first, speaker prominence, element count,
   reading time; ≥ 3 amounts become one bar chart, ≤ 3 elements per scene). `reel.py accept` measures the same on
   screen (`readable` and `art` checks; see docs/ACCEPTANCE.md).
+
+
+## CEOS Creative Breakdown kit (engine/ceos_kit.py)
+Templates only (no image generation). The jacket is an original drawing of a fictional product.
+| type | keys |
+|---|---|
+| `admock` | `angle` (price, quality, statement, comfort, value, delivery, gift, base), `lines` (≤2 headline lines), `chip`, `w`, `h`, `size`, `label` (default "مثال · منتج تخيّلي"), `deco` (treat as a picture in checks; automatic under 300 px wide) |
+| `motive` | `text`, `tag` (small English tag, decorative), `icon` (price, quality, value, statement, delivery, gift, comfort, unique), `w`, `h`, `size` |
+| `product` | `r`, `label`: the jacket on a lime disc |
+| `banner` | `text`, `w`, `h`, `size`, `color` ("white" for white text; default lime): black bar |
+| `crowd` | `n`, `cols`, `gap`, `ask` (lime "?" on each person) |
+
+New keys (any reel):
+- element `"anim": "burst"` + `"from": [x, y]`: flies out of a point to its place (one ad → many).
+- element `"sfx": "pop"`, `"sfx_gain"`, `"sfx_offset"`; scene `"sfx"`; top-level `"sfx": [{"at", "kind", "gain"}]`.
+  Sounds in `library/sfx/` (whoosh, whoosh2, pop, pop2, impact; ElevenLabs sound generation). Default levels are
+  15–23 dB under the voice.
+- top-level `"audio_clean": true`: high-pass, light denoise, gentle compression, −15 LUFS (`engine/audio_mix.py`).
+- top-level `"caption_max_bottom": 1500`: the whole caption box ends above this y. A small card at the top
+  (layout `mini`) carries its caption right under it.
+- scene `"captions": false`: no captions in this scene (its graphics carry the words). Element `"mute_captions": true`:
+  captions step aside while it is on screen.
+- layout `mini` (look 2): a 300×370 presenter, top centre, for full-page graphics.
+- `cta`: `keyword_bg` (e.g. "yellow" = brand lime) puts the keyword in ink on a coloured block; `magnet_color`.
+- Checker: text inside `[data-deco]` (ad thumbnails, decorative tags) counts as part of a picture.
