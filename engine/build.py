@@ -155,6 +155,9 @@ def flag_late(anchors, spec, t, t_out, s_start, what):
                                'problem': f'comes in at {t:.2f}s, after it leaves ({t_out:.2f}s), so it never appears'})
 
 
+SFX_CUES = []                                           # filled while expanding; mixed into the audio at the end
+
+
 def expand(el, mode, anchors, s_start, s_end, idx, ins=None, floor=None):
     """Return SVG for one element (seats and steps expand to several animated groups).
     floor: earliest allowed in-time (Mode B: after the face card has finished sliding)."""
@@ -167,6 +170,8 @@ def expand(el, mode, anchors, s_start, s_end, idx, ins=None, floor=None):
     what = el.get('text') or el.get('hl') or el.get('title') or el.get('name') or el['type']
     flag_late(anchors, el.get('in'), t_in, t_out, s_start, what)
     ins.append(t_in)
+    if el.get('sfx'):                                   # a sound effect when this element appears
+        SFX_CUES.append({'t': round(t_in + float(el.get('sfx_offset', 0)), 3), 'kind': el['sfx'], 'gain': el.get('sfx_gain')})
     kind = el.get('anim', 'pop')
     ex = el.get('exit', 'fade')
     x, y, rot, sc = el.get('x', 0), el.get('y', 0), el.get('rot', 0), el.get('scale', 1)
@@ -216,6 +221,8 @@ def expand(el, mode, anchors, s_start, s_end, idx, ins=None, floor=None):
         gap = el.get('gap', 130)
         for i, item in enumerate(el.get('items', [])):
             ti = anchors.resolve(item.get('in'), s_start, default=t_in + 0.6 * i)
+            if item.get('sfx') or el.get('item_sfx'):
+                SFX_CUES.append({'t': round(ti, 3), 'kind': item.get('sfx') or el['item_sfx'], 'gain': el.get('sfx_gain')})
             if floor is not None:
                 ti = max(ti, floor)
             flag_late(anchors, item.get('in'), ti, t_out, s_start, item.get('text') or f'steps item {i + 1}')
@@ -352,6 +359,7 @@ def key_word(ws, hl):
 
 
 def build(project_dir, out_dir=None):
+    SFX_CUES.clear()
     cfg = load_config()
     pdir = os.path.abspath(project_dir)
     with open(os.path.join(pdir, 'project.json'), encoding='utf-8') as f:
@@ -605,8 +613,19 @@ html,body{{margin:0;background:#000}} #stage{{position:relative;width:{W}px;heig
 
     with open(os.path.join(out_dir, 'page.html'), 'w', encoding='utf-8') as f:
         f.write(page)
+    # scene-level and top-level sound effects, then the final mix (voice clean-up + effects)
+    for sc, st in zip(spec.get('scenes', []), starts):
+        if sc.get('sfx'):
+            SFX_CUES.append({'t': round(st + float(sc.get('sfx_offset', 0)), 3), 'kind': sc['sfx'], 'gain': sc.get('sfx_gain')})
+    for c in spec.get('sfx', []):
+        SFX_CUES.append({'t': round(anchors.resolve(c.get('at'), 0, default=0) + float(c.get('offset', 0)), 3),
+                         'kind': c['kind'], 'gain': c.get('gain')})
+    if os.path.exists(audio_path) and (SFX_CUES or spec.get('audio_clean')):
+        import audio_mix
+        audio = audio_mix.mix(pdir, audio_path, SFX_CUES, clean=bool(spec.get('audio_clean')))
+        audio_path = os.path.join(pdir, audio)
     meta = dict(data)
-    meta.update({'scale': M['scale'], 'audio': audio if os.path.exists(audio_path) else None,
+    meta.update({'scale': M['scale'], 'audio': audio if os.path.exists(audio_path) else None, 'sfx': SFX_CUES,
                  'anchor_misses': anchors.misses, 'words': len(words), 'notes': notes})
     with open(os.path.join(out_dir, 'meta.json'), 'w', encoding='utf-8') as f:
         json.dump(meta, f, ensure_ascii=False, indent=1)

@@ -1,0 +1,24 @@
+{
+  "slug": "ceos-1",
+  "title": "CEOS-1",
+  "mode": "B",
+  "reel_id": "CEOS-1",
+  "cta_keyword": "",
+  "stage": "brief",
+  "created": "2026-11-18T14:43:40+02:00",
+  "length_target_s": [
+    45,
+    60
+  ],
+  "elevenlabs": {
+    "flow_id": "",
+    "voice_id": "",
+    "generation_id": "",
+    "chosen_take": ""
+  },
+  "notes": "",
+  "look": 2,
+  "raw": "raw/raw.mp4",
+  "source_name": "Edits_CEOs_1_20261118_143819.MP4",
+  "brand": "ceos"
+}
