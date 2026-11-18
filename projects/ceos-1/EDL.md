@@ -1,4 +1,4 @@
-# CEOS-1 · Edit decision list (review export v001)
+# CEOS-1 · Edit decision list (review export v002)
 
 **Style:** CEOS Creative Breakdown · CEOS lime #D1FE17 + black + white · RC Warm Cinematic at 70% on footage only
 **Length:** 98.4 s (rough cut rc002 112.2 s, raw 160.4 s) · 1080×1920 · 30 fps
@@ -34,7 +34,7 @@ Visual modes: **P** = presenter (full-frame speaker) · **B** = product-angle br
 | 3.79–8.03 | B | card expands → top | تخيل نفس الـ jacket ده ممكن يتباع بسبع إعلانات مختلفة تمامًا | kinetic "بسبع إعلانات مختلفة" (lime on بسبع); 7 ad thumbnails fan out on "مختلفة" | whoosh 6.9 |
 | 8.03–14.87 | B | split | تخيل معايا… عشر أشخاص… ولا واحد فيهم بيشتريه لنفس السبب | 10 people (9.0); each gets a "?" on "المشكلة"; bar "ولا واحد بيشتريه لنفس السبب" | pop 9.0 |
 | 14.87–36.19 | B | split, punch 1.05 on "فارق" | the six buyers | motivation cards, each on its word: السعر 16.3 · الجودة 18.6 · أحسن value 22.0 · Statement 27.2 · يوصل بكرة 31.6 · هدية 33.8 | whoosh 14.9; 6 soft pops |
-| 36.19–42.03 | P | full, punch 1.09 on "الفرق؟" | **شايف الفرق؟** (pause) هما كلهم… سبب مختلف للشرا | bar "شايف الفرق؟" (caption steps aside); bar "نفس الـ jacket · سبب مختلف" | impact 36.2 |
+| 36.19–42.03 | P | full, punch 1.09 on "الفرق؟" | **شايف الفرق؟** (pause) هما كلهم… سبب مختلف للشرا | bar "شايف الفرق؟" holds through the pause until "سبب" (no caption until "هما"); then bar "نفس الـ jacket · سبب مختلف" | impact 36.2 |
 | 42.03–52.72 | B | split | فلو إعلاناتك كلها بتقول أحسن سعر وأقوى خصم… | three identical price ads (44.1); "كله بيقول نفس الحاجة" → "نوع واحد بس من العملا" | pop 44.1 |
 | 52.72–58.31 | X | mini (speaker small, top centre), zoom transition | هنا بتيجي قوة الـ creative diversity، إنك تعمل لكل سبب شرا creative angle مختلف | one ad, big, "jacket واحد / إعلان واحد"; bar "creative diversity"; Value and هدية cards burst out of it | whoosh 52.7, 57.2 |
 | 58.31–66.48 | **X — payoff** | mini, captions off (the chips carry his words) | فهتلاقي واحد للسعر… الجودة… مفيش زيه… comfort / مريح | the one ad becomes four, each bursting out on its word: السعر 59.1 · الجودة 60.3 · مفيش زيه 62.4 · الراحة 64.6 | 4 soft whooshes |
@@ -43,6 +43,9 @@ Visual modes: **P** = presenter (full-frame speaker) · **B** = product-angle br
 | 74.15–86.05 | B | split | ده بيعمل إيه؟ … بيساعدك تحول نفس المنتج لأفكار إعلانات مختلفة… وجاهزة تبدأ تختبرها | "ده بيعمل إيه؟"; "أعمل النهاردة إعلان عن إيه؟"; jacket disc → four **idea** cards ("فكرة: السعر / الجودة / مفيش زيه / الراحة"); "دوافع شرا مختلفة"; "جاهزة تبدأ تختبرها" | pop 79.1, 84.5 |
 | 86.05–91.47 | P | full, drift 1.00→1.04 | الفكرة دي اتعملت… صرفنا millions على مدار السبع سنين اللي فاتوا | presenter only, no graphic for the claim | — |
 | 91.47–98.37 | B | top | فلو أنت عايز تعرف كام angle… اعمل follow، واكتب angles في comment | CTA card "اعمل follow واكتب **ANGLES**" + "كام angle تطلعه من منتجك" from "تعرف" (92.2) | pop 92.2 |
+
+v002 = v001 with 36.0–42.0 s re-rendered (the "شايف الفرق؟" bar now holds and no caption doubles it); the rest is
+v001's frames, re-encoded at CRF 15 for the join.
 
 Transitions: hard cuts everywhere except the zoom into the creative-diversity payoff (52.7). Speaker-card moves
 between layouts are the card expansions.

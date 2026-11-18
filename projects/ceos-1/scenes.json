@@ -367,8 +367,8 @@
      "size": 82,
      "in": "شايف",
      "anim": "stamp",
-     "out": "هما",
-     "mute_captions": true
+     "out": "سبب",
+     "exit": "shrink"
     },
     {
      "type": "banner",
@@ -907,5 +907,14 @@
    ]
   }
  ],
- "caption_max_bottom": 1500
+ "caption_max_bottom": 1500,
+ "caption_mute": [
+  [
+   36.15,
+   {
+    "at": "هما",
+    "after": 36
+   }
+  ]
+ ]
 }

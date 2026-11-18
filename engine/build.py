@@ -554,6 +554,8 @@ def build(project_dir, out_dir=None):
             fy = (cy + ch / 2) / 2560 if cw == 1440 else 0.45
         focus = [0.5, round(fy, 3)]
     caption_style = spec.get('caption_style') or brand_cfg.get('caption_style') or 'box'
+    for w0, w1 in spec.get('caption_mute', []):          # top-level caption mute windows: [from, to] anchors/seconds
+        CAP_MUTE.append([round(anchors.resolve(w0, 0, default=0), 3), round(anchors.resolve(w1, 0, default=0), 3)])
     data = {'mode': mode, 'W': W, 'H': H, 'fps': M['fps'], 'duration': duration, 'card': CARD,
             'layouts': LAYOUTS, 'slide': CARD_SLIDE, 'cf': cfi, 'focus': focus, 'capStyle': caption_style,
             'hlColor': kits.B['yellow'], 'scenes': scene_meta, 'captions': captions, 'cap': cap_cfg,

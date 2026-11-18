@@ -260,5 +260,41 @@
       "audio": true,
       "problems": []
     }
+  },
+  {
+    "id": "v001",
+    "kind": "render",
+    "file": "exports/v001.mp4",
+    "sheet": "exports/v001_sheet.png",
+    "created": "2026-11-18T16:30:06+02:00",
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 98.37,
+      "mbps": 6.97,
+      "audio": true,
+      "problems": []
+    },
+    "draft": false,
+    "note": "review export: CEOS Creative Breakdown, 98.4 s"
+  },
+  {
+    "id": "v002",
+    "kind": "render",
+    "file": "exports/v002.mp4",
+    "sheet": "exports/v002_sheet.png",
+    "created": "2026-11-18T16:38:33+02:00",
+    "qa": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30.0,
+      "duration": 98.37,
+      "mbps": 6.68,
+      "audio": true,
+      "problems": []
+    },
+    "draft": false,
+    "note": ""
   }
 ]
