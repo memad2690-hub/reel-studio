@@ -1,0 +1,39 @@
+{
+ "text": "[fast-paced] عند مية براند… أول تشغيل.",
+ "words": [
+  {
+   "text": "عند",
+   "start": 0.204,
+   "end": 0.24
+  },
+  {
+   "text": "مية",
+   "start": 0.28,
+   "end": 0.56
+  },
+  {
+   "text": "براند…",
+   "start": 0.613,
+   "end": 1.04
+  },
+  {
+   "text": "أول",
+   "start": 1.18,
+   "end": 1.6
+  },
+  {
+   "text": "تشغيل.",
+   "start": 1.68,
+   "end": 2.24
+  }
+ ],
+ "duration": 2.272653,
+ "model": "eleven_v3",
+ "settings": {
+  "stability": 0.5,
+  "similarity_boost": 0.8,
+  "style": 0.2,
+  "use_speaker_boost": true
+ },
+ "hash": "e1652a138e71"
+}

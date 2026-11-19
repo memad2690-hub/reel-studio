@@ -1,0 +1,54 @@
+{
+ "text": "المحرّك ده فيه عشرة آلاف مكان… كلهم فاضيين.",
+ "words": [
+  {
+   "text": "المحرّك",
+   "start": 0.0,
+   "end": 0.56
+  },
+  {
+   "text": "ده",
+   "start": 0.64,
+   "end": 0.8
+  },
+  {
+   "text": "فيه",
+   "start": 0.86,
+   "end": 1.04
+  },
+  {
+   "text": "عشرة",
+   "start": 1.147,
+   "end": 1.52
+  },
+  {
+   "text": "آلاف",
+   "start": 1.6,
+   "end": 1.92
+  },
+  {
+   "text": "مكان…",
+   "start": 2.032,
+   "end": 2.56
+  },
+  {
+   "text": "كلهم",
+   "start": 2.68,
+   "end": 3.12
+  },
+  {
+   "text": "فاضيين.",
+   "start": 3.16,
+   "end": 3.68
+  }
+ ],
+ "duration": 3.709388,
+ "model": "eleven_v3",
+ "settings": {
+  "stability": 0.5,
+  "similarity_boost": 0.8,
+  "style": 0.2,
+  "use_speaker_boost": true
+ },
+ "hash": "50fb9a628178"
+}

@@ -1,0 +1,64 @@
+{
+ "text": "[fast-paced] اكتب اسم البراند بتاعك وبيبيع إيه… أو اكتب: جنب الدرج.",
+ "words": [
+  {
+   "text": "اكتب",
+   "start": 0.139,
+   "end": 0.32
+  },
+  {
+   "text": "اسم",
+   "start": 0.38,
+   "end": 0.56
+  },
+  {
+   "text": "البراند",
+   "start": 0.608,
+   "end": 0.96
+  },
+  {
+   "text": "بتاعك",
+   "start": 1.013,
+   "end": 1.44
+  },
+  {
+   "text": "وبيبيع",
+   "start": 1.48,
+   "end": 1.92
+  },
+  {
+   "text": "إيه…",
+   "start": 1.96,
+   "end": 2.56
+  },
+  {
+   "text": "أو",
+   "start": 2.613,
+   "end": 2.72
+  },
+  {
+   "text": "اكتب:",
+   "start": 2.773,
+   "end": 3.28
+  },
+  {
+   "text": "جنب",
+   "start": 3.36,
+   "end": 3.6
+  },
+  {
+   "text": "الدرج.",
+   "start": 3.664,
+   "end": 4.16
+  }
+ ],
+ "duration": 4.597551,
+ "model": "eleven_v3",
+ "settings": {
+  "stability": 0.5,
+  "similarity_boost": 0.8,
+  "style": 0.2,
+  "use_speaker_boost": true
+ },
+ "hash": "5b8312c69699"
+}

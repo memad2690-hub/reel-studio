@@ -1,0 +1,49 @@
+{
+ "text": "[whispers] وأنا نفسي مش عارف هيطلع فيه إيه.",
+ "words": [
+  {
+   "text": "وأنا",
+   "start": 0.147,
+   "end": 0.24
+  },
+  {
+   "text": "نفسي",
+   "start": 0.32,
+   "end": 0.56
+  },
+  {
+   "text": "مش",
+   "start": 0.64,
+   "end": 0.8
+  },
+  {
+   "text": "عارف",
+   "start": 0.84,
+   "end": 1.12
+  },
+  {
+   "text": "هيطلع",
+   "start": 1.2,
+   "end": 1.6
+  },
+  {
+   "text": "فيه",
+   "start": 1.68,
+   "end": 1.92
+  },
+  {
+   "text": "إيه.",
+   "start": 1.96,
+   "end": 2.32
+  }
+ ],
+ "duration": 2.35102,
+ "model": "eleven_v3",
+ "settings": {
+  "stability": 0.5,
+  "similarity_boost": 0.8,
+  "style": 0.2,
+  "use_speaker_boost": true
+ },
+ "hash": "700462b25b87"
+}

@@ -1,0 +1,39 @@
+{
+ "text": "وعند عشرة آلاف… الدُّرج يتفتح.",
+ "words": [
+  {
+   "text": "وعند",
+   "start": 0.0,
+   "end": 0.32
+  },
+  {
+   "text": "عشرة",
+   "start": 0.4,
+   "end": 0.72
+  },
+  {
+   "text": "آلاف…",
+   "start": 0.8,
+   "end": 1.84
+  },
+  {
+   "text": "الدُّرج",
+   "start": 1.9,
+   "end": 2.32
+  },
+  {
+   "text": "يتفتح.",
+   "start": 2.4,
+   "end": 3.04
+  }
+ ],
+ "duration": 3.082449,
+ "model": "eleven_v3",
+ "settings": {
+  "stability": 0.5,
+  "similarity_boost": 0.8,
+  "style": 0.2,
+  "use_speaker_boost": true
+ },
+ "hash": "dd04008d907b"
+}

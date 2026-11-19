@@ -1,0 +1,599 @@
+{
+ "episode": "001",
+ "world": "ceos-engine",
+ "title": "المحرّك · الحلقة 001",
+ "voice": {
+  "voice_id": "uJCHSa1oJ32y5sbQ1hDc",
+  "name": "Mine (cloned)",
+  "model": "eleven_v3",
+  "seed": 7,
+  "settings": {
+   "stability": 0.5,
+   "similarity_boost": 0.8,
+   "style": 0.2,
+   "use_speaker_boost": true
+  },
+  "gap": 0.32,
+  "max_duration": 45,
+  "max_speed": 1.08,
+  "note": "eleven_v3 has no previous/next-text stitching; consistency comes from one seed + identical settings. \"[fast-paced]\" (not spoken) keeps the episode within 45 s without touching the words."
+ },
+ "data": {
+  "counter": 0,
+  "capacity": 10000,
+  "queue": [],
+  "drawer135": {
+   "state": "sealed",
+   "lines": 0
+  },
+  "frameworks": 134,
+  "handle": "@CreativeEngineOS"
+ },
+ "lines": [
+  {
+   "id": "L1",
+   "text": "المحرّك ده فيه عشرة آلاف مكان… كلهم فاضيين.",
+   "keys": [
+    "عشرة",
+    "آلاف",
+    "فاضيين."
+   ],
+   "tag": "[fast-paced]",
+   "scene": "wide engine in the dark",
+   "cam": {
+    "shot": "wide_far",
+    "move": "cut"
+   },
+   "events": [
+    {
+     "do": "grid.scan",
+     "at": "عشرة"
+    },
+    {
+     "do": "hud.pulse",
+     "at": "فاضيين."
+    }
+   ],
+   "sfx": [
+    {
+     "kind": "clunk",
+     "at": "المحرّك",
+     "gain": -20
+    }
+   ]
+  },
+  {
+   "id": "L2",
+   "text": "اتبنى عشان يطلّع إعلانات لبراندات حقيقية. بس التجربة دي… مش هتبدأ غير لما البراندات تدخل.",
+   "keys": [
+    "إعلانات",
+    "التجربة",
+    "تدخل."
+   ],
+   "tag": "[fast-paced]",
+   "scene": "core pulses; drift to the experiment module",
+   "cam": {
+    "shot": "module",
+    "move": "drift",
+    "at": "اتبنى",
+    "until": "التجربة",
+    "until_offset": 0.2
+   },
+   "events": [
+    {
+     "do": "core.pulse",
+     "at": "اتبنى"
+    },
+    {
+     "do": "core.pulse",
+     "at": "إعلانات"
+    },
+    {
+     "do": "module.label",
+     "at": "التجربة"
+    }
+   ],
+   "sfx": []
+  },
+  {
+   "id": "L3",
+   "text": "براندات مين؟… براندك انت.",
+   "keys": [
+    "براندك"
+   ],
+   "tag": "[fast-paced]",
+   "scene": "push in to one slot: براندك",
+   "cam": {
+    "shot": "slot",
+    "move": "push",
+    "at": "start",
+    "until": "براندك",
+    "until_offset": 0.05
+   },
+   "events": [
+    {
+     "do": "you.on",
+     "at": "براندك"
+    }
+   ],
+   "sfx": [
+    {
+     "kind": "clunk",
+     "at": "براندك",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "L4",
+   "text": "اكتب اسم البراند بتاعك في الكومنتس، ياخد مكانه جوّه. والبراندات اللي نختارها… يطلع لها إعلانات قدام الناس كلها.",
+   "keys": [
+    "الكومنتس،",
+    "مكانه",
+    "إعلانات"
+   ],
+   "tag": "[fast-paced]",
+   "scene": "comment flies into the slot; tray prints one ad",
+   "cam": {
+    "shot": "slot_tray",
+    "move": "pull",
+    "at": "start",
+    "dur": 1.2
+   },
+   "events": [
+    {
+     "do": "bubble.fly",
+     "at": "الكومنتس،",
+     "text": "براندك — بيبيع هدوم"
+    },
+    {
+     "do": "core.pulse",
+     "at": "مكانه"
+    },
+    {
+     "do": "tray.emit",
+     "at": "إعلانات",
+     "n": 1
+    }
+   ],
+   "sfx": []
+  },
+  {
+   "id": "L5",
+   "text": "دلوقتي؟ المحرّك فاضي.",
+   "keys": [
+    "فاضي."
+   ],
+   "tag": "[fast-paced]",
+   "scene": "pull back, everything dims, HUD 0",
+   "cam": {
+    "shot": "wide",
+    "move": "pull",
+    "at": "start",
+    "dur": 1.1
+   },
+   "events": [
+    {
+     "do": "lights.dim",
+     "at": "المحرّك",
+     "level": 0.55,
+     "dur": 0.7
+    },
+    {
+     "do": "you.off",
+     "at": "فاضي."
+    },
+    {
+     "do": "hud.pulse",
+     "at": "فاضي."
+    }
+   ],
+   "sfx": []
+  },
+  {
+   "id": "L6",
+   "text": "عند مية براند… أول تشغيل.",
+   "keys": [
+    "مية",
+    "تشغيل."
+   ],
+   "tag": "[fast-paced]",
+   "scene": "HUD → 100, the experiment ignites",
+   "cam": {
+    "shot": "engine_module",
+    "move": "drift",
+    "at": "start",
+    "dur": 1.4
+   },
+   "events": [
+    {
+     "do": "lights.up",
+     "at": "عند",
+     "dur": 0.4
+    },
+    {
+     "do": "hud.to",
+     "at": "مية",
+     "value": 100,
+     "dur": 0.8
+    },
+    {
+     "do": "core.active",
+     "at": "تشغيل."
+    },
+    {
+     "do": "module.ignite",
+     "at": "تشغيل."
+    }
+   ],
+   "sfx": [
+    {
+     "kind": "ignite",
+     "at": "تشغيل.",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "L7",
+   "text": "عند ألف، تجارب على منتجات حقيقية… حلقة ورا حلقة.",
+   "keys": [
+    "ألف،",
+    "حلقة"
+   ],
+   "tag": "[fast-paced]",
+   "scene": "HUD → 1,000, the tray prints ad after ad",
+   "cam": {
+    "shot": "tray",
+    "move": "push",
+    "at": "start",
+    "dur": 1.0
+   },
+   "events": [
+    {
+     "do": "hud.to",
+     "at": "ألف،",
+     "value": 1000,
+     "dur": 0.7
+    },
+    {
+     "do": "tray.emit",
+     "at": "تجارب",
+     "n": 7,
+     "interval": 0.26
+    }
+   ],
+   "sfx": []
+  },
+  {
+   "id": "L8",
+   "text": "وعند عشرة آلاف… الدُّرج يتفتح.",
+   "keys": [
+    "عشرة",
+    "آلاف…",
+    "يتفتح."
+   ],
+   "tag": "[fast-paced]",
+   "scene": "HUD → 10,000, the whole grid lights, drift toward the corridor",
+   "cam": {
+    "shot": "grid_corridor",
+    "move": "drift",
+    "at": "آلاف…",
+    "until": "end"
+   },
+   "events": [
+    {
+     "do": "hud.to",
+     "at": "عشرة",
+     "value": 10000,
+     "dur": 0.9
+    },
+    {
+     "do": "grid.lit",
+     "at": "آلاف…",
+     "dur": 0.9
+    },
+    {
+     "do": "core.pulse",
+     "at": "يتفتح."
+    }
+   ],
+   "sfx": [
+    {
+     "kind": "swoosh",
+     "at": "آلاف…",
+     "gain": -16
+    }
+   ]
+  },
+  {
+   "id": "L9",
+   "text": "أصل في حاجة ما قلتهاش.",
+   "keys": [
+    "حاجة"
+   ],
+   "tag": "[fast-paced]",
+   "scene": "HARD CUT: lights drop, near silence, HUD resets to 0",
+   "cam": {
+    "shot": "corridor_start",
+    "move": "cut",
+    "at": "start",
+    "offset": -0.12
+   },
+   "events": [
+    {
+     "do": "lights.drop",
+     "at": "start",
+     "offset": -0.12,
+     "level": 0.8
+    },
+    {
+     "do": "hud.to",
+     "at": "start",
+     "offset": -0.12,
+     "value": 0,
+     "instant": true
+    },
+    {
+     "do": "grid.dim",
+     "at": "start",
+     "offset": -0.12
+    },
+    {
+     "do": "corridor.dark",
+     "at": "start",
+     "offset": -0.12
+    },
+    {
+     "do": "corridor.light",
+     "at": "حاجة",
+     "from": 1,
+     "to": 3,
+     "over": 0.5
+    }
+   ],
+   "sfx": [
+    {
+     "kind": "drop",
+     "at": "start",
+     "offset": -0.12,
+     "gain": -10
+    }
+   ]
+  },
+  {
+   "id": "L10",
+   "text": "جوّه المحرّك ميّة أربعة وتلاتين فريم ورك. ودُرج رقم ميّة خمسة وتلاتين… مقفول.",
+   "keys": [
+    "فريم",
+    "ورك.",
+    "مقفول."
+   ],
+   "tag": "[fast-paced]",
+   "scene": "travel the corridor of 134 lit frameworks to sealed drawer 135",
+   "cam": {
+    "shot": "corridor_end",
+    "move": "travel",
+    "at": "جوّه",
+    "until": "ودُرج"
+   },
+   "events": [
+    {
+     "do": "lights.up",
+     "at": "جوّه",
+     "dur": 0.5
+    },
+    {
+     "do": "corridor.light",
+     "at": "جوّه",
+     "from": 1,
+     "to": 134,
+     "until": "ورك."
+    },
+    {
+     "do": "hud.line",
+     "at": "فريم",
+     "text": "134 / 134 فريم ورك"
+    },
+    {
+     "do": "d135.pulse",
+     "at": "مقفول.",
+     "level": 0.15,
+     "grow": 0.6
+    }
+   ],
+   "sfx": [
+    {
+     "kind": "clunk",
+     "at": "مقفول.",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "L11",
+   "text": "كل براند بيدخل… بيحط فيه حاجة.",
+   "tag": "[whispers]",
+   "keys": [
+    "حاجة."
+   ],
+   "scene": "whisper: close on drawer 135, pulse grows",
+   "cam": {
+    "shot": "drawer_close",
+    "move": "push",
+    "at": "start",
+    "offset": -0.25,
+    "dur": 2.6,
+    "whoosh_gain": -26
+   },
+   "events": [
+    {
+     "do": "hud.line_off",
+     "at": "start"
+    },
+    {
+     "do": "d135.pulse",
+     "at": "بيحط",
+     "level": 0.45,
+     "grow": 1.0
+    },
+    {
+     "do": "d135.label",
+     "at": "حاجة.",
+     "text": "سطور مكتوبة: 0"
+    }
+   ],
+   "sfx": [
+    {
+     "kind": "pulse",
+     "at": "حاجة.",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "L12",
+   "text": "وأنا نفسي مش عارف هيطلع فيه إيه.",
+   "tag": "[whispers]",
+   "keys": [
+    "إيه."
+   ],
+   "scene": "whisper: the pulse grows",
+   "cam": {
+    "shot": "drawer",
+    "move": "drift",
+    "at": "start",
+    "dur": 2.0,
+    "whoosh": false
+   },
+   "events": [
+    {
+     "do": "d135.pulse",
+     "at": "عارف",
+     "level": 0.75,
+     "grow": 1.2
+    }
+   ],
+   "sfx": [
+    {
+     "kind": "pulse",
+     "at": "إيه.",
+     "gain": -10
+    }
+   ]
+  },
+  {
+   "id": "L13",
+   "text": "اكتب اسم البراند بتاعك وبيبيع إيه… أو اكتب: جنب الدرج.",
+   "keys": [
+    "البراند",
+    "جنب",
+    "الدرج."
+   ],
+   "tag": "[fast-paced]",
+   "scene": "mock comments appear",
+   "cam": {
+    "shot": "drawer_up",
+    "move": "drift",
+    "at": "start",
+    "dur": 1.0,
+    "whoosh": false
+   },
+   "events": [
+    {
+     "do": "d135.label_off",
+     "at": "start"
+    },
+    {
+     "do": "comments.show",
+     "at": "البراند",
+     "items": [
+      "سكين كير"
+     ],
+     "y": 1070
+    },
+    {
+     "do": "comments.show",
+     "at": "إيه…",
+     "items": [
+      "أكل"
+     ],
+     "y": 1195
+    },
+    {
+     "do": "comments.show",
+     "at": "جنب",
+     "items": [
+      "هدوم — جنب الدرج ١٣٥"
+     ],
+     "y": 1320,
+     "highlight": true
+    }
+   ],
+   "sfx": []
+  },
+  {
+   "id": "L14",
+   "text": "واعمل فولو… قبل ما الدرج يتفتح.",
+   "keys": [
+    "فولو…",
+    "يتفتح."
+   ],
+   "tag": "[fast-paced]",
+   "scene": "end card: follow before the drawer opens",
+   "cam": {
+    "shot": "drawer",
+    "move": "drift",
+    "at": "start",
+    "dur": 2.4,
+    "whoosh": false
+   },
+   "events": [
+    {
+     "do": "comments.hide",
+     "at": "start"
+    },
+    {
+     "do": "hud.hide",
+     "at": "start"
+    },
+    {
+     "do": "endcard.show",
+     "at": "start",
+     "lines": [
+      "اعمل *فولو*",
+      "قبل ما الدرج يتفتح"
+     ]
+    },
+    {
+     "do": "d135.pulse",
+     "at": "يتفتح.",
+     "level": 1.0,
+     "grow": 0.5
+    }
+   ],
+   "sfx": [
+    {
+     "kind": "pulse",
+     "at": "يتفتح.",
+     "gain": -9
+    }
+   ]
+  }
+ ],
+ "tail": 0.38,
+ "bed": {
+  "kind": "hum",
+  "gain": -27,
+  "duck_from": {
+   "line": "L9",
+   "at": "start"
+  },
+  "duck_to": {
+   "line": "L10",
+   "at": "start",
+   "offset": 0.4
+  },
+  "duck_gain": -60
+ }
+}

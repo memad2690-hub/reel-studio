@@ -1,0 +1,39 @@
+{
+ "text": "أصل في حاجة ما قلتهاش.",
+ "words": [
+  {
+   "text": "أصل",
+   "start": 0.0,
+   "end": 0.24
+  },
+  {
+   "text": "في",
+   "start": 0.293,
+   "end": 0.4
+  },
+  {
+   "text": "حاجة",
+   "start": 0.44,
+   "end": 0.64
+  },
+  {
+   "text": "ما",
+   "start": 0.667,
+   "end": 0.72
+  },
+  {
+   "text": "قلتهاش.",
+   "start": 0.76,
+   "end": 1.44
+  }
+ ],
+ "duration": 1.48898,
+ "model": "eleven_v3",
+ "settings": {
+  "stability": 0.5,
+  "similarity_boost": 0.8,
+  "style": 0.2,
+  "use_speaker_boost": true
+ },
+ "hash": "76ca93e3f975"
+}

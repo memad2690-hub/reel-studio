@@ -1,0 +1,44 @@
+{
+ "text": "[fast-paced] واعمل فولو… قبل ما الدرج يتفتح.",
+ "words": [
+  {
+   "text": "واعمل",
+   "start": 0.072,
+   "end": 0.32
+  },
+  {
+   "text": "فولو…",
+   "start": 0.4,
+   "end": 0.88
+  },
+  {
+   "text": "قبل",
+   "start": 1.2,
+   "end": 2.16
+  },
+  {
+   "text": "ما",
+   "start": 2.213,
+   "end": 2.32
+  },
+  {
+   "text": "الدرج",
+   "start": 2.384,
+   "end": 2.72
+  },
+  {
+   "text": "يتفتح.",
+   "start": 2.773,
+   "end": 3.28
+  }
+ ],
+ "duration": 3.317551,
+ "model": "eleven_v3",
+ "settings": {
+  "stability": 0.5,
+  "similarity_boost": 0.8,
+  "style": 0.2,
+  "use_speaker_boost": true
+ },
+ "hash": "e59f85c75471"
+}

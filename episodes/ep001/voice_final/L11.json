@@ -1,0 +1,44 @@
+{
+ "text": "[whispers] كل براند بيدخل… بيحط فيه حاجة.",
+ "words": [
+  {
+   "text": "كل",
+   "start": 0.28,
+   "end": 0.32
+  },
+  {
+   "text": "براند",
+   "start": 0.4,
+   "end": 0.8
+  },
+  {
+   "text": "بيدخل…",
+   "start": 0.84,
+   "end": 1.92
+  },
+  {
+   "text": "بيحط",
+   "start": 2.08,
+   "end": 2.72
+  },
+  {
+   "text": "فيه",
+   "start": 2.76,
+   "end": 2.88
+  },
+  {
+   "text": "حاجة.",
+   "start": 2.96,
+   "end": 3.36
+  }
+ ],
+ "duration": 3.395918,
+ "model": "eleven_v3",
+ "settings": {
+  "stability": 0.5,
+  "similarity_boost": 0.8,
+  "style": 0.2,
+  "use_speaker_boost": true
+ },
+ "hash": "339c7bb4c641"
+}

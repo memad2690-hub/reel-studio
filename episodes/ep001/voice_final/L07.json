@@ -1,0 +1,59 @@
+{
+ "text": "[fast-paced] عند ألف، تجارب على منتجات حقيقية… حلقة ورا حلقة.",
+ "words": [
+  {
+   "text": "عند",
+   "start": 0.204,
+   "end": 0.24
+  },
+  {
+   "text": "ألف،",
+   "start": 0.3,
+   "end": 0.56
+  },
+  {
+   "text": "تجارب",
+   "start": 0.64,
+   "end": 1.04
+  },
+  {
+   "text": "على",
+   "start": 1.08,
+   "end": 1.2
+  },
+  {
+   "text": "منتجات",
+   "start": 1.26,
+   "end": 1.68
+  },
+  {
+   "text": "حقيقية…",
+   "start": 1.72,
+   "end": 2.48
+  },
+  {
+   "text": "حلقة",
+   "start": 2.56,
+   "end": 2.88
+  },
+  {
+   "text": "ورا",
+   "start": 2.987,
+   "end": 3.32
+  },
+  {
+   "text": "حلقة.",
+   "start": 3.36,
+   "end": 3.68
+  }
+ ],
+ "duration": 3.709388,
+ "model": "eleven_v3",
+ "settings": {
+  "stability": 0.5,
+  "similarity_boost": 0.8,
+  "style": 0.2,
+  "use_speaker_boost": true
+ },
+ "hash": "a71b4dff2d49"
+}

@@ -21,3 +21,10 @@ projects/*/acceptance/inspect*.json
 exports/
 # fast previews are regenerated (reel.py preview)
 projects/*/exports/previews/
+# Story World episodes: renders, builds and the voice-take cache are reproducible; the chosen takes are kept
+episodes/*/build/
+episodes/*/exports/*.mp4
+episodes/*/voice/
+episodes/*/voice_tagtest/
+episodes/*/voice_v2test/
+episodes/*/vo.wav

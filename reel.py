@@ -765,6 +765,28 @@ def cmd_check(a):
     print('\nReady.' if ok else '\nFix the items above, then run this again.')
 
 
+
+def cmd_episode(a):
+    """Story World episode: build (word-anchored events) → mix → render → QA."""
+    import world
+    ep = os.path.abspath(a.file)
+    out, data, sfx = world.build(ep)
+    print(f'built {out}: {data["duration"]}s, {len(data["events"])} events, {len(data["cams"])} camera moves, {len(sfx)} sfx')
+    if a.build:
+        return
+    audio = world.mix(ep, out)
+    base = os.path.splitext(ep)[0]
+    os.makedirs(os.path.join(base, 'exports'), exist_ok=True)
+    n = 1
+    while os.path.exists(os.path.join(base, 'exports', f'v{n:03d}.mp4')):
+        n += 1
+    mp4 = os.path.join(base, 'exports', f'v{n:03d}.mp4')
+    args = ['node', os.path.join(ROOT, 'engine', 'render.js'), '--build', out, '--out', mp4, '--audio', audio]
+    if a.from_ is not None:
+        args += ['--from', str(a.from_), '--to', str(a.to)]
+    subprocess.run(args, check=True)
+    print(json.dumps({'file': mp4, 'qa': qa(mp4)}, ensure_ascii=False))
+
 def main():
     p = argparse.ArgumentParser(description='Reel Studio')
     sp = p.add_subparsers(dest='cmd', required=True)
@@ -837,6 +859,9 @@ def main():
     s.add_argument('--notes'); s.add_argument('--tech'); s.set_defaults(f=cmd_library)
     s = sp.add_parser('studio', help='open the local review studio'); s.add_argument('--port', type=int); s.add_argument('--open', action='store_true'); s.set_defaults(f=cmd_studio)
     s = sp.add_parser('check', help='check prerequisites'); s.set_defaults(f=cmd_check)
+    s = sp.add_parser('episode', help='Story World episode: build → mix → render (episodes/epNNN.json)'); s.add_argument('file')
+    s.add_argument('--build', action='store_true', help='build only'); s.add_argument('--from', dest='from_', type=float); s.add_argument('--to', type=float)
+    s.set_defaults(f=cmd_episode)
     a = p.parse_args()
     a.f(a)
 
