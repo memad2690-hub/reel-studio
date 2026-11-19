@@ -1,8 +1,14 @@
 {
- "roughcut": {
-  "approved": true,
-  "version": "rc002",
-  "by": "user",
-  "note": "reviewed rc002 and asked to proceed + test tightening to 85–100 s; rc003 is that tighten (director), pending his review in the edit"
- }
+  "roughcut": {
+    "approved": true,
+    "version": "rc002",
+    "by": "user",
+    "note": "reviewed rc002 and asked to proceed + test tightening to 85–100 s; rc003 is that tighten (director), pending his review in the edit"
+  },
+  "final": {
+    "approved": true,
+    "version": "v003",
+    "at": "2026-11-19T11:56:24+02:00",
+    "by": "user"
+  }
 }

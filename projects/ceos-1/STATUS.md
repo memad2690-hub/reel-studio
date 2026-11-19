@@ -6,3 +6,4 @@
 - 2026-11-18T15:48:33+02:00: final cut prepared: words.json mapped, 2951 card frames
 - 2026-11-18T16:30:06+02:00: render v001 1080x1920 98.37s  QA ok
 - 2026-11-18T16:38:33+02:00: render v002 1080x1920 98.37s  QA ok
+- 2026-11-19T11:56:24+02:00: approved final v003

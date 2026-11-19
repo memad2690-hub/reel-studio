@@ -1,0 +1,350 @@
+{
+ "project": "ceos-1",
+ "video": "exports/v002.mp4",
+ "verdict": "warn",
+ "checks": [
+  {
+   "id": "finance",
+   "name": "No incorrect financial calculations",
+   "status": "pass",
+   "detail": "0 financial component(s) checked by the build (totals, results, tones, chart sums)",
+   "evidence": []
+  },
+  {
+   "id": "assets",
+   "name": "No missing assets",
+   "status": "pass",
+   "detail": "audio present; 2951 card frames for 98.4s; fonts bundled",
+   "evidence": []
+  },
+  {
+   "id": "timing",
+   "name": "Graphics timed to speech",
+   "status": "pass",
+   "detail": "every anchor found; nothing timed after its scene ends",
+   "evidence": []
+  },
+  {
+   "id": "captions",
+   "name": "Caption timing",
+   "status": "pass",
+   "detail": "101 captions, 266 words; each caption starts on its first spoken word (±1 frame)",
+   "evidence": []
+  },
+  {
+   "id": "clip",
+   "name": "No clipped text",
+   "status": "pass",
+   "detail": "118 moments checked; every visible text box inside the 1080×1920 frame",
+   "evidence": []
+  },
+  {
+   "id": "overlap-caption",
+   "name": "Graphics clear of captions",
+   "status": "pass",
+   "detail": "no text graphic covers more than 20% of a caption",
+   "evidence": []
+  },
+  {
+   "id": "overlap-face",
+   "name": "Graphics clear of the face",
+   "status": "pass",
+   "detail": "face found at 118/118 moments; no front graphic covers more than 30% of it",
+   "evidence": []
+  },
+  {
+   "id": "safe-zone",
+   "name": "Text clear of platform UI (heuristic)",
+   "status": "pass",
+   "detail": "no text in the bottom 220 px or the lower right 100 px column",
+   "evidence": []
+  },
+  {
+   "id": "readable",
+   "name": "Text readable on a phone (≥ 44 px)",
+   "status": "pass",
+   "detail": "every text ≥ 44 px (captions included)",
+   "evidence": []
+  },
+  {
+   "id": "art",
+   "name": "Art direction (focus, density, speaker, empty page)",
+   "status": "warn",
+   "detail": "15 note(s) to review",
+   "evidence": [
+    "seven: page mostly empty at 3 sampled moments",
+    "ten: page mostly empty at 5 sampled moments",
+    "motives: 6 text elements at once (competing)",
+    "motives: no dominant element (largest text 51 px)",
+    "motives: page mostly empty at 2 sampled moments",
+    "same: no dominant element (largest text 50 px)",
+    "same: page mostly empty at 2 sampled moments",
+    "diversity: no dominant element (largest text 55 px)",
+    "diversity: speaker frame only 5% of the screen",
+    "explosion: 4 text elements at once (competing)",
+    "explosion: no dominant element (largest text 48 px)",
+    "explosion: speaker frame only 5% of the screen",
+    "test: no dominant element (largest text 55 px)",
+    "test: speaker frame only 5% of the screen",
+    "how: 6 text elements at once (competing)"
+   ]
+  },
+  {
+   "id": "shaping",
+   "name": "Correct Arabic shaping",
+   "status": "pass",
+   "detail": "121 distinct texts; Cairo loaded; letters join (each word drawn shaped differs from its letters drawn apart)",
+   "evidence": []
+  },
+  {
+   "id": "rtl",
+   "name": "No broken RTL",
+   "status": "pass",
+   "detail": "every line with Arabic runs right→left (also when it starts with a Latin word); numbers read left→right",
+   "evidence": []
+  },
+  {
+   "id": "stable",
+   "name": "Page runs without errors",
+   "status": "pass",
+   "detail": "no page or console errors",
+   "evidence": []
+  },
+  {
+   "id": "export",
+   "name": "Export format (1080×1920 · 9:16 · 30 fps · H.264 · MP4)",
+   "status": "pass",
+   "detail": "1080×1920, 30/1, h264 High yuv420p, faststart yes, 98.37s, 6676 kb/s, 82.1 MB",
+   "evidence": []
+  },
+  {
+   "id": "audio",
+   "name": "Consistent audio",
+   "status": "pass",
+   "detail": "aac 48000 Hz 2ch 192 kb/s; integrated -13.5 LUFS, LRA 1.9 LU, true peak -1.4 dBTP; audio length = video length ±0.1 s",
+   "evidence": []
+  },
+  {
+   "id": "stable-render",
+   "name": "Stable rendering (decodes cleanly, no black frames)",
+   "status": "pass",
+   "detail": "whole file decodes without errors; no black frames ≥ 0.1 s",
+   "evidence": []
+  },
+  {
+   "id": "transitions",
+   "name": "Smooth transitions",
+   "status": "pass",
+   "detail": "1 designed transition(s) (diversity:zoom); no frozen picture ≥ 1.5 s",
+   "evidence": []
+  },
+  {
+   "id": "determinism",
+   "name": "Deterministic rerenders",
+   "status": "pass",
+   "detail": "4 frames rendered twice: byte-identical PNGs",
+   "evidence": []
+  }
+ ],
+ "flagged_sheet": null,
+ "scenes": [
+  {
+   "id": "hook",
+   "style": "editorial",
+   "layout": "full",
+   "tr": null
+  },
+  {
+   "id": "seven",
+   "style": "editorial",
+   "layout": "top",
+   "tr": null
+  },
+  {
+   "id": "ten",
+   "style": "editorial",
+   "layout": "split",
+   "tr": null
+  },
+  {
+   "id": "motives",
+   "style": "editorial",
+   "layout": "split",
+   "tr": null
+  },
+  {
+   "id": "difference",
+   "style": "editorial",
+   "layout": "full",
+   "tr": null
+  },
+  {
+   "id": "same",
+   "style": "editorial",
+   "layout": "split",
+   "tr": null
+  },
+  {
+   "id": "diversity",
+   "style": "editorial",
+   "layout": "mini",
+   "tr": "zoom"
+  },
+  {
+   "id": "explosion",
+   "style": "editorial",
+   "layout": "mini",
+   "tr": null
+  },
+  {
+   "id": "test",
+   "style": "editorial",
+   "layout": "full",
+   "tr": null
+  },
+  {
+   "id": "ceos",
+   "style": "editorial",
+   "layout": "top",
+   "tr": null
+  },
+  {
+   "id": "how",
+   "style": "editorial",
+   "layout": "split",
+   "tr": null
+  },
+  {
+   "id": "founder",
+   "style": "editorial",
+   "layout": "full",
+   "tr": null
+  },
+  {
+   "id": "cta",
+   "style": "editorial",
+   "layout": "top",
+   "tr": null
+  }
+ ],
+ "duration": 98.367,
+ "art": [
+  {
+   "scene": "hook",
+   "look_first": "the speaker",
+   "focal_px": null,
+   "max_elements": 0,
+   "max_words": 0,
+   "speaker_share": 1.0,
+   "empty_moments": 0
+  },
+  {
+   "scene": "seven",
+   "look_first": "بسبع إعلانات مختلفة",
+   "focal_px": 171,
+   "max_elements": 1,
+   "max_words": 3,
+   "speaker_share": 0.44,
+   "empty_moments": 3
+  },
+  {
+   "scene": "ten",
+   "look_first": "ولا واحد بيشتريه لنفس السبب",
+   "focal_px": 79,
+   "max_elements": 1,
+   "max_words": 5,
+   "speaker_share": 0.37,
+   "empty_moments": 5
+  },
+  {
+   "scene": "motives",
+   "look_first": "Statement",
+   "focal_px": 51,
+   "max_elements": 6,
+   "max_words": 2,
+   "speaker_share": 0.37,
+   "empty_moments": 2
+  },
+  {
+   "scene": "difference",
+   "look_first": "شايف الفرق؟",
+   "focal_px": 82,
+   "max_elements": 1,
+   "max_words": 6,
+   "speaker_share": 0.91,
+   "empty_moments": 0
+  },
+  {
+   "scene": "same",
+   "look_first": "كله بيقول نفس الحاجة",
+   "focal_px": 50,
+   "max_elements": 1,
+   "max_words": 5,
+   "speaker_share": 0.37,
+   "empty_moments": 2
+  },
+  {
+   "scene": "diversity",
+   "look_first": "jacket واحد",
+   "focal_px": 55,
+   "max_elements": 2,
+   "max_words": 4,
+   "speaker_share": 0.05,
+   "empty_moments": 1
+  },
+  {
+   "scene": "explosion",
+   "look_first": "مريح طول اليوم",
+   "focal_px": 48,
+   "max_elements": 4,
+   "max_words": 10,
+   "speaker_share": 0.05,
+   "empty_moments": 1
+  },
+  {
+   "scene": "test",
+   "look_first": "اختبر إيه اللي بيجيب عملا أكتر",
+   "focal_px": 55,
+   "max_elements": 1,
+   "max_words": 6,
+   "speaker_share": 0.05,
+   "empty_moments": 1
+  },
+  {
+   "scene": "ceos",
+   "look_first": "Creative Engine OS",
+   "focal_px": 108,
+   "max_elements": 2,
+   "max_words": 5,
+   "speaker_share": 0.44,
+   "empty_moments": 1
+  },
+  {
+   "scene": "how",
+   "look_first": "جاهزة تبدأ تختبرها",
+   "focal_px": 85,
+   "max_elements": 6,
+   "max_words": 9,
+   "speaker_share": 0.37,
+   "empty_moments": 1
+  },
+  {
+   "scene": "founder",
+   "look_first": "the speaker",
+   "focal_px": null,
+   "max_elements": 0,
+   "max_words": 0,
+   "speaker_share": 1.0,
+   "empty_moments": 0
+  },
+  {
+   "scene": "cta",
+   "look_first": "اعمل follow واكتب ANGLES كام a",
+   "focal_px": 110,
+   "max_elements": 1,
+   "max_words": 9,
+   "speaker_share": 0.44,
+   "empty_moments": 1
+  }
+ ]
+}
