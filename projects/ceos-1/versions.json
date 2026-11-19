@@ -298,22 +298,21 @@
   "note": ""
  },
  {
-  "id": "v002",
+  "id": "v003",
   "kind": "render",
   "file": "exports/v003.mp4",
-  "sheet": "exports/v002_sheet.png",
+  "sheet": null,
   "created": "2026-11-19T11:50:39",
   "qa": {
    "width": 1080,
    "height": 1920,
    "fps": 30.0,
    "duration": 98.37,
-   "mbps": 6.68,
+   "mbps": 5.87,
    "audio": true,
    "problems": []
   },
   "draft": false,
-  "note": "v002 fixed: single continuous encode (v002 spliced differently-encoded pieces at 36 s and 42 s, which glitched on phones). Same edit as v002.",
-  "version": "v003"
+  "note": "v002 fixed: single continuous encode (v002 spliced differently-encoded pieces at 36 s and 42 s, which glitched on phones). Same edit as v002."
  }
 ]
