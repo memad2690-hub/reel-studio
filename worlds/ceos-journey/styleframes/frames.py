@@ -32,9 +32,10 @@ def stars(n=220, seed=3, y1=H):
                    f'fill="#fff" opacity="{r.uniform(.2, .8):.2f}"/>' for _ in range(n))
 
 
-def text(s, x, y, size, fill='#fff', weight=900, anchor='middle', extra=''):
-    return (f'<text x="{x}" y="{y}" font-size="{size}" font-weight="{weight}" fill="{fill}" text-anchor="{anchor}" '
-            f'direction="rtl" font-family="Cairo" {extra}>{s}</text>')
+def text(s, x, y, size, fill='#fff', weight=900, anchor='middle', extra='', d='ltr'):
+    """On-screen text is English (LTR); only captions are Arabic."""
+    return (f'<text x="{x}" y="{y}" font-size="{size}" font-weight="{weight}" fill="{fill}" text-anchor="{anchor}" letter-spacing="{2 if d == "ltr" else 0}" '
+            f'direction="{d}" font-family="Cairo" {extra}>{s}</text>')
 
 
 def caption(words, y=1440):
@@ -53,18 +54,18 @@ def hud(value, total, label, y=230, icon='people'):
 {ic}<line x1="-250" y1="-34" x2="-250" y2="34" stroke="#fff" stroke-opacity=".4" stroke-width="2"/>
 <text x="-215" y="20" font-size="64" font-weight="900" fill="{LIME}" direction="ltr" font-family="Cairo">{value}<tspan fill="#fff"> / {total}</tspan></text>
 <g transform="translate(120,6)">{''.join(f'<rect x="{i*11}" y="-14" width="6" height="28" rx="3" fill="{LIME if i < 1 else "#3a3b36"}"/>' for i in range(22))}</g>
-<text x="0" y="104" font-size="30" font-weight="800" fill="#fff" fill-opacity=".8" text-anchor="middle" direction="rtl" font-family="Cairo">{label}</text></g>'''
+<text x="0" y="104" font-size="30" font-weight="800" fill="#fff" fill-opacity=".8" text-anchor="middle" letter-spacing="4" direction="ltr" font-family="Cairo">{label}</text></g>'''
 
 
 def tracker(active=0, y=1700):
-    labels = ['اركب براندك', 'الرحلة', 'العالم الجديد']
-    xs = [880, 540, 200]                                  # RTL: the first stage on the right
-    out = [f'<line x1="{xs[2]}" y1="{y}" x2="{xs[0]}" y2="{y}" stroke="#fff" stroke-opacity=".6" stroke-width="3"/>']
+    labels = ['BOARD YOUR BRAND', 'THE JOURNEY', 'THE NEW WORLD']
+    xs = [200, 540, 880]                                  # LTR: the first stage on the left
+    out = [f'<line x1="{xs[0]}" y1="{y}" x2="{xs[2]}" y2="{y}" stroke="#fff" stroke-opacity=".6" stroke-width="3"/>']
     for i, (x, l) in enumerate(zip(xs, labels)):
         on = i <= active
         out.append(f'<circle cx="{x}" cy="{y}" r="20" fill="{LIME if on else "#000"}" stroke="{LIME if on else "#fff"}" stroke-width="4"'
                    + (' filter="url(#glow)"' if on else '') + '/>')
-        out.append(text(l, x, y + 64, 32, '#fff' if on else '#bdbdb5', 800))
+        out.append(text(l, x, y + 62, 28, '#fff' if on else '#bdbdb5', 800))
     return ''.join(out)
 
 
@@ -128,7 +129,7 @@ def exterior():
     # nose with the 10,000 plate
     out.append(f'<polygon points="{" ".join(f"{x},{y}" for x, y in N)}" fill="url(#nose)" stroke="#000" stroke-width="3"/>')
     out.append(f'<polygon points="160,915 245,800 495,800 560,915 530,1100 190,1100" fill="#0a0b09" stroke="{LIME}" stroke-width="5" filter="url(#glow)"/>')
-    out.append(text('10,000', 375, 980, 100, LIME, 900, extra='direction="ltr"'))
+    out.append(text('10,000', 375, 980, 100, LIME, 900))
     out.append(text('مكان للبراندات', 375, 1050, 40, '#fff', 800))
     # boarding door + ramp
     out.append(f'<rect x="300" y="1170" width="160" height="130" rx="6" fill="{LIME}" opacity=".95" filter="url(#glow)"/>'
@@ -139,7 +140,7 @@ def exterior():
         t0, t1 = i / 7, i / 7 + .06
         out.append(f'<line x1="{lerp(380, -20, t0):.0f}" y1="{lerp(1300, 1640, t0):.0f}" x2="{lerp(380, -20, t1):.0f}" y2="{lerp(1300, 1640, t1):.0f}" stroke="{LIME}" stroke-width="{4 + i*2}" stroke-linecap="round"/>')
     out.append(f'<ellipse cx="380" cy="1310" rx="140" ry="26" fill="url(#limeGlow)" opacity=".7"/>')
-    out.append(hud('0', '10,000', 'براندات على السفينة'))
+    out.append(hud('0', '10,000', 'BRANDS ON BOARD'))
     out.append(caption([('فيها', False), ('عشرة', True), ('آلاف', True), ('مكان.', False)], y=1530))
     out.append(tracker(0, 1710))
     return ''.join(out)
@@ -211,15 +212,15 @@ def cabin():
     out += pods
     out.append(f'<rect x="{vpx-150}" y="1440" width="300" height="60" rx="14" fill="none" stroke="{LIME}" stroke-width="5" filter="url(#glow)" transform="translate(0,-20)"/>')
     out.append(pod(vpx, 1300, .95, lit=True))
-    out.append(f'<g transform="translate({vpx},1050)"><rect x="-110" y="-38" width="220" height="70" rx="35" fill="#000" stroke="{LIME}" stroke-width="4"/>'
-               + text('براندك', 0, 10, 40) + f'<line x1="0" y1="32" x2="0" y2="80" stroke="{LIME}" stroke-width="3"/></g>')
+    out.append(f'<g transform="translate({vpx},1050)"><rect x="-150" y="-38" width="300" height="70" rx="35" fill="#000" stroke="{LIME}" stroke-width="4"/>'
+               + text('YOUR BRAND', 0, 12, 34) + f'<line x1="0" y1="32" x2="0" y2="80" stroke="{LIME}" stroke-width="3"/></g>')
     # seat zones (the comment choices)
     def zone(t, x, y, col=LIME):
-        return (f'<g transform="translate({x},{y})"><rect x="-120" y="-30" width="240" height="56" rx="28" fill="#000" fill-opacity=".8" stroke="{col}" stroke-width="3"/>'
-                + text(t, 0, 10, 30, '#fff', 800) + '</g>')
-    out += [zone('عند الشباك', 190, 560), zone('جنب المحرك', 890, 560), zone('جنب الغرفة 135', 540, 900, AMBER)]
+        return (f'<g transform="translate({x},{y})"><rect x="-150" y="-30" width="300" height="56" rx="28" fill="#000" fill-opacity=".8" stroke="{col}" stroke-width="3"/>'
+                + text(t, 0, 10, 26, '#fff', 800) + '</g>')
+    out += [zone('BY THE WINDOW', 190, 560), zone('BY THE ENGINE', 890, 560), zone('BY ROOM 135', 540, 900, AMBER)]
     out.append(f'<rect width="{W}" height="{H}" fill="url(#vig)"/>')
-    out.append(hud('0', '10,000', 'براندات على السفينة'))
+    out.append(hud('0', '10,000', 'BRANDS ON BOARD'))
     out.append(caption([('براندات', False), ('مين؟…', False), ('براندك', True), ('إنت.', False)], y=1640))
     return ''.join(out)
 
@@ -256,7 +257,7 @@ def chamber():
                f'<circle cx="{vpx}" cy="{vpy+40}" r="18" fill="{AMBER}" filter="url(#glow)"/>'
                + text('135', vpx, vpy - 100, 64, AMBER))
     out.append(f'<rect width="{W}" height="{H}" fill="url(#vig)"/>')
-    out.append(hud('134', '134', 'وحدة شغالة'))
+    out.append(hud('134', '134', 'UNITS ONLINE'))
     out.append(caption([('محدش', False), ('عارف', False), ('وراها', False), ('إيه.', True)], y=1560))
     return ''.join(out)
 

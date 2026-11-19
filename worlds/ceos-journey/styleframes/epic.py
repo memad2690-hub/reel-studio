@@ -46,8 +46,8 @@ def rocket():
     # the 10,000 band
     hw = half(720)
     out.append(f'<path d="M{cx-hw+6},680 Q{cx},700 {cx+hw-6},680 L{cx+hw-4},800 Q{cx},822 {cx-hw+4},800 Z" fill="#0a0b09" stroke="{LIME}" stroke-width="4"/>')
-    out.append(text('10,000', cx, 755, 74, LIME, 900, extra='direction="ltr"'))
-    out.append(text('مكان للبراندات', cx, 797, 30, '#fff', 800))
+    out.append(text('10,000', cx, 755, 74, LIME, 900))
+    out.append(text('BRAND SEATS', cx, 797, 30, '#fff', 800))
     # windows wrapped around the cylinder: rows × visible columns, squeezed toward the edges
     rows, cols = 15, 11
     for i in range(rows):
@@ -92,7 +92,7 @@ def rocket():
         out.append(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="{rr:.0f}" fill="url(#smoke)" opacity="{r.uniform(.6, 1):.2f}"/>')
     out.append('<linearGradient id="gnd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#030303" stop-opacity="0"/><stop offset=".3" stop-color="#030303" stop-opacity=".9"/><stop offset="1" stop-color="#030303"/></linearGradient>'
                f'<rect x="0" y="1520" width="{W}" height="{H-1520}" fill="url(#gnd)"/>')
-    out.append(hud('0', '10,000', 'براندات على السفينة'))
+    out.append(hud('0', '10,000', 'BRANDS ON BOARD'))
     out.append(caption([('فيها', False), ('عشرة', True), ('آلاف', True), ('مكان.', False)], y=1560))
     out.append(tracker(0, 1730))
     return ''.join(out)
@@ -157,8 +157,8 @@ def starship():
         g.append(f'<circle cx="{x}" cy="{max(30, 230 - x*.21):.0f}" r="4" fill="#fff" opacity=".7"/>')
     # the 10,000 plate
     g.append(f'<polygon points="570,-150 600,-182 780,-150 790,-120 770,-40 580,-40" fill="#0a0b09" stroke="{LIME}" stroke-width="5" filter="url(#glow)"/>')
-    g.append(text('10,000', 680, -92, 60, LIME, 900, extra='direction="ltr"'))
-    g.append(text('مكان للبراندات', 680, -54, 26, '#fff', 800))
+    g.append(text('10,000', 680, -92, 60, LIME, 900))
+    g.append(text('BRAND SEATS', 680, -54, 26, '#fff', 800))
     # boarding bay on the belly, open and lit
     g.append(f'<rect x="440" y="80" width="150" height="60" rx="8" fill="{LIME}" filter="url(#glow)"/><rect x="452" y="90" width="126" height="50" rx="6" fill="#e9ff7a"/>')
     ang, ox, oy = -30, 75, 1310
@@ -170,7 +170,7 @@ def starship():
                f'<g transform="translate({sx+128:.0f},{sy-200:.0f})"><rect x="-68" y="-30" width="136" height="58" rx="12" fill="#000" stroke="{AMBER}" stroke-width="3"/>'
                + text('135', 0, 12, 34, AMBER) + '</g>')
     out.append(f'<rect width="{W}" height="{H}" fill="url(#vig)" opacity=".7"/>')
-    out.append(hud('0', '10,000', 'براندات على السفينة'))
+    out.append(hud('0', '10,000', 'BRANDS ON BOARD'))
     out.append(caption([('فيها', False), ('عشرة', True), ('آلاف', True), ('مكان.', False)], y=1580))
     out.append(tracker(0, 1740))
     return ''.join(out)

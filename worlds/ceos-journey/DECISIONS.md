@@ -7,7 +7,8 @@
   Option B (starship in flight, `starship()`) kept on file as a possible post-launch look; not approved.
 - 500 EGP surprise stays secret until its terms are approved (no fabricated reference price; there is no 1,000 plan).
 
-- 2026-11-19 The vehicle is called "الصاروخ" on screen and in the script (HUD: براندات على الصاروخ).
+- 2026-11-19 The vehicle is called "الصاروخ" in the voiceover and captions.
+- 2026-11-19 ALL on-screen text in English (HUD "BRANDS ON BOARD", plate "10,000 BRAND SEATS", tracker BOARD YOUR BRAND → THE JOURNEY → THE NEW WORLD left→right, zones BY THE WINDOW / BY THE ENGINE / BY ROOM 135, tag YOUR BRAND, "UNITS ONLINE"). Voiceover and captions stay Egyptian Arabic.
 - 2026-11-19 A commenter gets a boarding pass (brand name + seat) by auto-DM; must be ready before Episode 001 posts.
 - 2026-11-19 Stages are milestones the user controls (launch date, episode reveals), not brand counts.
 - 2026-11-19 KEEP the 10,000 condition: reaching the new world happens at 10,000 brands (user's decision).
