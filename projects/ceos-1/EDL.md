@@ -1,4 +1,4 @@
-# CEOS-1 · Edit decision list (review export v002)
+# CEOS-1 · Edit decision list (review export v003)
 
 **Style:** CEOS Creative Breakdown · CEOS lime #D1FE17 + black + white · RC Warm Cinematic at 70% on footage only
 **Length:** 98.4 s (rough cut rc002 112.2 s, raw 160.4 s) · 1080×1920 · 30 fps
@@ -44,7 +44,7 @@ Visual modes: **P** = presenter (full-frame speaker) · **B** = product-angle br
 | 86.05–91.47 | P | full, drift 1.00→1.04 | الفكرة دي اتعملت… صرفنا millions على مدار السبع سنين اللي فاتوا | presenter only, no graphic for the claim | — |
 | 91.47–98.37 | B | top | فلو أنت عايز تعرف كام angle… اعمل follow، واكتب angles في comment | CTA card "اعمل follow واكتب **ANGLES**" + "كام angle تطلعه من منتجك" from "تعرف" (92.2) | pop 92.2 |
 
-v002 = v001 with 36.0–42.0 s re-rendered (the "شايف الفرق؟" bar now holds and no caption doubles it); the rest is
+v003 (same edit as v002; v002 glitched on phones at 0:36–0:42 because the splice copied differently-encoded pieces; v003 is one continuous encode) = v001 with 36.0–42.0 s re-rendered (the "شايف الفرق؟" bar now holds and no caption doubles it); the rest is
 v001's frames, re-encoded at CRF 15 for the join.
 
 Transitions: hard cuts everywhere except the zoom into the creative-diversity payoff (52.7). Speaker-card moves
